@@ -1,12 +1,3 @@
-#try to make a simple webapp that run the code and show the result
-#site also has a button to upload a new image to be processed
-#you put the image in the s3 bucket and then run the code
-#the code will then download the image from the s3 bucket and process it
-#then it will upload the result to the s3 bucket
-#the site will then show the result
-#not need to save image in local machine
-#The python code will run in the EC2 instance
-
 from deap import base
 from deap import creator
 from deap import tools
@@ -43,7 +34,7 @@ RANDOM_SEED = 42
 random.seed(RANDOM_SEED)
 
 # create the image test class instance:
-imageTest = image_test.ImageTest("images/Mona_Lisa_head.png", POLYGON_SIZE)
+imageTest = image_test.ImageTest("images/cubismo_picasso15072.jpg", POLYGON_SIZE)
 
 # calculate total number of params in chromosome:
 # For each polygon we have:

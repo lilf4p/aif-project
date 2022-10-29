@@ -31,7 +31,7 @@ class ImageTest:
         """
 
         # start with a new image:
-        image = Image.new('RGB', (self.width, self.height))#TODO
+        image = Image.new('RGB', (self.width, self.height))
         draw = ImageDraw.Draw(image, 'RGBA')
 
         # divide the polygonData to chunks, each containing the data for a single polygon:
