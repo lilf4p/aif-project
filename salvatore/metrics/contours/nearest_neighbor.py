@@ -12,7 +12,8 @@ class NearestNeighbourPointMetric(ContoursMetric):
     CHUNKSIZE = 2
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
-                 bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, num_points: int = 20000):
+                 bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, num_points: int = 20000,
+                 device='cpu'):
         """
         :param image_path: Path of the target image.
         :param canny_low: Low threshold for cv2.Canny().
@@ -24,7 +25,9 @@ class NearestNeighbourPointMetric(ContoursMetric):
         self.target_pil = None  # target image as PIL.Image object
         self.num_targets = 0
         self.num_points = num_points
-        super(NearestNeighbourPointMetric, self).__init__(image_path, canny_low, canny_high, bounds_low, bounds_high)
+        self.vp = np if device == 'cpu' else cp
+        super(NearestNeighbourPointMetric, self).__init__(
+            image_path, canny_low, canny_high, bounds_low, bounds_high, device=device)
 
     def get_target_image(self) -> Image:
         return self.target_pil
@@ -49,15 +52,15 @@ class NearestNeighbourPointMetric(ContoursMetric):
             contours_list.append(contour)
         # objective tensor: (2, num_targets, num_points)
         self.num_targets = tot_contours
-        aux = np.zeros((tot_contours, 2))
+        aux = self.vp.zeros((tot_contours, 2))
         i = 0
         for contour in contours_list:
+            contour = contour if self.device == 'cpu' else self.vp.array(contour)
             k = len(contour)
             aux[i:i+k, :] = contour
             i += k
-        aux = np.array(aux)  # now it should live on GPU
         # now aux contains a column with all the widths of the target points and another one with the heights
-        self.target = np.zeros((2, tot_contours, self.num_points))  # on GPU
+        self.target = self.vp.zeros((2, tot_contours, self.num_points))  # on GPU
         for j in range(self.num_points):
             self.target[0, :, j] = aux[:, 0]
             self.target[1, :, j] = aux[:, 1]
@@ -113,23 +116,24 @@ class NearestNeighbourPointMetric(ContoursMetric):
         for w, h in self.__list_to_chunks(individual):
             scaled[0] += [w]
             scaled[1] += [h]
-        aux = np.array(scaled)
-        target_individual = np.zeros((2, self.num_targets, self.num_points))
+        aux = self.vp.array(scaled)
+        target_individual = self.vp.zeros((2, self.num_targets, self.num_points))
         for i in range(self.num_targets):
-            target_individual[:, i] = np.abs(aux[:] - self.target[:, i])
+            target_individual[:, i] = self.vp.abs(aux[:] - self.target[:, i])
         return target_individual
 
     def get_difference(self, individual):
         standardized = self.standardize_individual(individual)
-        summed = np.sum(standardized, axis=0)
+        summed = self.vp.sum(standardized, axis=0)
         del standardized
         # target_individual = cp.abs(target_individual - self.target)
         # target_individual[0] += target_individual[1]
-        target_individual = np.min(summed, axis=1)
+        target_individual = self.vp.min(summed, axis=1)
         del summed
-        result = np.sum(target_individual)
+        result = self.vp.sum(target_individual)
         del target_individual
         return result
+        # return result if self.device == 'cpu' else self.vp.asnumpy(result)
 
 
 __all__ = [

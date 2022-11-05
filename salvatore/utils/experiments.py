@@ -11,8 +11,8 @@ import elitism_callback
 class Experiment:
 
     def __init__(self, population_size: int = 200, p_crossover: TReal = 0.9,
-                 p_mutation: TReal = 0.1, max_generations: int = 1000, hof_size: int = 20,
-                 random_seed: int = None, save_image_dir: str = None):
+                 p_mutation: TReal = 0.5, max_generations: int = 1000, hof_size: int = 20,
+                 random_seed: int = None, save_image_dir: str = None, device='cpu'):
         self.metric = None  # subclasses must initialize
         self.population_size = population_size
         self.p_crossover = p_crossover
@@ -28,6 +28,7 @@ class Experiment:
         save_image_dir = base_save_dir if save_image_dir is None else os.path.join(save_image_dir, base_save_dir)
         self.save_image_dir = os.path.join('results', save_image_dir)
         self._show_results = False
+        self.device = device
 
     def save_image(self, gen: int, individual: Any, gen_step: int = 20):
         # only after gen_step generations

@@ -7,6 +7,7 @@ import numpy as np
 import scipy as scp
 import seaborn as sns
 import cupy as cp
+import numba as nb
 import matplotlib.pyplot as plt
 import cv2
 import random
@@ -14,5 +15,6 @@ from deap import base as dp_base, creator as dp_creator, tools as dp_tools
 from time import time
 
 # Some typevars
-TReal = TypeVar('TReal', bound=Union[int, float])
+TReal = TypeVar('TReal', bound=Union[float, int])
 TBoolStr = TypeVar('TBoolStr', bound=tuple[bool, Optional[str]])
+TArray = TypeVar('TArray', bound=Union[np.ndarray, cp.ndarray])

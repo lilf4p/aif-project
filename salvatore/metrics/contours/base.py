@@ -6,13 +6,14 @@ from ..base import ImageMetric
 class ContoursMetric(ImageMetric):
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
-                 bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, **extra_args):
+                 bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu', **extra_args):
         self.canny_low = canny_low
         self.canny_high = canny_high
         self.image_width = None
         self.image_height = None
         self.bounds_low = bounds_low
         self.bounds_high = bounds_high
+        self.device = device
         super(ContoursMetric, self).__init__(image_path)
 
 
