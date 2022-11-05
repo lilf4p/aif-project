@@ -79,7 +79,8 @@ def find_contours(cv2_image, t_lower: TReal, t_upper: TReal, cv2_retr=cv2.RETR_E
     return edged, contours, hierarchy
 
 
-def create_monochromatic_image(width: int, height: int, color: int | tuple[int] = 255, mode='gray'):
+def create_monochromatic_image(width: int, height: int, color: int | tuple[int] = 255,
+                               mode='gray', device='cpu'):
     """
     Creates a monochromatic CV2 image.
     :param width: Width of the image.
@@ -88,13 +89,20 @@ def create_monochromatic_image(width: int, height: int, color: int | tuple[int] 
     an integer in range 0-255, otherwise if mode is BGR, it should be a tuple.
     Defaults to white in grayscale (255).
     :param mode: Mode of the image: 'gray' for grayscale, 'bgr' for BGR.
+    :param device: Device in which the image should be created, either 'cpu' or 'gpu'
+    for the first available CUDA gpu. Defaults to 'cpu'.
     """
+    # Set numerical framework
+    vp = np if device == 'cpu' else (cp if device == 'gpu' else None)
+    if vp is None:
+        raise ValueError(f"Unknown device '{device}'")
+
     if mode == 'gray':
-        img = np.zeros(shape=(height, width))
+        img = vp.zeros(shape=(height, width))#, dtype=vp.uint8)
         if not isinstance(color, int) or not (0 <= color <= 255):
             raise TypeError(f"'color' should be an integer in the range [0, 255]; got {color}")
     elif mode == 'bgr':
-        img = np.zeros(shape=(height, width, 3))
+        img = vp.zeros(shape=(height, width, 3))#, dtype=vp.uint8)
         if not isinstance(color, tuple) or len(color) != 3 or not all([0 <= v <= 255 for v in color]):
             raise TypeError(f"'color' should be a tuple of 3 elements in the range [0, 255]; got {color}")
     else:
@@ -112,11 +120,15 @@ def draw_contours(image, contours, num_contours: int = -1,
     return image_copy
 
 
-def bresenham(start, end, as_list=False) -> list | np.ndarray:
+def _bresenham_common(start, end, device='cpu'):
+    ...
+
+def bresenham(start, end, as_list=False, as_tuple=False, device='cpu') -> list | np.ndarray | cp.ndarray | tuple[list, list]:
     """
     Bresenham's Line Generation Algorithm.
     Credits: https://github.com/daQuincy/Bresenham-Algorithm (slightly modified).
     """
+    vp = np if device == 'cpu' else cp
     # step 1 get end-points of line
     (x0, y0) = start
     (x1, y1) = end
@@ -175,7 +187,101 @@ def bresenham(start, end, as_list=False) -> list | np.ndarray:
             else:
                 line_pixel.append((x, y))
 
-    return line_pixel if as_list else np.array(line_pixel)
+    return line_pixel if as_list else vp.array(line_pixel)
+
+
+def bresenham_tuple(start, end, device='cpu') -> tuple[list, list]:
+    """
+    Bresenham's Line Generation Algorithm.
+    Credits: https://github.com/daQuincy/Bresenham-Algorithm (slightly modified).
+    """
+    vp = np if device == 'cpu' else cp
+    # step 1 get end-points of line
+    (x0, y0) = start
+    (x1, y1) = end
+
+    # step 2 calculate difference
+    dx = abs(x1 - x0)
+    dy = abs(y1 - y0)
+    m = dy / dx if dx != 0 else None
+
+    line_pixel = [[x0], [y0]]
+
+    # step 3 if m is None then the two points are on the same x
+    if m is None:
+        if y0 > y1:
+            y0, y1 = y1, y0
+        for y in range(y0, y1 + 1):
+            line_pixel[0].append(x0)
+            line_pixel[1].append(y)
+    else:
+        # step 4 perform test to check if pk < 0
+        flag = True
+
+        step = 1
+        if x0 > x1 or y0 > y1:
+            step = -1
+
+        mm = False
+        if m < 1:
+            x0, x1, y0, y1 = y0, y1, x0, x1
+            dx = abs(x1 - x0)
+            dy = abs(y1 - y0)
+            mm = True
+
+        p0 = 2 * dx - dy
+        x = x0
+        y = y0
+
+        p = p0  # not necessary since flag is always True at the start, but disables warning from IDE
+        for i in range(abs(y1 - y0)):
+            if flag:
+                x_previous = x0
+                p_previous = p0
+                p = p0
+                flag = False
+            else:
+                x_previous = x
+                p_previous = p
+
+            if p >= 0:
+                x = x + step
+
+            p = p_previous + 2 * dx - 2 * dy * (abs(x - x_previous))
+            y = y + 1
+
+            if mm:
+                line_pixel[0].append(y)
+                line_pixel[1].append(x)
+            else:
+                line_pixel[0].append(x)
+                line_pixel[1].append(y)
+    return line_pixel[0], line_pixel[1]
+
+
+def naive_line(r0, c0, r1, c1):
+    # The algorithm below works fine if c1 >= c0 and c1-c0 >= abs(r1-r0).
+    # If either of these cases are violated, do some switches.
+    if abs(c1 - c0) < abs(r1 - r0):
+        # Switch x and y, and switch again when returning.
+        xx, yy, val = naive_line(c0, r0, c1, r1)
+        return (yy, xx, val)
+
+    # At this point we know that the distance in columns (x) is greater
+    # than that in rows (y). Possibly one more switch if c0 > c1.
+    if c0 > c1:
+        return naive_line(r1, c1, r0, c0)
+
+    # We write y as a function of x, because the slope is always <= 1
+    # (in absolute value)
+    x = np.arange(c0, c1 + 1, dtype=float)
+    y = x * (r1 - r0) / (c1 - c0) + (c1 * r0 - c0 * r1) / (c1 - c0)
+
+    valbot = np.floor(y) - y + 1
+    valtop = y - np.floor(y)
+
+    return (np.concatenate((np.floor(y), np.floor(y) + 1)).astype(int), np.concatenate((x, x)).astype(int),
+            np.concatenate((valbot, valtop)))
 
 
 __all__ = [
@@ -185,4 +291,5 @@ __all__ = [
     'create_monochromatic_image',
     'draw_contours',
     'bresenham',
+    'bresenham_tuple',
 ]
