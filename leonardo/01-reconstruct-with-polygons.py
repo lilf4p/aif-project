@@ -24,12 +24,12 @@ NUM_OF_POLYGONS = 1000
 NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 1)
 
 # Genetic Algorithm constants:
-POPULATION_SIZE = 600
+POPULATION_SIZE = 400
 P_CROSSOVER = 0.9  # probability for crossover
-P_MUTATION = 0.7   # probability for mutating an individual
+P_MUTATION = 0.5   # probability for mutating an individual
 MAX_GENERATIONS = 1000
 HALL_OF_FAME_SIZE = 100
-CROWDING_FACTOR = 50.0  # crowding factor for crossover and mutation
+CROWDING_FACTOR = 20.0  # crowding factor for crossover and mutation
 
 # set the random seed:
 RANDOM_SEED = 42
