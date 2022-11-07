@@ -1,6 +1,6 @@
 from __future__ import annotations
 from salvatore.utils import *
-from ..base import ImageMetric
+from ..base import ImageMetric, ArrayBatchedImageMetric, ArrayImageMetric
 
 
 class ContoursMetric(ImageMetric):
@@ -58,7 +58,38 @@ class ContoursLineMetric(ContoursMetric):
         return image
 
 
+class AContoursMetric(ArrayImageMetric):
+
+    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
+                 bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu', **extra_args):
+        self.canny_low = canny_low
+        self.canny_high = canny_high
+        self.image_width = None
+        self.image_height = None
+        self.bounds_low = bounds_low
+        self.bounds_high = bounds_high
+        self.device = device
+        super(AContoursMetric, self).__init__(image_path)
+
+
+class ABContoursMetric(ArrayBatchedImageMetric):
+
+    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
+                 bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu', op_batch_size: int = 1,
+                 **extra_args):
+        self.canny_low = canny_low
+        self.canny_high = canny_high
+        self.image_width = None
+        self.image_height = None
+        self.bounds_low = bounds_low
+        self.bounds_high = bounds_high
+        self.device = device
+        super(ABContoursMetric, self).__init__(image_path, op_batch_size)
+
+
 __all__ = [
     'ContoursMetric',
     'ContoursLineMetric',
+    'AContoursMetric',
+    'ABContoursMetric',
 ]

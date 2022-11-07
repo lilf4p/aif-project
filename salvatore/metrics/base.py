@@ -62,6 +62,98 @@ class ImageMetric:
         pass
 
 
+class ArrayImageMetric:
+    def __init__(self, image_path: str):
+        self.image_path = image_path    # We cannot even be interested in storing opened image in subclasses
+        self.standardize_target()
+
+    @abstractmethod
+    def standardize_target(self):
+        """
+        Given the image path, standardizes the representation of the target
+        for metric calculation.
+        """
+        pass
+
+    @abstractmethod
+    def get_target_image(self) -> Image:
+        """
+        Reconstruct image from target representation.
+        """
+        pass
+
+    @abstractmethod
+    def get_individual_image(self, individual: TArray) -> Image:
+        """
+        Reconstruct image from the given individual.
+        """
+        pass
+
+    @abstractmethod
+    def standardize_individuals(self, individuals: TArray):
+        """
+        Converts individual into a representation that can be used for calculating difference.
+        Base implementation that returns the individual itself, to be extended in subclasses.
+        """
+        pass
+
+    @abstractmethod
+    def get_difference(self, individuals: TArray):
+        """
+        Returns value of the metric w.r.t. the given individuals.
+        """
+        pass
+
+
+class ArrayBatchedImageMetric:
+    """
+    An ImageMetric based on the assumption that population is made up by a multi-dimensional numpy/cupy array.
+    """
+    def __init__(self, image_path: str, op_batch_size: int = 1):
+        self.image_path = image_path    # We cannot even be interested in storing opened image in subclasses
+        self.op_batch_size = op_batch_size
+        self.standardize_target()
+
+    @abstractmethod
+    def standardize_target(self):
+        """
+        Given the image path, standardizes the representation of the target
+        for metric calculation.
+        """
+        pass
+
+    @abstractmethod
+    def get_target_image(self) -> Image:
+        """
+        Reconstruct image from target representation.
+        """
+        pass
+
+    @abstractmethod
+    def get_individual_image(self, individual: TArray) -> Image:
+        """
+        Reconstruct image from the given individual.
+        """
+        pass
+
+    @abstractmethod
+    def standardize_individuals(self, individuals: TArray):
+        """
+        Converts individual into a representation that can be used for calculating difference.
+        Base implementation that returns the individual itself, to be extended in subclasses.
+        """
+        pass
+
+    @abstractmethod
+    def get_difference(self, individuals: TArray):
+        """
+        Returns value of the metric w.r.t. the given individuals.
+        """
+        pass
+
+
 __all__ = [
     'ImageMetric',
+    'ArrayImageMetric',
+    'ArrayBatchedImageMetric',
 ]

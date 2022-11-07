@@ -2,17 +2,18 @@
 from __future__ import annotations
 from .types import *
 from .misc import *
+from .batch_algorithms import *
 import os
 from datetime import datetime
 from time import time
-import elitism_callback
 
 
 class Experiment:
 
     def __init__(self, population_size: int = 200, p_crossover: TReal = 0.9,
                  p_mutation: TReal = 0.5, max_generations: int = 1000, hof_size: int = 20,
-                 random_seed: int = None, save_image_dir: str = None, device='cpu'):
+                 random_seed: int = None, save_image_dir: str = None, device='cpu',
+                 algorithm: EAlgorithm = EASimpleWithElitismAndCallback()):
         self.metric = None  # subclasses must initialize
         self.population_size = population_size
         self.p_crossover = p_crossover
@@ -22,6 +23,7 @@ class Experiment:
         self.seed = random_seed
         if self.seed is not None:
             random.seed(self.seed)
+            np.random.seed(self.seed)
         self.toolbox = dp_base.Toolbox()
         # Where to save experiment results
         base_save_dir = os.path.join(type(self).__name__, f"Experiment_{datetime.today().strftime('%Y_%m_%d_%H_%M_%S')}")
@@ -29,6 +31,7 @@ class Experiment:
         self.save_image_dir = os.path.join('results', save_image_dir)
         self._show_results = False
         self.device = device
+        self.algorithm = algorithm
 
     def save_image(self, gen: int, individual: Any, gen_step: int = 20):
         # only after gen_step generations
@@ -114,7 +117,7 @@ class Experiment:
         pass
 
     # noinspection PyUnresolvedReferences
-    def run(self, show: bool = False):
+    def run(self, show: bool = False, callback_args: dict = None, verbose: bool = True):
         if show:
             self._show_results = True
             self.show_target_image()
@@ -127,16 +130,17 @@ class Experiment:
         stats.register("avg", np.mean)
 
         # define the hall-of-fame object:
-        hof = dp_tools.HallOfFame(self.hof_size)
+        hof = ArrayHallOfFame(self.hof_size)    # todo sure?
 
         # pick starting time
         experiment_time_start = (time(), datetime.now())
         print(f'Experiment starting at {experiment_time_start[1]} ...')
 
         # perform the Genetic Algorithm flow with elitism and 'save_image' callback:
-        population, logbook = elitism_callback.eaSimpleWithElitismAndCallback(
+        population, logbook = self.algorithm(
             population, self.toolbox, cxpb=self.p_crossover, mutpb=self.p_mutation,
-            ngen=self.max_generations, callback=self.save_image, stats=stats, halloffame=hof, verbose=True)
+            ngen=self.max_generations, callback=self.save_image, callback_args=callback_args,
+            stats=stats, halloffame=hof, verbose=verbose)
 
         # pick ending time
         experiment_time_end = (time(), datetime.now())
