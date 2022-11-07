@@ -3,3 +3,4 @@ from __future__ import annotations
 from .base import *
 from .abs_error import *
 from .nearest_neighbor import *
+from .array_nearest_neighbor import *

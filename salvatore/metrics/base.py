@@ -90,7 +90,7 @@ class ArrayImageMetric:
         pass
 
     @abstractmethod
-    def standardize_individuals(self, individuals: TArray):
+    def standardize_individual(self, individual: TArray):
         """
         Converts individual into a representation that can be used for calculating difference.
         Base implementation that returns the individual itself, to be extended in subclasses.
