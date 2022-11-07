@@ -64,7 +64,9 @@ class ImageTest:
 
             # draw the polygon into the image:
             #draw.polygon(vertices, (red, green, blue, alpha))
-            draw.polygon(vertices, (gray, gray, gray, 255))
+            #draw.polygon(vertices, (gray, gray, gray, 255))
+            #draw circle grayscale
+            draw.ellipse(vertices, (gray, gray, gray, 255))
             
 
         # cleanup:

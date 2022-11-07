@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # problem related constants
-POLYGON_SIZE = 4
-NUM_OF_POLYGONS = 200
+POLYGON_SIZE = 2
+NUM_OF_POLYGONS = 1000
 
 # calculate total number of params in chromosome:
 # For each polygon we have:
@@ -24,12 +24,12 @@ NUM_OF_POLYGONS = 200
 NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 1)
 
 # Genetic Algorithm constants:
-POPULATION_SIZE = 200
+POPULATION_SIZE = 600
 P_CROSSOVER = 0.9  # probability for crossover
-P_MUTATION = 0.5   # probability for mutating an individual
-MAX_GENERATIONS = 5000
-HALL_OF_FAME_SIZE = 20
-CROWDING_FACTOR = 10.0  # crowding factor for crossover and mutation
+P_MUTATION = 0.7   # probability for mutating an individual
+MAX_GENERATIONS = 1000
+HALL_OF_FAME_SIZE = 100
+CROWDING_FACTOR = 50.0  # crowding factor for crossover and mutation
 
 # set the random seed:
 RANDOM_SEED = 42
@@ -109,7 +109,7 @@ def saveImage(gen, polygonData):
     if gen % 100 == 0:
 
         # create folder if does not exist:
-        folder = "images/results/run-{}-{}".format(POLYGON_SIZE, NUM_OF_POLYGONS)
+        folder = "result/grayscale/run-mse-ellipse-{}-{}/ga-{}-{}-{}-{}-{}-{}".format(POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR)
         if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -152,8 +152,11 @@ def main():
     print("Best Score = ", best.fitness.values[0])
     print()
 
+
     # draw best image next to reference image:
-    imageTest.plotImages(imageTest.polygonDataToImage(best))
+    folder = "result/grayscale/run-mse-ellipse-{}-{}/ga-{}-{}-{}-{}-{}-{}".format(POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR)
+    imageTest.saveImage(best,"{}/best.png".format(folder),
+                            "Best Solution\nBest Score = {}".format(best.fitness.values[0]))
 
     # extract statistics:
     minFitnessValues, meanFitnessValues = logbook.select("min", "avg")
@@ -167,8 +170,8 @@ def main():
     plt.ylabel('Min / Average Fitness')
     plt.title('Min and Average fitness over Generations')
 
-    # show both plots:
-    plt.show()
+    # save both plots:
+    plt.savefig("result/grayscale/run-mse-ellipse-{}-{}/ga-{}-{}-{}-{}-{}-{}/stats.png".format(POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR))
 
 if __name__ == "__main__":
     main()
