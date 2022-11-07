@@ -61,6 +61,8 @@ class NearestNeighbourPointMetric(ContoursMetric):
             i += k
         # now aux contains a column with all the widths of the target points and another one with the heights
         self.target = self.vp.zeros((2, tot_contours, self.num_points))  # on GPU
+        # self.target[0, :, :] = aux[:, 0]
+        # self.target[1, :, :] = aux[:, 1]
         for j in range(self.num_points):
             self.target[0, :, j] = aux[:, 0]
             self.target[1, :, j] = aux[:, 1]
@@ -122,18 +124,27 @@ class NearestNeighbourPointMetric(ContoursMetric):
             target_individual[:, i] = self.vp.abs(aux[:] - self.target[:, i])
         return target_individual
 
-    def get_difference(self, individual):
+    def _core_get_difference(self, individual) -> np.ndarray | cp.ndarray:
         standardized = self.standardize_individual(individual)
         summed = self.vp.sum(standardized, axis=0)
         del standardized
         # target_individual = cp.abs(target_individual - self.target)
         # target_individual[0] += target_individual[1]
-        target_individual = self.vp.min(summed, axis=1)
+        target_individual = self.vp.min(summed, axis=0)  # todo reset to 1 afterwards!
         del summed
         result = self.vp.sum(target_individual)
         del target_individual
         return result
-        # return result if self.device == 'cpu' else self.vp.asnumpy(result)
+
+    def get_difference(self, individual):
+        if self.device == 'cpu':
+            return self._core_get_difference(individual)
+        else:
+            with cp.cuda.Stream() as stream:
+                result: cp.ndarray = self._core_get_difference(individual)
+            stream.synchronize()
+            # noinspection PyUnresolvedReferences
+            return result.asnumpy()
 
 
 __all__ = [

@@ -3,6 +3,18 @@ from __future__ import annotations
 from .types import *
 
 
+def timeit(msg: str):
+    def wrapper(func):
+        def new_f(*args, **kwargs):
+            crt = perf_counter()
+            result = func(*args, **kwargs)
+            crt = perf_counter() - crt
+            print(f'Elapsed time for {msg}: {crt} seconds')
+            return result
+        return new_f
+    return wrapper
+
+
 # noinspection PyUnresolvedReferences
 def pil_to_cv2(pil_image: Image, start_mode='RGB', end_mode='BGR'):
     """
@@ -119,9 +131,6 @@ def draw_contours(image, contours, num_contours: int = -1,
     cv2.drawContours(image_copy, contours, num_contours, color, width)
     return image_copy
 
-
-def _bresenham_common(start, end, device='cpu'):
-    ...
 
 def bresenham(start, end, as_list=False, as_tuple=False, device='cpu') -> list | np.ndarray | cp.ndarray | tuple[list, list]:
     """
@@ -284,7 +293,26 @@ def naive_line(r0, c0, r1, c1):
             np.concatenate((valbot, valtop)))
 
 
+# Some Numba Functions (to rework)
+@nb.njit
+def _filter_out_nb(arr, out, cond_nb):
+    j = 0
+    for i in range(arr.size):
+        if cond_nb(arr[i]):
+            out[j] = arr[i]
+            j += 1
+    return j
+
+
+def filter_resize_xnb(arr, cond_nb):
+    result = np.empty_like(arr)
+    j = _filter_out_nb(arr, result, cond_nb)
+    result.resize(j, refcheck=False)  # unsupported in NoPython mode
+    return result
+
+
 __all__ = [
+    'timeit',
     'pil_to_cv2',
     'cv2_to_pil',
     'find_contours',
@@ -292,4 +320,5 @@ __all__ = [
     'draw_contours',
     'bresenham',
     'bresenham_tuple',
+    'filter_resize_xnb',
 ]
