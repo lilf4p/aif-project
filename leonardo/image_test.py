@@ -3,6 +3,9 @@ import numpy as np
 from skimage.metrics import structural_similarity
 import cv2
 import matplotlib.pyplot as plt
+import sewar as sw
+
+from sewar.full_ref import mse, rmse, psnr, uqi, ssim, ergas, scc, rase, sam, msssim, vifp
 
 MAX_STEPS = 200
 FLAG_LOCATION = 0.5
@@ -64,9 +67,10 @@ class ImageTest:
 
             # draw the polygon into the image:
             #draw.polygon(vertices, (red, green, blue, alpha))
-            #draw.polygon(vertices, (gray, gray, gray, 255))
+            #draw polygon grayscale
+            draw.polygon(vertices, (gray, gray, gray, 255))
             #draw circle grayscale
-            draw.ellipse(vertices, (gray, gray, gray, 255))
+            #draw.ellipse(vertices, (gray, gray, gray, 255))
             
 
         # cleanup:
@@ -80,7 +84,7 @@ class ImageTest:
         between this image and the reference image using one of two methods.
         :param polygonData: a list of polygon parameters. Each item in the list
         represents the vertices locations, color and transparency of the corresponding polygon
-        :param method: base method of calculating the difference ("MSE" or "SSIM").
+        :param method: base method of calculating the difference ("MSE" or "SSIM" or others).
         larger return value always means larger difference
         :return: the calculated difference between the image containg the polygons and the reference image
         """
@@ -90,8 +94,12 @@ class ImageTest:
 
         if method == "MSE":
             return self.getMse(image)
-        else:
+        elif method == "UQI":
+            return self.getUqi(image)
+        elif method == "SSIM":
             return 1.0 - self.getSsim(image)
+        elif method == "MSSIM":
+            return 1.0 - self.getMsssim(image)
 
     def plotImages(self, image, header=None):
         """
@@ -148,7 +156,17 @@ class ImageTest:
 
     def getSsim(self, image):
         """calculates mean structural similarity index between the given image and the reference image"""
-        return structural_similarity(self.toCv2(image), self.refImageCv2, multichannel=True)
+        #return structural_similarity(self.toCv2(image), self.refImageCv2, multichannel=True)
+        #ssim for grayscale images
+        return structural_similarity(self.toCv2(image), self.refImageCv2)
+
+    def getUqi(self, image):
+        """calculates universal quality index between the given image and the reference image using swear"""
+        return uqi(self.toCv2(image), self.refImageCv2)
+
+    def getMsssim(self, image):
+        """calculates mean structural similarity index between the given image and the reference image"""
+        return msssim(self.toCv2(image), self.refImageCv2)
 
     def list2Chunks(self, list, chunkSize):
         """divides a given list to fixed size chunks, returns a generator iterator"""

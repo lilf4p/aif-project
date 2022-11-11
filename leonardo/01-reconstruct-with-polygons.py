@@ -13,8 +13,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # problem related constants
-POLYGON_SIZE = 2
-NUM_OF_POLYGONS = 1000
+POLYGON_SIZE = 3
+NUM_OF_POLYGONS = 100
+DISTANCE_METRIC = "MSSIM"
 
 # calculate total number of params in chromosome:
 # For each polygon we have:
@@ -24,12 +25,12 @@ NUM_OF_POLYGONS = 1000
 NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 1)
 
 # Genetic Algorithm constants:
-POPULATION_SIZE = 400
+POPULATION_SIZE = 200
 P_CROSSOVER = 0.9  # probability for crossover
 P_MUTATION = 0.5   # probability for mutating an individual
 MAX_GENERATIONS = 1000
-HALL_OF_FAME_SIZE = 100
-CROWDING_FACTOR = 20.0  # crowding factor for crossover and mutation
+HALL_OF_FAME_SIZE = 10
+CROWDING_FACTOR = 10.0  # crowding factor for crossover and mutation
 
 # set the random seed:
 RANDOM_SEED = 42
@@ -52,9 +53,13 @@ toolbox = base.Toolbox()
 
 # define a single objective, minimizing fitness strategy:
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+# maximize fitness:
+#creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 
 # create the Individual class based on list:
 creator.create("Individual", list, fitness=creator.FitnessMin)
+# maximize fitness:
+#creator.create("Individual", list, fitness=creator.FitnessMax)
 
 # helper function for creating random real numbers uniformly distributed within a given range [low, up]
 # it assumes that the range is the same for every dimension
@@ -79,7 +84,7 @@ toolbox.register("populationCreator",
 
 # fitness calculation using MSE as difference metric:
 def getDiff(individual):
-    return imageTest.getDifference(individual, "MSE"),
+    return imageTest.getDifference(individual, DISTANCE_METRIC),
     #return imageTest.getDifference(individual, "SSIM"),
 
 toolbox.register("evaluate", getDiff)
@@ -109,7 +114,7 @@ def saveImage(gen, polygonData):
     if gen % 100 == 0:
 
         # create folder if does not exist:
-        folder = "result/grayscale/run-mse-ellipse-{}-{}/ga-{}-{}-{}-{}-{}-{}".format(POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR)
+        folder = "result/grayscale/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}".format(DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR)
         if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -152,9 +157,8 @@ def main():
     print("Best Score = ", best.fitness.values[0])
     print()
 
-
     # draw best image next to reference image:
-    folder = "result/grayscale/run-mse-ellipse-{}-{}/ga-{}-{}-{}-{}-{}-{}".format(POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR)
+    folder = "result/grayscale/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}".format(DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR)
     imageTest.saveImage(best,"{}/best.png".format(folder),
                             "Best Solution\nBest Score = {}".format(best.fitness.values[0]))
 
@@ -171,7 +175,7 @@ def main():
     plt.title('Min and Average fitness over Generations')
 
     # save both plots:
-    plt.savefig("result/grayscale/run-mse-ellipse-{}-{}/ga-{}-{}-{}-{}-{}-{}/stats.png".format(POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR))
+    plt.savefig("result/grayscale/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}/stats.png".format(DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR))
 
 if __name__ == "__main__":
     main()
