@@ -1,9 +1,12 @@
 #from genetic_from_text import original_image, original_height, original_width
 import string
 import random
-from skimage.metrics import peak_signal_noise_ratio as psns # For image similarity evaluation
+from skimage.metrics import peak_signal_noise_ratio as psnr 
+from skimage.metrics import mean_squared_error as mse
+from skimage.metrics import structural_similarity as ssim
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
+
 
 def load_image(image_path):
     global original_image 
@@ -41,9 +44,15 @@ def create_random_population(size, mutation_strength):
         first_population.append(filled_image)
     return first_population
 
-def evaluate_fitness(image):
+def evaluate_fitness(image, distance):
     """Evaluate similarity of image with original."""
-    return psns(np.array(image), np.array(original_image))
+    if (distance == "psns"):
+        return psnr(np.array(image), np.array(original_image))
+
+    if (distance == "mse"):
+        return mse(np.array(image), np.array(original_image))
+
+    return psnr(np.array(image), np.array(original_image))
 
 # Crossover operations with alternatives and helpers
 
@@ -71,12 +80,21 @@ def mutate(image, number_of_times):
     mutated = add_random_shape_to_image(image, number_of_times)
     return mutated
 
-def get_parents(local_population, local_fitnesses):
+def get_parents(local_population, local_fitnesses, distance):
     """Connect parents in pairs based on fitnesses as weights using softmax."""
-    fitness_sum = sum(np.exp(local_fitnesses))
-    fitness_normalized = np.exp(local_fitnesses) / fitness_sum
+
+    if(distance == "mse"):
+            local_fitnesses = 1 / np.array(local_fitnesses)
+    
+    fitness_normalized = []
+    for f in local_fitnesses:
+        newf = (f - min(local_fitnesses)) / (max(local_fitnesses) - min(local_fitnesses))
+        fitness_normalized.append(newf)
+    
+    fitness_sum = sum(np.exp(fitness_normalized))
+    fitness_activated = np.exp(fitness_normalized) / fitness_sum
     local_parents_list = []
     for _ in range(0, len(local_population)):
-        parents = random.choices(local_population, weights=fitness_normalized, k=2)
+        parents = random.choices(local_population, weights=fitness_activated, k=2)
         local_parents_list.append(parents)
     return local_parents_list
