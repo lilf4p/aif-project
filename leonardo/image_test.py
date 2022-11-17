@@ -4,6 +4,7 @@ from skimage.metrics import structural_similarity
 import cv2
 import matplotlib.pyplot as plt
 import sewar as sw
+import imageio
 
 from sewar.full_ref import mse, rmse, psnr, uqi, ssim, ergas, scc, rase, sam, msssim, vifp
 
@@ -24,6 +25,9 @@ class ImageTest:
         self.width, self.height = self.refImage.size
         self.numPixels = self.width * self.height
         self.refImageCv2 = self.toCv2(self.refImage)
+        
+        #iamge for gif
+        self.gif_images = []
 
     def polygonDataToImage(self, polygonData):
         """
@@ -68,9 +72,12 @@ class ImageTest:
             # draw the polygon into the image:
             #draw.polygon(vertices, (red, green, blue, alpha))
             #draw polygon grayscale
-            draw.polygon(vertices, (gray, gray, gray, 255))
+            #draw.polygon(vertices, (gray, gray, gray, 255))
             #draw circle grayscale
-            #draw.ellipse(vertices, (gray, gray, gray, 255))
+            draw.ellipse(vertices, (gray, gray, gray, 255))
+            #draw circle grayscale not filled
+            #draw.ellipse(vertices, outline=(gray, gray, gray, 255))
+            
             
 
         # cleanup:
@@ -100,6 +107,8 @@ class ImageTest:
             return 1.0 - self.getSsim(image)
         elif method == "MSSIM":
             return 1.0 - self.getMsssim(image)
+        elif method == "MSE+SSIM":
+            return self.getMse(image) + (1.0 - self.getSsim(image))
 
     def plotImages(self, image, header=None):
         """
@@ -138,11 +147,18 @@ class ImageTest:
         # create an image from th epolygon data:
         image = self.polygonDataToImage(polygonData)
 
+        # save image for gif animation 
+        self.gif_images.append(self.toCv2(image))
+
         # plot the image side-by-side with the reference image:
         self.plotImages(image, header)
 
         # save the plot to file:
         plt.savefig(imageFilePath)
+
+    def saveGif(self, gifFilePath):
+        # save gif to file:
+        imageio.mimsave(gifFilePath, self.gif_images)
 
     # utility methods:
 
