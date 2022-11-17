@@ -11,11 +11,12 @@ import elitism_callback as elitism_callback
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+import imageio
 
 # problem related constants
-POLYGON_SIZE = 3
-NUM_OF_POLYGONS = 100
-DISTANCE_METRIC = "MSSIM"
+POLYGON_SIZE = 2
+NUM_OF_POLYGONS = 400
+DISTANCE_METRIC = "MSE+SSIM"
 
 # calculate total number of params in chromosome:
 # For each polygon we have:
@@ -27,9 +28,9 @@ NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 1)
 # Genetic Algorithm constants:
 POPULATION_SIZE = 200
 P_CROSSOVER = 0.9  # probability for crossover
-P_MUTATION = 0.5   # probability for mutating an individual
-MAX_GENERATIONS = 1000
-HALL_OF_FAME_SIZE = 10
+P_MUTATION = 0.7   # probability for mutating an individual
+MAX_GENERATIONS = 2000
+HALL_OF_FAME_SIZE = 5
 CROWDING_FACTOR = 10.0  # crowding factor for crossover and mutation
 
 # set the random seed:
@@ -176,6 +177,9 @@ def main():
 
     # save both plots:
     plt.savefig("result/grayscale/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}/stats.png".format(DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR))
+
+    # save gif
+    imageTest.saveGif("result/grayscale/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}/result.gif".format(DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR))
 
 if __name__ == "__main__":
     main()
