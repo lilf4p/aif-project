@@ -1,15 +1,17 @@
 from __future__ import annotations
 from salvatore.utils import *
-from .base import AContoursMetric
+from .base import ArrayPointContoursMetric
 
 
-class TargetPointsArrayNearestNeighbourPointMetric(AContoursMetric):
+class TargetPointsArrayNearestNeighbourPointMetric(ArrayPointContoursMetric):
     """
     A metric that, given a population of points with coordinates (x, y), computes
     the fitness as the sum of the minimum Manhattan distances from each target point
     to the set of candidate points.
     """
-    CHUNKSIZE = 2
+    @property
+    def CHUNKSIZE(self):
+        return 2
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
                  bounds_high: TReal = 1.0, num_points: int = 20000, device='cpu'):
@@ -31,9 +33,6 @@ class TargetPointsArrayNearestNeighbourPointMetric(AContoursMetric):
         self.fitness_calc = self.cpu_fitness_calc_min if device == 'cpu' else self.gpu_fitness_calc_min
         self.results = self.vp.zeros(self.num_targets)
         self.target_individuals = self.vp.zeros((2, self.num_targets, self.num_points))
-
-    def get_target_image(self) -> Image:
-        return self.target_pil
 
     # noinspection PyUnresolvedReferences
     def standardize_target(self):
@@ -80,24 +79,10 @@ class TargetPointsArrayNearestNeighbourPointMetric(AContoursMetric):
         # cleanup
         del contours_list, aux, target_cv2
 
-    def __list_to_chunks(self, individual):
-        """
-        Breaks individual into a sequence of couples of tuples
-        ((start_x, start_y), (end_x, end_y)) already rescaled.
-        """
-        for chunk in range(0, len(individual), self.CHUNKSIZE):
-            yield int(individual[chunk] * self.image_width), int(individual[chunk+1] * self.image_height)
+    def check_individual_repr(self, individual) -> TBoolStr:
+        return True, None   # no interest in actual checking (by now)
 
-    def get_individual_image(self, individual) -> Image:
-        image = Image.new('F', (self.image_width, self.image_height), color=255)
-        draw = ImageDraw.Draw(image, 'F')
-        for x, y in self.__list_to_chunks(individual):
-            draw.point((x, y), fill=0)
-        # cleanup
-        del draw
-        return image
-
-    def standardize_individual(self, individual: TArray):
+    def standardize_individual(self, individual: TArray, check_repr=False):
         # reshape and rescale
         reshaped = np.reshape(individual, (self.num_points, 2))
         r0, r1 = reshaped[:, 0], reshaped[:, 1]
@@ -141,8 +126,11 @@ class TargetPointsArrayNearestNeighbourPointMetric(AContoursMetric):
         return results.copy()   # fixme check if this is necessary
 
 
-class TableTargetPointsNNContoursMetric(AContoursMetric):
-    CHUNKSIZE = 2
+class TableTargetPointsNNContoursMetric(ArrayPointContoursMetric):
+
+    @property
+    def CHUNKSIZE(self):
+        return 2
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
                  bounds_high: TReal = 1.0, num_points: int = 20000, device='cpu'):
@@ -164,8 +152,8 @@ class TableTargetPointsNNContoursMetric(AContoursMetric):
         self.results = self.vp.zeros(self.num_targets, dtype=self.vp.int32)
         self.target_individuals = self.vp.zeros((2, self.num_targets, self.num_points))
 
-    def get_target_image(self) -> Image:
-        return self.target_pil
+    def check_individual_repr(self, individual) -> TBoolStr:
+        return True, None   # no interest in actual checking (by now)
 
     # noinspection PyUnresolvedReferences
     def standardize_target(self):
@@ -226,24 +214,7 @@ class TableTargetPointsNNContoursMetric(AContoursMetric):
         # cleanup
         del contours_list, aux, target_cv2
 
-    def __list_to_chunks(self, individual):
-        """
-        Breaks individual into a sequence of couples of tuples
-        ((start_x, start_y), (end_x, end_y)) already rescaled.
-        """
-        for chunk in range(0, len(individual), self.CHUNKSIZE):
-            yield int(individual[chunk] * self.image_width), int(individual[chunk+1] * self.image_height)
-
-    def get_individual_image(self, individual) -> Image:
-        image = Image.new('F', (self.image_width, self.image_height), color=255)
-        draw = ImageDraw.Draw(image, 'F')
-        for x, y in self.__list_to_chunks(individual):
-            draw.point((x, y), fill=0)
-        # cleanup
-        del draw
-        return image
-
-    def standardize_individual(self, individual: TArray):
+    def standardize_individual(self, individual: TArray, check_repr=False):
         # reshape and rescale
         individual = individual if self.device == 'cpu' else cp.asarray(individual)
         reshaped = self.vp.reshape(individual, (self.num_points, 2))

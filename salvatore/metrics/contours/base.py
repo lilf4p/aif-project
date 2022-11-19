@@ -1,9 +1,9 @@
 from __future__ import annotations
 from salvatore.utils import *
-from ..base import ImageMetric, ArrayBatchedImageMetric, ArrayImageMetric
+from ..base import ImageMetric
 
 
-class ContoursMetric(ImageMetric):
+class ContoursLineMetric(ImageMetric):
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
                  bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu', **extra_args):
@@ -14,10 +14,12 @@ class ContoursMetric(ImageMetric):
         self.bounds_low = bounds_low
         self.bounds_high = bounds_high
         self.device = device
-        super(ContoursMetric, self).__init__(image_path)
+        super(ContoursLineMetric, self).__init__(image_path)
 
-
-class ContoursLineMetric(ContoursMetric):
+    @property
+    @abstractmethod
+    def chunk_size(self):
+        pass
 
     def check_individual_repr(self, individual) -> TBoolStr:
         """
@@ -29,7 +31,8 @@ class ContoursLineMetric(ContoursMetric):
             return False, f"Invalid type for individual: Sequence, got {type(individual)}"
         ilen = len(individual)
         if ilen % 4 != 0:
-            return False, f"Invalid length for individual sequence: expected multiple of 4, got {ilen} (% 4 = {ilen % 4})"
+            return False, f"Invalid length for individual sequence: expected multiple of 4," \
+                          f"got {ilen} (% 4 = {ilen % 4})"
         for i in range(ilen):
             ith = individual[i]
             if not isinstance(ith, int):
@@ -43,7 +46,7 @@ class ContoursLineMetric(ContoursMetric):
         Breaks individual into a sequence of couples of tuples
         ((start_x, start_y), (end_x, end_y)) already rescaled.
         """
-        for chunk in range(0, len(individual), self.CHUNKSIZE):
+        for chunk in range(0, len(individual), self.chunk_size):
             start = (int(individual[chunk] * self.image_width), int(individual[chunk+1] * self.image_height))
             end = (int(individual[chunk+2] * self.image_width), int(individual[chunk+3] * self.image_height))
             yield start, end
@@ -58,7 +61,12 @@ class ContoursLineMetric(ContoursMetric):
         return image
 
 
-class AContoursMetric(ArrayImageMetric):
+class ArrayPointContoursMetric(ImageMetric):
+
+    @property
+    @abstractmethod
+    def CHUNKSIZE(self):
+        pass
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
                  bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu', **extra_args):
@@ -69,27 +77,32 @@ class AContoursMetric(ArrayImageMetric):
         self.bounds_low = bounds_low
         self.bounds_high = bounds_high
         self.device = device
-        super(AContoursMetric, self).__init__(image_path)
+        if not hasattr(self, 'target_pil'):
+            self.target_pil = None
+        super(ArrayPointContoursMetric, self).__init__(image_path)
 
+    def get_target_image(self) -> Image:
+        return self.target_pil
 
-class ABContoursMetric(ArrayBatchedImageMetric):
+    def __list_to_chunks(self, individual):
+        """
+        Breaks individual into a sequence of couples of tuples
+        ((start_x, start_y), (end_x, end_y)) already rescaled.
+        """
+        for chunk in range(0, len(individual), self.CHUNKSIZE):
+            yield int(individual[chunk] * self.image_width), int(individual[chunk+1] * self.image_height)
 
-    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
-                 bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu', op_batch_size: int = 1,
-                 **extra_args):
-        self.canny_low = canny_low
-        self.canny_high = canny_high
-        self.image_width = None
-        self.image_height = None
-        self.bounds_low = bounds_low
-        self.bounds_high = bounds_high
-        self.device = device
-        super(ABContoursMetric, self).__init__(image_path, op_batch_size)
+    def get_individual_image(self, individual) -> Image:
+        image = Image.new('F', (self.image_width, self.image_height), color=255)
+        draw = ImageDraw.Draw(image, 'F')
+        for x, y in self.__list_to_chunks(individual):
+            draw.point((x, y), fill=0)
+        # cleanup
+        del draw
+        return image
 
 
 __all__ = [
-    'ContoursMetric',
     'ContoursLineMetric',
-    'AContoursMetric',
-    'ABContoursMetric',
+    'ArrayPointContoursMetric',
 ]

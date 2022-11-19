@@ -311,6 +311,20 @@ def filter_resize_xnb(arr, cond_nb):
     return result
 
 
+def common_test_part(experiment, gen_step, other_callback_args):
+    experiment.setup()
+    # experiment.plot_individual_sample(difference=False, eval_fitness=True)
+    # Enable below for checking correct fitness for target
+    """
+    target_individual = experiment.metric.get_target_as_individual()
+    print(f"Target individual: {target_individual}")
+    print(f"Its fitness is: {experiment.metric.get_difference(target_individual)}")
+    """
+    callback_args = other_callback_args if other_callback_args is not None else {}
+    callback_args['gen_step'] = gen_step
+    experiment.run(show=True, callback_args=callback_args)
+
+
 __all__ = [
     'timeit',
     'pil_to_cv2',
@@ -321,4 +335,5 @@ __all__ = [
     'bresenham',
     'bresenham_tuple',
     'filter_resize_xnb',
+    'common_test_part',
 ]

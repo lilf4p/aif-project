@@ -1,14 +1,13 @@
 from __future__ import annotations
-
-import cv2
-
 from salvatore.utils import *
 from .base import ContoursLineMetric
 
 
 class AbsErrorLinesMetric(ContoursLineMetric):
     # todo add documentation!
-    CHUNKSIZE = 4   # size of chunks to be extracted from individuals
+    @property
+    def chunk_size(self):
+        return 4  # size of chunks to be extracted from individuals
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
                  bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu'):
@@ -22,7 +21,8 @@ class AbsErrorLinesMetric(ContoursLineMetric):
         """
         self.target_cv2 = None  # target image in cv2 (array) format
         self.target_pil = None  # target image as PIL.Image object
-        super(AbsErrorLinesMetric, self).__init__(image_path, canny_low, canny_high, bounds_low, bounds_high, device=device)
+        super(AbsErrorLinesMetric, self).__init__(image_path, canny_low, canny_high, bounds_low,
+                                                  bounds_high, device=device)
         self.device = device
         self.target_individuals = cv2.cuda_GpuMat()
 

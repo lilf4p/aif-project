@@ -112,9 +112,40 @@ class Experiment:
             labelleft=False,
         )
 
-    @abstractmethod
-    def setup(self):
+    # noinspection PyMethodMayBeStatic
+    def set_fitness(self):  # fitness function
+        # define a single objective, minimizing fitness strategy:
+        dp_creator.create("FitnessMin", dp_base.Fitness, weights=(-1.0,))
+
+    def set_individual(self):  # individual class and individualCreator
         pass
+
+    def set_pop_creator(self):
+        # create an operator that generates a list of individuals:
+        self.toolbox.register("populationCreator", dp_tools.initRepeat, list, self.toolbox.individualCreator)
+
+    def set_evaluate(self):
+        # register evaluation
+        self.toolbox.register("evaluate", lambda individual: (self.metric.get_difference(individual),))
+
+    def set_select(self):
+        # genetic operators
+        self.toolbox.register('select', dp_tools.selTournament, tournsize=2)
+
+    def set_mate(self):
+        pass
+
+    def set_mutate(self):
+        pass
+
+    def setup(self):
+        self.set_fitness()
+        self.set_individual()
+        self.set_pop_creator()
+        self.set_evaluate()
+        self.set_select()
+        self.set_mate()
+        self.set_mutate()
 
     # noinspection PyUnresolvedReferences
     def run(self, show: bool = False, callback_args: dict = None, verbose: bool = True):

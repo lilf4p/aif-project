@@ -1,10 +1,8 @@
 from __future__ import annotations
 import os
-from salvatore.utils.types import *
-from salvatore.utils.batch_algorithms import EAlgorithm, EASimpleBatchProcessing
+from salvatore.utils import *
 from salvatore.metrics import TargetPointsArrayNearestNeighbourPointMetric, \
     DoubleArrayNearestNeighbourPointMetric, TableTargetPointsNNContoursMetric
-from salvatore.utils.experiments import Experiment
 
 
 class TargetPointsArrayNearestNeighbourPointContoursExperiment(Experiment):
@@ -34,10 +32,7 @@ class TargetPointsArrayNearestNeighbourPointContoursExperiment(Experiment):
         self.bounds_high = bounds_high
         self.num_params = self.chunk_size * self.num_of_points
 
-    def setup(self):
-        # define a single objective, minimizing fitness strategy:
-        dp_creator.create("FitnessMin", dp_base.Fitness, weights=(-1.0,))
-
+    def set_individual(self):
         # create the Individual class based on list:
         # noinspection PyUnresolvedReferences
         dp_creator.create("Individual", list, fitness=dp_creator.FitnessMin)
@@ -52,19 +47,15 @@ class TargetPointsArrayNearestNeighbourPointContoursExperiment(Experiment):
         # noinspection PyUnresolvedReferences
         self.toolbox.register("individualCreator", dp_tools.initIterate, dp_creator.Individual, self.toolbox.attrFloat)
 
-        # create an operator that generates a list of individuals:
-        self.toolbox.register("populationCreator", dp_tools.initRepeat, list, self.toolbox.individualCreator)
-
+    def set_evaluate(self):
         # register evaluation
         self.toolbox.register("evaluate", self.metric.get_difference)
 
-        # ---------------------------------
-        # genetic operators
-        self.toolbox.register('select', dp_tools.selTournament, tournsize=2)
-
+    def set_mate(self):
         self.toolbox.register("mate", dp_tools.cxSimulatedBinaryBounded,
                               low=self.bounds_low, up=self.bounds_high, eta=self.crowding_factor)
 
+    def set_mutate(self):
         self.toolbox.register("mutate", dp_tools.mutPolynomialBounded, low=self.bounds_low, up=self.bounds_high,
                               eta=self.crowding_factor, indpb=1.0 / self.num_params)
 
@@ -96,10 +87,7 @@ class TableTargetPointsNNContoursExperiment(Experiment):
         self.bounds_high = bounds_high
         self.num_params = self.chunk_size * self.num_of_points
 
-    def setup(self):
-        # define a single objective, minimizing fitness strategy:
-        dp_creator.create("FitnessMin", dp_base.Fitness, weights=(-1.0,))
-
+    def set_individual(self):
         # create the Individual class based on list:
         # noinspection PyUnresolvedReferences
         dp_creator.create("Individual", list, fitness=dp_creator.FitnessMin)
@@ -114,19 +102,15 @@ class TableTargetPointsNNContoursExperiment(Experiment):
         # noinspection PyUnresolvedReferences
         self.toolbox.register("individualCreator", dp_tools.initIterate, dp_creator.Individual, self.toolbox.attrFloat)
 
-        # create an operator that generates a list of individuals:
-        self.toolbox.register("populationCreator", dp_tools.initRepeat, list, self.toolbox.individualCreator)
-
+    def set_evaluate(self):
         # register evaluation
         self.toolbox.register("evaluate", self.metric.get_difference)
 
-        # ---------------------------------
-        # genetic operators
-        self.toolbox.register('select', dp_tools.selTournament, tournsize=2)
-
+    def set_mate(self):
         self.toolbox.register("mate", dp_tools.cxSimulatedBinaryBounded,
                               low=self.bounds_low, up=self.bounds_high, eta=self.crowding_factor)
 
+    def set_mutate(self):
         self.toolbox.register("mutate", dp_tools.mutPolynomialBounded, low=self.bounds_low, up=self.bounds_high,
                               eta=self.crowding_factor, indpb=1.0 / self.num_params)
 
@@ -160,10 +144,7 @@ class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
         self.bounds_high = bounds_high
         self.num_params = self.chunk_size * self.num_of_points
 
-    def setup(self):
-        # define a single objective, minimizing fitness strategy:
-        dp_creator.create("FitnessMin", dp_base.Fitness, weights=(-1.0,))
-
+    def set_individual(self):
         # create the Individual class based on list:
         # noinspection PyUnresolvedReferences
         dp_creator.create("Individual", list, fitness=dp_creator.FitnessMin)
@@ -178,80 +159,69 @@ class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
         # noinspection PyUnresolvedReferences
         self.toolbox.register("individualCreator", dp_tools.initIterate, dp_creator.Individual, self.toolbox.attrFloat)
 
-        # create an operator that generates a list of individuals:
-        self.toolbox.register("populationCreator", dp_tools.initRepeat, list, self.toolbox.individualCreator)
-
+    def set_evaluate(self):
         # register evaluation
         self.toolbox.register("evaluate", self.metric.get_difference)
 
-        # ---------------------------------
-        # genetic operators
-        self.toolbox.register('select', dp_tools.selTournament, tournsize=2)
-
+    def set_mate(self):
         self.toolbox.register("mate", dp_tools.cxSimulatedBinaryBounded,
                               low=self.bounds_low, up=self.bounds_high, eta=self.crowding_factor)
 
+    def set_mutate(self):
         self.toolbox.register("mutate", dp_tools.mutPolynomialBounded, low=self.bounds_low, up=self.bounds_high,
                               eta=self.crowding_factor, indpb=1.0 / self.num_params)
 
 
-if __name__ == '__main__':
-    os.chdir('../..')
-    image_path = "images/torre eiffel.jpg"  # "images/Mona_Lisa_head.png"
-
+def test_table_target_points_nn(
+        dir_path='../..', image_path='images/torre eiffel.jpg',
+        population_size=250, max_generations=1000,
+        random_seed=10, num_of_points=2500, hof_size=25,
+        device='cpu', gen_step=25, other_callback_args=None,
+):
+    os.chdir(dir_path)
     experiment = TableTargetPointsNNContoursExperiment(
-        image_path, 100, 200, population_size=250, max_generations=200, random_seed=10,
-        num_of_points=2500, hof_size=25, device='gpu')
-    experiment.setup()
-    # experiment.plot_individual_sample(difference=False, eval_fitness=True)
-    # Enable below for checking correct fitness for target
-    """
-    target_individual = experiment.metric.get_target_as_individual()
-    print(f"Target individual: {target_individual}")
-    print(f"Its fitness is: {experiment.metric.get_difference(target_individual)}")
-    """
-    experiment.run(show=True, callback_args={'gen_step': 25})
+        image_path, 100, 200, population_size=population_size,
+        max_generations=max_generations, random_seed=random_seed,
+        num_of_points=num_of_points, hof_size=hof_size, device=device,
+    )
+    common_test_part(experiment, gen_step, other_callback_args)
 
 
-if __name__ == '__main___':
-    os.chdir('../..')
-    image_path = "images/torre eiffel.jpg"  # "images/Mona_Lisa_head.png"
+def test_double_nn(
+        dir_path='../..', image_path='images/torre eiffel.jpg',
+        population_size=250, max_generations=1000, random_seed=10,
+        num_of_points=2500, hof_size=25, device='cpu',
+        target_candidate_weight=2.0, candidate_target_weight=1.0,
+        gen_step=25, other_callback_args=None,
+):
+    os.chdir(dir_path)
 
     experiment = DoubleArrayNearestNeighbourPointContoursExperiment(
-        image_path, 100, 200, population_size=250, max_generations=800, random_seed=10,
-        num_of_points=2500, hof_size=25, device='gpu', target_candidate_weight=4.0,
-        candidate_target_weight=1.0,
+        image_path, 100, 200, population_size=population_size, max_generations=max_generations,
+        random_seed=random_seed, num_of_points=num_of_points, hof_size=hof_size, device=device,
+        target_candidate_weight=target_candidate_weight, candidate_target_weight=candidate_target_weight,
     )
-    experiment.setup()
-    # experiment.plot_individual_sample(difference=False, eval_fitness=True)
-    # Enable below for checking correct fitness for target
-    """
-    target_individual = experiment.metric.get_target_as_individual()
-    print(f"Target individual: {target_individual}")
-    print(f"Its fitness is: {experiment.metric.get_difference(target_individual)}")
-    """
-    experiment.run(show=True, callback_args={'gen_step': 25})
+    common_test_part(experiment, gen_step, other_callback_args)
 
 
-if __name__ == '__main___':  # todo rewrite these two mains in a decent way
-    os.chdir('../..')
-    image_path = "images/torre eiffel.jpg"  # "images/Mona_Lisa_head.png"
+def test_target_points_nn(
+        dir_path='../..', image_path='images/torre eiffel.jpg',
+        population_size=250, max_generations=1000, random_seed=10,
+        num_of_points=2500, hof_size=25, device='cpu',
+        gen_step=25, other_callback_args=None,
+):
+    os.chdir(dir_path)
     experiment = TargetPointsArrayNearestNeighbourPointContoursExperiment(
-        image_path, 100, 200, population_size=250, max_generations=800, random_seed=10,
-        num_of_points=2500, hof_size=25, device='gpu',
+        image_path, 100, 200, population_size=population_size, max_generations=max_generations,
+        random_seed=random_seed, num_of_points=num_of_points, hof_size=hof_size, device=device,
     )
-    experiment.setup()
-    # experiment.plot_individual_sample(difference=False, eval_fitness=True)
-    # Enable below for checking correct fitness for target
-    """
-    target_individual = experiment.metric.get_target_as_individual()
-    print(f"Target individual: {target_individual}")
-    print(f"Its fitness is: {experiment.metric.get_difference(target_individual)}")
-    """
-    experiment.run(show=True, callback_args={'gen_step': 25})
+    common_test_part(experiment, gen_step, other_callback_args)
 
 
 __all__ = [
     'TargetPointsArrayNearestNeighbourPointContoursExperiment',
     'DoubleArrayNearestNeighbourPointContoursExperiment',
+    'test_table_target_points_nn',
+    'test_double_nn',
+    'test_target_points_nn',
 ]
