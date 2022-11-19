@@ -30,7 +30,7 @@ if __name__ == '__main__':
     image_path = "images/torre eiffel.jpg"
     experiment = AbsErrorContoursExperiment(
         image_path, 100, 200, population_size=1000, max_generations=1000, p_mutation=0.5,
-        lineno=600, random_seed=10, device='cpu',
+        lineno=600, random_seed=10, device='gpu',
     )
     experiment.setup()
     experiment.plot_individual_sample(difference=False, eval_fitness=True)

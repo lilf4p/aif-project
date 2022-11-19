@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+import cv2
+
 from salvatore.utils import *
 from .base import ContoursLineMetric
 
@@ -21,6 +24,7 @@ class AbsErrorLinesMetric(ContoursLineMetric):
         self.target_pil = None  # target image as PIL.Image object
         super(AbsErrorLinesMetric, self).__init__(image_path, canny_low, canny_high, bounds_low, bounds_high, device=device)
         self.device = device
+        self.target_individuals = cv2.cuda_GpuMat()
 
     def get_target_image(self) -> Image:
         return self.target_pil
@@ -39,39 +43,42 @@ class AbsErrorLinesMetric(ContoursLineMetric):
         self.target_cv2 = draw_contours(self.target_cv2, contours, copy=False)
         self.target_pil = Image.fromarray(self.target_cv2)
         if self.device == 'gpu':
-            self.target_cv2 = cp.array(self.target_cv2)
+            target_cv2 = self.target_cv2
+            self.target_cv2 = cv2.cuda_GpuMat()
+            self.target_cv2.upload(target_cv2)
+            # self.target_cv2 = cp.array(self.target_cv2)
 
     def standardize_individual(self, individual, check_repr=False):
         """
         Expands this individual into a complete sequence of points of lines.
         """
         individual = super(AbsErrorLinesMetric, self).standardize_individual(individual, check_repr)
-        img = create_monochromatic_image(self.image_width, self.image_height, device=self.device)
-        for start, end in self.list_to_chunks(individual):
-            img = cv2.line(img, start, end, color=0)
-        """
-        x_pixels, y_pixels = [], []
-        for start, end in self.list_to_chunks(individual):
-            x, y = bresenham_tuple(start, end, self.device)
-            x_pixels += x
-            y_pixels += y
-        img[x_pixels, y_pixels] = 0
-        # if self.device == 'gpu':
-        #    img = cp.array(img)
-        """
+        img = create_monochromatic_image(self.image_width, self.image_height, device='cpu')
+        if self.device == 'cpu':
+            for start, end in self.list_to_chunks(individual):
+                img = cv2.line(img, start, end, color=0)
+        else:
+            self.target_individuals.upload(img)
+            img = self.target_individuals
+            for start, end in self.list_to_chunks(individual):
+                cv2.line(img, start, end, color=0)
         return img
 
     def get_difference(self, individual):
         # get all individual points as a numpy array
         vp = np if self.device == 'cpu' else cp
         individual_points = self.standardize_individual(individual)
-        # result = self.target_cv2 - individual_points
-        result = np.abs(cv2.subtract(self.target_cv2, individual_points))
-        result = vp.sum(result)
-        if self.device == 'gpu':
-            result = cp.asnumpy(result)
-        # result = result if self.device == 'cpu' else cp.asnumpy(result)
-        return result
+        if self.device == 'cpu':
+            result = np.abs(cv2.subtract(self.target_cv2, individual_points))
+            result = np.sum(result)
+            return result
+        else:
+            sub = cv2.cuda_GpuMat()
+            cv2.subtract(src1=self.target_cv2, src2=individual_points, dst=sub)
+            result = np.zeros((self.image_height, self.image_width))
+            sub.download(dst=result)
+            result = np.sum(np.abs(result))
+            return result
 
 
 __all__ = [
