@@ -106,9 +106,9 @@ class EAlgorithm(Callable):
 
     @abstractmethod
     def __call__(self, population: Sequence | np.ndarray, toolbox: dp_base.Toolbox, cxpb: float,
-                 mutpb: float, ngen: int, callback: Callable = None, callback_args: dict = None,
-                 stats: dp_tools.Statistics = None, halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None,
-                 verbose=__debug__) -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
+                 mutpb: float, ngen: int, callbacks: TCallback = None, stats: dp_tools.Statistics = None,
+                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None, verbose=__debug__) \
+            -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         pass
 
 
@@ -117,9 +117,9 @@ class EASimple(EAlgorithm):
     eaSimple algorithm as in deap
     """
     def __call__(self, population: Sequence | np.ndarray, toolbox: dp_base.Toolbox, cxpb: float,
-                 mutpb: float, ngen: int, callback: Callable = None, callback_args: dict = None,
-                 stats: dp_tools.Statistics = None, halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None,
-                 verbose=__debug__) -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
+                 mutpb: float, ngen: int, callbacks: TCallback = None, stats: dp_tools.Statistics = None,
+                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None, verbose=__debug__) \
+            -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         return dp_algorithms.eaSimple(population, toolbox, cxpb, mutpb, ngen, stats, halloffame, verbose)
 
 
@@ -128,18 +128,28 @@ class EASimpleWithElitismAndCallback(EAlgorithm):
     eaSimpleWithElitismAndCallback as in elitism_callback
     """
     def __call__(self, population: Sequence | np.ndarray, toolbox: dp_base.Toolbox, cxpb: float,
-                 mutpb: float, ngen: int, callback: Callable = None, callback_args: dict = None,
-                 stats: dp_tools.Statistics = None, halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None,
+                 mutpb: float, ngen: int, callbacks: TCallback = None, stats: dp_tools.Statistics = None,
+                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None,
                  verbose=__debug__) -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
-        return elitism_callback.eaSimpleWithElitismAndCallback(
-            population, toolbox, cxpb, mutpb, ngen, callback, stats, halloffame, verbose
+        return elitism_callback.eaSimpleWithElitismAndCallback(  # todo aggiustare!
+            population, toolbox, cxpb, mutpb, ngen, callbacks.keys(), stats, halloffame, verbose
         )
 
 
 class EASimpleBatchProcessing(EAlgorithm):
 
+    def __init__(self):
+        self.population = None
+        self.cxpb = None
+        self.mutpb = None
+        self.ngen = None
+        self.stats = None
+        self.hof = None
+        self.logbook = None
+        self.best = None
+
     def __call__(self, population: list, toolbox: dp_base.Toolbox, cxpb: float, mutpb: float,
-                 ngen: int, callback: Callable = None, callback_args: dict = None,
+                 ngen: int, callbacks: dict[Callable, dict[str, Any]] = None,
                  stats: dp_tools.Statistics = None, halloffame: ArrayHallOfFame = None,
                  verbose=__debug__) -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         """
@@ -209,8 +219,10 @@ class EASimpleBatchProcessing(EAlgorithm):
             if verbose:
                 print(logbook.stream)
 
-            if callback:
-                callback(gen, halloffame.items[0], **callback_args)  # fixme check if this changes something!
+            if callbacks is not None:
+                for callback, callback_args in callbacks.items():
+                    callback_args = callback_args if callback_args is not None else {}
+                    callback(gen, halloffame.items[0], **callback_args)  # fixme check if this changes something!
 
         return population, logbook
 

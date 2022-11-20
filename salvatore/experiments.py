@@ -1,14 +1,18 @@
 # Base classes for experiments
 from __future__ import annotations
-from .types import *
-from .misc import *
-from .batch_algorithms import *
+from salvatore.utils.types import *
+from salvatore.utils.batch_algorithms import *
+from salvatore.utils.misc import *
 import os
 from datetime import datetime
 from time import time
 
 
 class Experiment:
+
+    @property
+    def base_save_dir(self):
+        return os.path.join(type(self).__name__, f"Experiment_{datetime.today().strftime('%Y_%m_%d_%H_%M_%S')}")
 
     def __init__(self, population_size: int = 200, p_crossover: TReal = 0.9,
                  p_mutation: TReal = 0.5, max_generations: int = 1000, hof_size: int = 20,
@@ -20,15 +24,18 @@ class Experiment:
         self.p_mutation = p_mutation
         self.max_generations = max_generations
         self.hof_size = hof_size
+
         self.seed = random_seed
         if self.seed is not None:
             random.seed(self.seed)
             np.random.seed(self.seed)
         self.toolbox = dp_base.Toolbox()
+
         # Where to save experiment results
-        base_save_dir = os.path.join(type(self).__name__, f"Experiment_{datetime.today().strftime('%Y_%m_%d_%H_%M_%S')}")
-        save_image_dir = base_save_dir if save_image_dir is None else os.path.join(save_image_dir, base_save_dir)
+        save_image_dir = self.base_save_dir if save_image_dir is None \
+            else os.path.join(save_image_dir, self.base_save_dir)
         self.save_image_dir = os.path.join('results', save_image_dir)
+
         self._show_results = False
         self.device = device
         self.algorithm = algorithm
@@ -148,7 +155,7 @@ class Experiment:
         self.set_mutate()
 
     # noinspection PyUnresolvedReferences
-    def run(self, show: bool = False, callback_args: dict = None, verbose: bool = True):
+    def run(self, show: bool = False, callbacks: TCallback = None, verbose: bool = True):
         if show:
             self._show_results = True
             self.show_target_image()
@@ -170,7 +177,7 @@ class Experiment:
         # perform the Genetic Algorithm flow with elitism and 'save_image' callback:
         population, logbook = self.algorithm(
             population, self.toolbox, cxpb=self.p_crossover, mutpb=self.p_mutation,
-            ngen=self.max_generations, callback=self.save_image, callback_args=callback_args,
+            ngen=self.max_generations, callbacks=callbacks,
             stats=stats, halloffame=hof, verbose=verbose)
 
         # pick ending time

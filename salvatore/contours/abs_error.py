@@ -2,6 +2,7 @@ from __future__ import annotations
 import os
 from salvatore.utils import *
 from salvatore.metrics import AbsErrorLinesMetric
+from salvatore.experiments import Experiment
 
 
 class AbsErrorContoursExperiment(Experiment):
@@ -56,14 +57,14 @@ def test_abs_error(
         dir_path='../..', image_path="images/torre eiffel.jpg",
         population_size=1000, max_generations=1000, p_mutation=0.5,
         lineno=600, random_seed=10, device='cpu',
-        gen_step=25, other_callback_args=None,
+        gen_step=25, other_callback_args=None, logger=None,
 ):
     os.chdir(dir_path)
     experiment = AbsErrorContoursExperiment(
         image_path, 100, 200, population_size=population_size, max_generations=max_generations,
         p_mutation=p_mutation, lineno=lineno, random_seed=random_seed, device=device,
     )
-    common_test_part(experiment, gen_step, other_callback_args)
+    common_test_part(experiment, gen_step, other_callback_args, logger)
 
 
 __all__ = [

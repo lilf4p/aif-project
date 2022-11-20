@@ -3,6 +3,7 @@ import os
 from salvatore.utils import *
 from salvatore.metrics import TargetPointsArrayNearestNeighbourPointMetric, \
     DoubleArrayNearestNeighbourPointMetric, TableTargetPointsNNContoursMetric
+from salvatore.experiments import Experiment
 
 
 class TargetPointsArrayNearestNeighbourPointContoursExperiment(Experiment):
@@ -174,9 +175,9 @@ class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
 
 def test_table_target_points_nn(
         dir_path='../..', image_path='images/torre eiffel.jpg',
-        population_size=250, max_generations=1000,
-        random_seed=10, num_of_points=2500, hof_size=25,
-        device='cpu', gen_step=25, other_callback_args=None,
+        population_size=250, max_generations=1000, random_seed=10,
+        num_of_points=2500, hof_size=25, device='cpu',
+        gen_step=25, other_callback_args=None, logger=None,
 ):
     os.chdir(dir_path)
     experiment = TableTargetPointsNNContoursExperiment(
@@ -184,7 +185,7 @@ def test_table_target_points_nn(
         max_generations=max_generations, random_seed=random_seed,
         num_of_points=num_of_points, hof_size=hof_size, device=device,
     )
-    common_test_part(experiment, gen_step, other_callback_args)
+    common_test_part(experiment, gen_step, other_callback_args, logger)
 
 
 def test_double_nn(
@@ -192,7 +193,7 @@ def test_double_nn(
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
         target_candidate_weight=2.0, candidate_target_weight=1.0,
-        gen_step=25, other_callback_args=None,
+        gen_step=25, other_callback_args=None, logger=None,
 ):
     os.chdir(dir_path)
 
@@ -201,21 +202,21 @@ def test_double_nn(
         random_seed=random_seed, num_of_points=num_of_points, hof_size=hof_size, device=device,
         target_candidate_weight=target_candidate_weight, candidate_target_weight=candidate_target_weight,
     )
-    common_test_part(experiment, gen_step, other_callback_args)
+    common_test_part(experiment, gen_step, other_callback_args, logger)
 
 
 def test_target_points_nn(
         dir_path='../..', image_path='images/torre eiffel.jpg',
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
-        gen_step=25, other_callback_args=None,
+        gen_step=25, other_callback_args=None, logger=None,
 ):
     os.chdir(dir_path)
     experiment = TargetPointsArrayNearestNeighbourPointContoursExperiment(
         image_path, 100, 200, population_size=population_size, max_generations=max_generations,
         random_seed=random_seed, num_of_points=num_of_points, hof_size=hof_size, device=device,
     )
-    common_test_part(experiment, gen_step, other_callback_args)
+    common_test_part(experiment, gen_step, other_callback_args, logger)
 
 
 __all__ = [

@@ -311,7 +311,7 @@ def filter_resize_xnb(arr, cond_nb):
     return result
 
 
-def common_test_part(experiment, gen_step, other_callback_args):
+def common_test_part(experiment, gen_step, other_callback_args, logger):
     experiment.setup()
     # experiment.plot_individual_sample(difference=False, eval_fitness=True)
     # Enable below for checking correct fitness for target
@@ -322,7 +322,12 @@ def common_test_part(experiment, gen_step, other_callback_args):
     """
     callback_args = other_callback_args if other_callback_args is not None else {}
     callback_args['gen_step'] = gen_step
-    experiment.run(show=True, callback_args=callback_args)
+    callbacks = {
+        experiment.save_image: callback_args,
+    }
+    if logger is not None:
+        callbacks[logger] = {}
+    experiment.run(show=True, callbacks=callbacks)
 
 
 __all__ = [

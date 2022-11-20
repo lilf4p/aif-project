@@ -72,7 +72,7 @@ class TargetPointsArrayNearestNeighbourPointMetric(ArrayPointContoursMetric):
         elapsed_time = time() - elapsed_time
         print(elapsed_time)
         # create and store contour image in memory
-        target_cv2 = create_monochromatic_image(self.image_width, self.image_height)
+        target_cv2 = create_monochromatic_image(self.image_width, self.image_height, device='cpu')
         target_cv2 = draw_contours(target_cv2, contours, copy=False)
         self.target_pil = Image.fromarray(target_cv2)
 
@@ -150,7 +150,6 @@ class TableTargetPointsNNContoursMetric(ArrayPointContoursMetric):
             image_path, canny_low, canny_high, bounds_low, bounds_high, device=device
         )
         self.results = self.vp.zeros(self.num_targets, dtype=self.vp.int32)
-        self.target_individuals = self.vp.zeros((2, self.num_targets, self.num_points))
 
     def check_individual_repr(self, individual) -> TBoolStr:
         return True, None   # no interest in actual checking (by now)
