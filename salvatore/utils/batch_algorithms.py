@@ -1,5 +1,6 @@
 from __future__ import annotations
 import elitism_callback
+from datetime import datetime
 from .types import *
 from bisect import bisect_right
 from operator import eq
@@ -104,10 +105,26 @@ class ArrayHallOfFame(object):
 
 class EAlgorithm(Callable):
 
+    def __init__(self):
+        self.population = None
+        self.toolbox = None
+        self.cxpb = None
+        self.mutpb = None
+        self.ngen = 0
+        self.stats = None
+        self.hof = None
+        self.logbook = None
+        self.best = None
+        self.gen = None
+        self.start_time = None
+        self.end_time = None
+        self.stop = False
+
     @abstractmethod
     def __call__(self, population: Sequence | np.ndarray, toolbox: dp_base.Toolbox, cxpb: float,
                  mutpb: float, ngen: int, callbacks: TCallback = None, stats: dp_tools.Statistics = None,
-                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None, verbose=__debug__) \
+                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None, logbook: dp_tools.Logbook = None,
+                 verbose=__debug__) \
             -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         pass
 
@@ -118,7 +135,8 @@ class EASimple(EAlgorithm):
     """
     def __call__(self, population: Sequence | np.ndarray, toolbox: dp_base.Toolbox, cxpb: float,
                  mutpb: float, ngen: int, callbacks: TCallback = None, stats: dp_tools.Statistics = None,
-                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None, verbose=__debug__) \
+                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None,  logbook: dp_tools.Logbook = None,
+                 verbose=__debug__) \
             -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         return dp_algorithms.eaSimple(population, toolbox, cxpb, mutpb, ngen, stats, halloffame, verbose)
 
@@ -129,7 +147,7 @@ class EASimpleWithElitismAndCallback(EAlgorithm):
     """
     def __call__(self, population: Sequence | np.ndarray, toolbox: dp_base.Toolbox, cxpb: float,
                  mutpb: float, ngen: int, callbacks: TCallback = None, stats: dp_tools.Statistics = None,
-                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None,
+                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None, logbook: dp_tools.Logbook = None,
                  verbose=__debug__) -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         return elitism_callback.eaSimpleWithElitismAndCallback(  # todo aggiustare!
             population, toolbox, cxpb, mutpb, ngen, callbacks.keys(), stats, halloffame, verbose
@@ -139,18 +157,11 @@ class EASimpleWithElitismAndCallback(EAlgorithm):
 class EASimpleBatchProcessing(EAlgorithm):
 
     def __init__(self):
-        self.population = None
-        self.cxpb = None
-        self.mutpb = None
-        self.ngen = None
-        self.stats = None
-        self.hof = None
-        self.logbook = None
-        self.best = None
+        super(EASimpleBatchProcessing, self).__init__()
 
     def __call__(self, population: list, toolbox: dp_base.Toolbox, cxpb: float, mutpb: float,
-                 ngen: int, callbacks: dict[Callable, dict[str, Any]] = None,
-                 stats: dp_tools.Statistics = None, halloffame: ArrayHallOfFame = None,
+                 ngen: int, callbacks: dict[Callable, dict[str, Any]] = None, stats: dp_tools.Statistics = None,
+                 halloffame: ArrayHallOfFame = None, logbook: dp_tools.Logbook = None,
                  verbose=__debug__) -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         """
         Specialized version of eaSimpleWithElitismAndCallback for working with numpy/cupy arrays for population
@@ -162,8 +173,17 @@ class EASimpleBatchProcessing(EAlgorithm):
         3. mate(ind1: TArray, ind2: TArray) -> tuple[TArray, TArray] for crossover (as standard operators)
         4. mutate(individual: TArray, ...) -> tuple[TArray, None] for mutation (as standard operators)
         """
-        logbook = dp_tools.Logbook()
-        logbook.header = ['gen', 'nevals'] + (stats.fields if stats else [])
+        self.population = population
+        self.cxpb = cxpb
+        self.mutpb = mutpb
+        self.ngen = ngen
+        self.stats = stats
+        self.hof = halloffame
+        self.logbook = dp_tools.Logbook() if logbook is None else logbook
+        self.logbook.header = ['gen', 'nevals'] + (stats.fields if stats else [])
+
+        self.start_time = perf_counter()
+        print(f'Algorithm starting at {datetime.now()} ...')
 
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in population if not ind.fitness.valid]
@@ -172,24 +192,30 @@ class EASimpleBatchProcessing(EAlgorithm):
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = (fit,)  # we are not using a tuple in the function evaluation
 
-        if halloffame is None:
+        if self.hof is None:
             raise ValueError("halloffame parameter must not be empty!")
 
-        halloffame.update(population)
-        hof_size = len(halloffame.items) if halloffame.items else 0
-        pop_hof = len(population) - hof_size
+        self.hof.update(self.population)
+        hof_size = len(self.hof.items) if self.hof.items else 0
+        pop_hof = len(self.population) - hof_size
 
-        record = stats.compile(population) if stats else {}  # fixme check if this changes something!
-        logbook.record(gen=0, nevals=len(invalid_ind), **record)
+        record = stats.compile(self.population) if stats else {}
+        self.logbook.record(gen=0, nevals=len(invalid_ind), time=perf_counter()-self.start_time, **record)
         if verbose:
-            print(logbook.stream)
+            print(self.logbook.stream)
 
         # Begin the generational process
-        for gen in range(1, ngen + 1):
+        for self.gen in range(1, self.ngen + 1):
+
+            if self.stop:   # A callback has set stop to True to indicate interruption
+                break
+
+            if self.gen == self.ngen:   # max number of generations
+                self.stop = True
 
             # Select the next generation individuals
             # noinspection PyUnresolvedReferences
-            offspring = toolbox.select(population, pop_hof)  # todo should be TArray!
+            offspring = toolbox.select(self.population, pop_hof)  # todo should be TArray!
 
             # Vary the pool of individuals
             offspring = dp_algorithms.varAnd(offspring, toolbox, cxpb, mutpb)  # todo cambiare!
@@ -202,29 +228,31 @@ class EASimpleBatchProcessing(EAlgorithm):
                 ind.fitness.values = (fit,)
 
             # add the best back to population:
-            offspring.extend(halloffame.items)
-
-            # np.put(population, range(pop_hof, len(population)), halloffame.items)
-            # offspring.extend(halloffame.items)
+            offspring.extend(self.hof.items)
 
             # Update the hall of fame with the generated individuals
-            halloffame.update(offspring)
+            self.hof.update(offspring)
 
             # Replace the current population by the offspring
-            population[:] = offspring
+            self.population[:] = offspring
 
             # Append the current generation statistics to the logbook
-            record = stats.compile(population) if stats else {}  # fixme check if this changes something!
-            logbook.record(gen=gen, nevals=len(invalid_ind), **record)
+            record = self.stats.compile(self.population) if stats else {}
+            self.logbook.record(gen=self.gen, nevals=len(invalid_ind), time=perf_counter()-self.start_time, **record)
+            self.best = self.hof.items[0]
             if verbose:
-                print(logbook.stream)
+                print(self.logbook.stream)
+
+            if self.stop:
+                self.end_time = perf_counter()
 
             if callbacks is not None:
                 for callback, callback_args in callbacks.items():
                     callback_args = callback_args if callback_args is not None else {}
-                    callback(gen, halloffame.items[0], **callback_args)  # fixme check if this changes something!
+                    callback(self, **callback_args)
 
-        return population, logbook
+        print(f'Algorithm terminating at {datetime.now()} ...')
+        return self.population, self.logbook
 
 
 __all__ = [

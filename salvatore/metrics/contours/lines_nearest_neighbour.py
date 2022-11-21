@@ -11,7 +11,8 @@ class LinesNNPointContoursMetric(ContoursLineMetric):
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
                  bounds_high: TReal = 1.0, lineno: int = 500, device='cpu',
-                 point_adherence_coeff: float = 10.0, line_adherence_coeff: float = 1.0):
+                 point_adherence_coeff: float = 10.0, line_adherence_coeff: float = 1.0,
+                 line_l1_lambda: float = 5.0):
         """
         :param image_path: Path of the target image.
         :param canny_low: Low threshold for cv2.Canny().
@@ -29,6 +30,7 @@ class LinesNNPointContoursMetric(ContoursLineMetric):
         self.num_points = lineno * (self.chunk_size // 2)
         self.point_adherence_coeff = point_adherence_coeff
         self.line_adherence_coeff = line_adherence_coeff
+        self.line_l1_lambda = line_l1_lambda
         super(LinesNNPointContoursMetric, self).__init__(
             image_path, canny_low, canny_high, bounds_low, bounds_high, device=device,
         )
@@ -94,6 +96,17 @@ class LinesNNPointContoursMetric(ContoursLineMetric):
     def get_target_image(self) -> Image:
         return self.target_pil
 
+    def list_to_chunks(self, individual):
+        """
+        A "reversed" version of the usual list_to_chunks, used for speeding up
+        the calculation of the length of the lines.
+        """
+        length = len(individual)
+        for chunk in range(0, length // 2, self.chunk_size // 2):
+            start = (int(individual[chunk] * self.image_width), int(individual[chunk+1] * self.image_height))
+            end = (int(individual[length-2-chunk] * self.image_width), int(individual[length-1-chunk] * self.image_height))
+            yield start, end
+
     def standardize_individual(self, individual, check_repr=False) -> tuple[np.ndarray, np.ndarray]:
         # reshape and rescale
         individual = individual if self.device == 'cpu' else cp.asarray(individual)
@@ -111,7 +124,9 @@ class LinesNNPointContoursMetric(ContoursLineMetric):
         individual_img, individual_points = self.standardize_individual(individual)
         aux = self.target_table[individual_points[1], individual_points[0]]
         p, q = self.vp.sum(aux), np.sum(np.abs(cv2.subtract(self.target_cv2, individual_img))) // 255
-        self.results[index] = self.point_adherence_coeff * p + self.line_adherence_coeff * q
+        individual_points_flipped = np.flip(individual_points, axis=0)
+        r = np.sum(np.abs(individual_points - individual_points_flipped)) // 2  # total sum of the lines length
+        self.results[index] = self.point_adherence_coeff * p + self.line_adherence_coeff * q + self.line_l1_lambda * r
 
     def get_difference(self, individuals: TArray):
         n_ind = len(individuals)

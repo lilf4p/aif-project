@@ -33,32 +33,9 @@ class TargetPointsArrayNearestNeighbourPointContoursExperiment(Experiment):
         self.bounds_high = bounds_high
         self.num_params = self.chunk_size * self.num_of_points
 
-    def set_individual(self):
-        # create the Individual class based on list:
-        # noinspection PyUnresolvedReferences
-        dp_creator.create("Individual", list, fitness=dp_creator.FitnessMin)
-
-        # register an operator that randomly returns a float in the given range
-        self.toolbox.register(
-            "attrFloat",
-            lambda low, high: [random.uniform(l, u) for l, u in zip([low] * self.num_params, [high] * self.num_params)],
-            self.bounds_low, self.bounds_high)
-
-        # create an operator that fills up an Individual instance:
-        # noinspection PyUnresolvedReferences
-        self.toolbox.register("individualCreator", dp_tools.initIterate, dp_creator.Individual, self.toolbox.attrFloat)
-
     def set_evaluate(self):
         # register evaluation
         self.toolbox.register("evaluate", self.metric.get_difference)
-
-    def set_mate(self):
-        self.toolbox.register("mate", dp_tools.cxSimulatedBinaryBounded,
-                              low=self.bounds_low, up=self.bounds_high, eta=self.crowding_factor)
-
-    def set_mutate(self):
-        self.toolbox.register("mutate", dp_tools.mutPolynomialBounded, low=self.bounds_low, up=self.bounds_high,
-                              eta=self.crowding_factor, indpb=1.0 / self.num_params)
 
 
 class TableTargetPointsNNContoursExperiment(Experiment):
@@ -88,32 +65,9 @@ class TableTargetPointsNNContoursExperiment(Experiment):
         self.bounds_high = bounds_high
         self.num_params = self.chunk_size * self.num_of_points
 
-    def set_individual(self):
-        # create the Individual class based on list:
-        # noinspection PyUnresolvedReferences
-        dp_creator.create("Individual", list, fitness=dp_creator.FitnessMin)
-
-        # register an operator that randomly returns a float in the given range
-        self.toolbox.register(
-            "attrFloat",
-            lambda low, high: [random.uniform(l, u) for l, u in zip([low] * self.num_params, [high] * self.num_params)],
-            self.bounds_low, self.bounds_high)
-
-        # create an operator that fills up an Individual instance:
-        # noinspection PyUnresolvedReferences
-        self.toolbox.register("individualCreator", dp_tools.initIterate, dp_creator.Individual, self.toolbox.attrFloat)
-
     def set_evaluate(self):
         # register evaluation
         self.toolbox.register("evaluate", self.metric.get_difference)
-
-    def set_mate(self):
-        self.toolbox.register("mate", dp_tools.cxSimulatedBinaryBounded,
-                              low=self.bounds_low, up=self.bounds_high, eta=self.crowding_factor)
-
-    def set_mutate(self):
-        self.toolbox.register("mutate", dp_tools.mutPolynomialBounded, low=self.bounds_low, up=self.bounds_high,
-                              eta=self.crowding_factor, indpb=1.0 / self.num_params)
 
 
 class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
@@ -145,39 +99,17 @@ class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
         self.bounds_high = bounds_high
         self.num_params = self.chunk_size * self.num_of_points
 
-    def set_individual(self):
-        # create the Individual class based on list:
-        # noinspection PyUnresolvedReferences
-        dp_creator.create("Individual", list, fitness=dp_creator.FitnessMin)
-
-        # register an operator that randomly returns a float in the given range
-        self.toolbox.register(
-            "attrFloat",
-            lambda low, high: [random.uniform(l, u) for l, u in zip([low] * self.num_params, [high] * self.num_params)],
-            self.bounds_low, self.bounds_high)
-
-        # create an operator that fills up an Individual instance:
-        # noinspection PyUnresolvedReferences
-        self.toolbox.register("individualCreator", dp_tools.initIterate, dp_creator.Individual, self.toolbox.attrFloat)
-
     def set_evaluate(self):
         # register evaluation
         self.toolbox.register("evaluate", self.metric.get_difference)
-
-    def set_mate(self):
-        self.toolbox.register("mate", dp_tools.cxSimulatedBinaryBounded,
-                              low=self.bounds_low, up=self.bounds_high, eta=self.crowding_factor)
-
-    def set_mutate(self):
-        self.toolbox.register("mutate", dp_tools.mutPolynomialBounded, low=self.bounds_low, up=self.bounds_high,
-                              eta=self.crowding_factor, indpb=1.0 / self.num_params)
 
 
 def test_table_target_points_nn(
         dir_path='../..', image_path='images/torre eiffel.jpg',
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
-        gen_step=25, other_callback_args=None, logger=None,
+        save_image_gen_step=50,
+        other_callback_args=None, logger=None,
 ):
     os.chdir(dir_path)
     experiment = TableTargetPointsNNContoursExperiment(
@@ -185,7 +117,10 @@ def test_table_target_points_nn(
         max_generations=max_generations, random_seed=random_seed,
         num_of_points=num_of_points, hof_size=hof_size, device=device,
     )
-    common_test_part(experiment, gen_step, other_callback_args, logger)
+    common_test_part(
+        experiment, save_image_gen_step=save_image_gen_step,
+        other_callback_args=other_callback_args, logger=logger,
+    )
 
 
 def test_double_nn(
@@ -193,7 +128,8 @@ def test_double_nn(
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
         target_candidate_weight=2.0, candidate_target_weight=1.0,
-        gen_step=25, other_callback_args=None, logger=None,
+        save_image_gen_step=50,
+        other_callback_args=None, logger=None,
 ):
     os.chdir(dir_path)
 
@@ -202,21 +138,28 @@ def test_double_nn(
         random_seed=random_seed, num_of_points=num_of_points, hof_size=hof_size, device=device,
         target_candidate_weight=target_candidate_weight, candidate_target_weight=candidate_target_weight,
     )
-    common_test_part(experiment, gen_step, other_callback_args, logger)
+    common_test_part(
+        experiment, save_image_gen_step=save_image_gen_step,
+        other_callback_args=other_callback_args, logger=logger,
+    )
 
 
 def test_target_points_nn(
         dir_path='../..', image_path='images/torre eiffel.jpg',
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
-        gen_step=25, other_callback_args=None, logger=None,
+        save_image_gen_step=50,
+        other_callback_args=None, logger=None,
 ):
     os.chdir(dir_path)
     experiment = TargetPointsArrayNearestNeighbourPointContoursExperiment(
         image_path, 100, 200, population_size=population_size, max_generations=max_generations,
         random_seed=random_seed, num_of_points=num_of_points, hof_size=hof_size, device=device,
     )
-    common_test_part(experiment, gen_step, other_callback_args, logger)
+    common_test_part(
+        experiment, save_image_gen_step=save_image_gen_step,
+        other_callback_args=other_callback_args, logger=logger,
+    )
 
 
 __all__ = [
