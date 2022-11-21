@@ -119,6 +119,7 @@ class EAlgorithm(Callable):
         self.start_time = None
         self.end_time = None
         self.stop = False
+        self.stop_msg = None
 
     @abstractmethod
     def __call__(self, population: Sequence | np.ndarray, toolbox: dp_base.Toolbox, cxpb: float,
@@ -127,6 +128,11 @@ class EAlgorithm(Callable):
                  verbose=__debug__) \
             -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         pass
+
+    def set_stop(self, msg: str = 'Maximum number of generations reached'):
+        self.stop = True
+        self.stop_msg = msg
+        self.end_time = perf_counter()
 
 
 class EASimple(EAlgorithm):
@@ -207,11 +213,8 @@ class EASimpleBatchProcessing(EAlgorithm):
         # Begin the generational process
         for self.gen in range(1, self.ngen + 1):
 
-            if self.stop:   # A callback has set stop to True to indicate interruption
+            if self.stop:
                 break
-
-            if self.gen == self.ngen:   # max number of generations
-                self.stop = True
 
             # Select the next generation individuals
             # noinspection PyUnresolvedReferences
@@ -243,8 +246,8 @@ class EASimpleBatchProcessing(EAlgorithm):
             if verbose:
                 print(self.logbook.stream)
 
-            if self.stop:
-                self.end_time = perf_counter()
+            if self.gen == self.ngen:   # max number of generations
+                self.set_stop()
 
             if callbacks is not None:
                 for callback, callback_args in callbacks.items():

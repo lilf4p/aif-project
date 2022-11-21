@@ -33,8 +33,8 @@ class AbsErrorContoursExperiment(Experiment):
 def test_abs_error(
         dir_path='../..', image_path="images/torre eiffel.jpg",
         population_size=1000, max_generations=1000, p_mutation=0.5,
-        lineno=600, random_seed=10, device='cpu',
-        save_image_gen_step=50, other_callback_args=None, logger=None,
+        lineno=600, random_seed=10, device='cpu', save_image_gen_step=50,
+        other_callback_args=None, logger=None, stopping_criterions=None,
 ):
     os.chdir(dir_path)
     experiment = AbsErrorContoursExperiment(
@@ -44,6 +44,7 @@ def test_abs_error(
     common_test_part(
         experiment, save_image_gen_step=save_image_gen_step,
         other_callback_args=other_callback_args, logger=logger,
+        stopping_criterions=None,
     )
 
 

@@ -71,12 +71,12 @@ class Logger:
             self.csv_fp.flush()
             self.last_gen_recorded = gen + 1
         if algorithm.stop:
-            end_time = perf_counter() if algorithm.end_time is None else algorithm.end_time
             self.dict['experiment']['time'] = {
                 'actual_generations': algorithm.gen,
                 'start': algorithm.start_time,
                 'end': algorithm.end_time,
-                'elapsed': end_time - algorithm.start_time,
+                'elapsed': float(f"{(algorithm.end_time - algorithm.start_time):.4f}"),
+                'stop_message': algorithm.stop_msg,
             }
             json.dump(self.dict, fp=self.json_fp, indent=2)
 

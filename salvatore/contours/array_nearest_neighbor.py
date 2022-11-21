@@ -108,8 +108,8 @@ def test_table_target_points_nn(
         dir_path='../..', image_path='images/torre eiffel.jpg',
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
-        save_image_gen_step=50,
-        other_callback_args=None, logger=None,
+        save_image_gen_step=50, other_callback_args=None,
+        logger=None, stopping_criterions=None,
 ):
     os.chdir(dir_path)
     experiment = TableTargetPointsNNContoursExperiment(
@@ -120,6 +120,7 @@ def test_table_target_points_nn(
     common_test_part(
         experiment, save_image_gen_step=save_image_gen_step,
         other_callback_args=other_callback_args, logger=logger,
+        stopping_criterions=stopping_criterions,
     )
 
 
@@ -128,8 +129,8 @@ def test_double_nn(
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
         target_candidate_weight=2.0, candidate_target_weight=1.0,
-        save_image_gen_step=50,
-        other_callback_args=None, logger=None,
+        save_image_gen_step=50, other_callback_args=None,
+        logger=None, stopping_criterions=None,
 ):
     os.chdir(dir_path)
 
@@ -141,6 +142,7 @@ def test_double_nn(
     common_test_part(
         experiment, save_image_gen_step=save_image_gen_step,
         other_callback_args=other_callback_args, logger=logger,
+        stopping_criterions=stopping_criterions,
     )
 
 
@@ -148,8 +150,8 @@ def test_target_points_nn(
         dir_path='../..', image_path='images/torre eiffel.jpg',
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
-        save_image_gen_step=50,
-        other_callback_args=None, logger=None,
+        save_image_gen_step=50, other_callback_args=None,
+        logger=None, stopping_criterions=None,
 ):
     os.chdir(dir_path)
     experiment = TargetPointsArrayNearestNeighbourPointContoursExperiment(
@@ -159,6 +161,7 @@ def test_target_points_nn(
     common_test_part(
         experiment, save_image_gen_step=save_image_gen_step,
         other_callback_args=other_callback_args, logger=logger,
+        stopping_criterions=stopping_criterions,
     )
 
 

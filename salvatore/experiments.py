@@ -1,8 +1,5 @@
 # Base classes for experiments
 from __future__ import annotations
-
-import matplotlib.pyplot as plt
-
 from salvatore.utils.types import *
 from salvatore.utils.batch_algorithms import *
 from salvatore.utils.misc import *
@@ -256,9 +253,10 @@ class Experiment:
         print("Best Score = ", best.fitness.values[0])
         print()
 
-        # draw best image next to reference image:
-        self.plot_image_comparison(self.metric.get_individual_image(best))
+        # draw best image next to reference image
+        self.save_image(self.algorithm, gen_step=1)
 
+        # save statistics at the end of the experiment
         self.save_stats(self.algorithm, show=True)
 
 

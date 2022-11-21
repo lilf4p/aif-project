@@ -48,8 +48,8 @@ def test_lines_nn(
         population_size=250, max_generations=1000, random_seed=10,
         lineno=500, hof_size=25, device='cpu', point_adherence_coeff=10.0,
         line_adherence_coeff=1.0, line_l1_lambda=5.0,
-        save_image_gen_step=50,
-        other_callback_args=None, logger=None,
+        save_image_gen_step=50, other_callback_args=None,
+        logger=None, stopping_criterions=None,
 ):
     os.chdir(dir_path)
     experiment = LinesNNPointContoursExperiment(
@@ -61,6 +61,7 @@ def test_lines_nn(
     common_test_part(
         experiment, save_image_gen_step=save_image_gen_step,
         other_callback_args=other_callback_args, logger=logger,
+        stopping_criterions=stopping_criterions,
     )
 
 
