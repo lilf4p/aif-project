@@ -70,6 +70,7 @@ class ArrayPointContoursMetric(ImageMetric):
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
                  bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu', **extra_args):
+        self.results = None
         self.canny_low = canny_low
         self.canny_high = canny_high
         self.image_width = None
@@ -100,6 +101,24 @@ class ArrayPointContoursMetric(ImageMetric):
         # cleanup
         del draw
         return image
+
+    @abstractmethod
+    def _core_get_difference(self, individual, index):
+        pass
+
+    def get_difference(self, individuals: TArray):
+        n_ind = len(individuals)
+        self.results[:] = 0
+        if self.device == 'cpu':
+            for index in range(n_ind):
+                self._core_get_difference(individuals[index], index)
+        else:
+            with cp.cuda.Stream() as stream:
+                for index in range(n_ind):
+                    self._core_get_difference(individuals[index], index)
+                stream.synchronize()
+        results = self.results[:n_ind] if self.device == 'cpu' else cp.asnumpy(self.results[:n_ind])
+        return results.copy()   # fixme check if this is necessary
 
 
 __all__ = [

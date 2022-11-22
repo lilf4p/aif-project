@@ -1,6 +1,7 @@
 # A combination of the "nearest-neighbour" approach with points and MSE for lines
 from salvatore.utils import *
 from .base import ContoursLineMetric
+from .utils import *
 
 
 class LinesNNPointContoursMetric(ContoursLineMetric):
@@ -37,55 +38,13 @@ class LinesNNPointContoursMetric(ContoursLineMetric):
         self.results = self.vp.zeros(self.num_targets, dtype=self.vp.int32)
 
     def standardize_target(self):
-        pil_image = Image.open(self.image_path)
-        cv2_image = pil_to_cv2(pil_image)
+        aux, pil_image, cv2_image, contours = extract_contours(self.image_path,
+                                                               self.canny_low, self.canny_high, self.device)
         self.image_width, self.image_height = cv2_image.shape[1], cv2_image.shape[0]
-
-        # find contours
-        _, contours, _ = find_contours(cv2_image, self.canny_low, self.canny_high)
-
-        # Transform contours from numpy arrays to tuples
-        tot_contours = 0
-        contours_list = []
-        for contour in contours:
-            fldim = np.prod(contour.shape)
-            contour = np.reshape(contour, (fldim // 2, 2))
-            tot_contours += len(contour)
-            contours_list.append(contour)
-        # objective tensor: (2, num_targets, num_points)
-        self.num_targets = tot_contours
-        aux = np.zeros((tot_contours, 2))
-        i = 0
-        for contour in contours_list:
-            # contour = contour if self.device == 'cpu' else self.vp.array(contour)
-            k = len(contour)
-            aux[i:i+k, :] = contour
-            i += k
-        # now aux contains a column with all the widths of the target points and another one with the heights
-        # and it will be transferred to gpu if specified in constructor
-        # aux = aux.astype(np.int32)  # todo pass integer type as parameter!
-        aux = aux if self.device == 'cpu' else self.vp.asarray(aux)
-        target_aux_0 = self.vp.zeros((2, tot_contours, self.image_width))
-        target_aux_1 = self.vp.zeros((2, tot_contours, self.image_width))
-        for j in range(self.image_width):    # todo check if this double slice works!
-            target_aux_0[0, :, j] = aux[:, 0]
-            target_aux_0[1, :, j] = aux[:, 1]
-            target_aux_1[0, :, j] = aux[:, 0]
-            target_aux_1[1, :, j] = aux[:, 1]
-
-        # Build table of distances
-        self.target_table = self.vp.full((self.image_height, self.image_width), -1, dtype=np.int32)
-        for i in range(self.image_height):
-            target_aux_1[1] -= i
-            for j in range(self.image_width):  # todo questo si può modificare con un array (self.width,) creato appositamente!
-                target_aux_1[0, :, j] -= j
-            target_aux_1 = np.abs(target_aux_1)
-            target_aux_2 = np.sum(target_aux_1, axis=0)
-            result = np.min(target_aux_2, axis=0)
-            # result = np.min(np.sum(np.abs(target_aux_1), axis=0), axis=0)
-            self.target_table[i, :] = result
-            self.vp.copyto(dst=target_aux_1, src=target_aux_0)
-
+        self.num_targets = len(aux)
+        self.target_table = build_distance_table(
+            self.image_height, self.image_width, self.num_targets, aux, device=self.device
+        )
         # create and store contour image in memory
         self.target_cv2 = create_monochromatic_image(self.image_width, self.image_height, device='cpu')
         self.target_cv2 = draw_contours(self.target_cv2, contours, copy=False)
