@@ -64,8 +64,8 @@ def min_fitness_percentage_gain_stop(algorithm: EAlgorithm, percentage: float):
                            f" per generation during the experiment, but min fitness has not"
                            f" been found in the LogBook!")
     if current_min_fitness <= percentage * start_min_fitness:
-        algorithm.set_stop(msg=f'Fitness decreased down to at least {percentage:.4f}% '
-                               f'({current_min_fitness}) of the starting value ({start_min_fitness})')
+        algorithm.set_stop(msg=f'Fitness decreased down to at least {(100 * percentage)}% '
+                               f'({current_min_fitness:.4f}) of the starting value ({start_min_fitness:.4f})')
 
 
 def flat_percentage_fitness_stop(algorithm: EAlgorithm, epsilon_perc: float, gen_num: int, gen_step: int = 200):
@@ -98,7 +98,7 @@ def flat_percentage_fitness_stop(algorithm: EAlgorithm, epsilon_perc: float, gen
         diff = float(max_min_fitness - min_min_fitness)
         if diff <= epsilon_perc * start_fitness:
             algorithm.set_stop(msg=f'Fitness variation in the last {gen_num} generations is less than '
-                                   f'{epsilon_perc}% ({diff:.4f}) of the starting fitness value '
+                                   f'{(100 * epsilon_perc)}% ({diff:.4f}) of the starting fitness value '
                                    f'({float(start_fitness):.4f})')
 
 
