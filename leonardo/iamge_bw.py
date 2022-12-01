@@ -15,7 +15,7 @@ def toCv2(image):
 def main(): 
 
     # open the image to compare in grayscale:
-    image = Image.open('images/cubismo_picasso15072.jpg')
+    image = Image.open('images/cubismo_picasso.jpg')
     imageCv2 = toCv2(image)
 
     # open a new image in grayscale which will contain the polygons:

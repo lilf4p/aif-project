@@ -34,7 +34,7 @@ RANDOM_SEED = 42
 random.seed(RANDOM_SEED)
 
 # create the image test class instance:
-imageTest = image_test.ImageTest("images/cubismo_picasso15072.jpg", POLYGON_SIZE)
+imageTest = image_test.ImageTest("images/cubismo_picasso.jpg", POLYGON_SIZE)
 
 # calculate total number of params in chromosome:
 # For each polygon we have:

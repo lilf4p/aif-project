@@ -25,11 +25,11 @@ from multiprocessing import freeze_support
 
 
 start_time = time.time()
-C_METHOD = "SSIM"
+C_METHOD = "MSE"
 
 # problem related constants
 POLYGON_SIZE = 5
-NUM_OF_POLYGONS = 250
+NUM_OF_POLYGONS = 150
 
 # calculate total number of params in chromosome:
 # For each polygon we have:
@@ -43,10 +43,10 @@ NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 5)
 # MAX_GENERATIONS = 500
 # HALL_OF_FAME_SIZE = 30
 # CROWDING_FACTOR = 10.0  # crowding factor for crossover and mutation
-POPULATION_SIZE = 300
+POPULATION_SIZE = 250
 P_CROSSOVER = 0.9  # probability for crossover
 P_MUTATION = 0.01   # probability for mutating an individual
-MAX_GENERATIONS = 2000
+MAX_GENERATIONS = 8000
 HALL_OF_FAME_SIZE = 20
 CROWDING_FACTOR = 10.0  # crowding factor for crossover and mutation
 
@@ -55,7 +55,7 @@ RANDOM_SEED = 42
 random.seed(RANDOM_SEED)
 
 # create the image test class instance:
-imageTest = image_test.ImageTest("images/monalisa.png", POLYGON_SIZE)
+imageTest = image_test.ImageTest("images/car.jpg", POLYGON_SIZE)
 # imageTest = image_test.ImageTest("images/tower.jpg", POLYGON_SIZE)
 
 # calculate total number of params in chromosome:
@@ -113,13 +113,13 @@ toolbox.register("evaluate", getDiff)
 toolbox.register("select", tools.selBest, fit_attr='fitness')
 # toolbox.register("select", tools.selTournament, tournsize=2)
 SELECTION_METHOD = "SelectBest"
-toolbox.register("mate",tools.cxUniform, indpb=0.5)
-# toolbox.register("mate",tools.cxSimulatedBinaryBounded,low=BOUNDS_LOW,up=BOUNDS_HIGH,eta=CROWDING_FACTOR)
-MATE_METHODE = "Uniform"
+# toolbox.register("mate",tools.cxUniform, indpb=0.5)
+toolbox.register("mate",tools.cxSimulatedBinaryBounded,low=BOUNDS_LOW,up=BOUNDS_HIGH,eta=CROWDING_FACTOR)
+MATE_METHODE = "SimulatedBinaryBounded"
 
-# toolbox.register("mutate",tools.mutFlipBit,indpb=1.0/NUM_OF_PARAMS)
-toolbox.register("mutate",tools.mutPolynomialBounded,low=BOUNDS_LOW,up=BOUNDS_HIGH,eta=CROWDING_FACTOR,indpb=1.0/NUM_OF_PARAMS)
-MUTATE_METHODE = "PolynomialBounded"
+toolbox.register("mutate",tools.mutFlipBit,indpb=1.0/NUM_OF_PARAMS)
+# toolbox.register("mutate",tools.mutPolynomialBounded,low=BOUNDS_LOW,up=BOUNDS_HIGH,eta=CROWDING_FACTOR,indpb=1.0/NUM_OF_PARAMS)
+MUTATE_METHODE = "FlipBit"
 
 
 # save the best current drawing every 100 generations (used as a callback):
