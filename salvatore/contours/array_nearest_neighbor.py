@@ -13,11 +13,11 @@ class TargetPointsArrayNearestNeighbourPointContoursExperiment(Experiment):
         return 2
 
     def __init__(
-            self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
-            bounds_high: TReal = 1.0, population_size: int = 200, p_crossover: TReal = 0.9,
-            p_mutation: TReal = 0.5, max_generations: int = 1000, hof_size: int = 20,
+            self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low=0.0,
+            bounds_high=1.0, population_size: int = 200, p_crossover=0.9,
+            p_mutation=0.5, max_generations: int = 1000, hof_size: int = 20,
             crowding_factor: int = 10.0, num_of_points: int = 10000, random_seed: int = None,
-            save_image_dir: str = None, device='cpu', algorithm: EAlgorithm = EASimpleBatchProcessing(),
+            save_image_dir: str = None, device='cpu', algorithm: EAlgorithm = EASimpleForArrays(),
     ):
         super(TargetPointsArrayNearestNeighbourPointContoursExperiment, self).__init__(
             population_size, p_crossover, p_mutation, max_generations, hof_size,
@@ -45,11 +45,11 @@ class TableTargetPointsNNContoursExperiment(Experiment):
         return 2
 
     def __init__(
-            self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
-            bounds_high: TReal = 1.0, population_size: int = 200, p_crossover: TReal = 0.9,
-            p_mutation: TReal = 0.5, max_generations: int = 1000, hof_size: int = 20,
+            self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low=0.0,
+            bounds_high=1.0, population_size: int = 200, p_crossover=0.9,
+            p_mutation=0.5, max_generations: int = 1000, hof_size: int = 20,
             crowding_factor: int = 10.0, num_of_points: int = 10000, random_seed: int = None,
-            save_image_dir: str = None, device='cpu', algorithm: EAlgorithm = EASimpleBatchProcessing(),
+            save_image_dir: str = None, device='cpu', algorithm: EAlgorithm = EASimpleForArrays(),
     ):
         super(TableTargetPointsNNContoursExperiment, self).__init__(
             population_size, p_crossover, p_mutation, max_generations, hof_size,
@@ -77,11 +77,11 @@ class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
         return 2
 
     def __init__(
-            self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
-            bounds_high: TReal = 1.0, population_size: int = 200, p_crossover: TReal = 0.9,
-            p_mutation: TReal = 0.5, max_generations: int = 1000, hof_size: int = 20,
+            self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low=0.0,
+            bounds_high=1.0, population_size: int = 200, p_crossover=0.9,
+            p_mutation=0.5, max_generations: int = 1000, hof_size: int = 20,
             crowding_factor: int = 10.0, num_of_points: int = 10000, random_seed: int = None,
-            save_image_dir: str = None, device='cpu', algorithm: EAlgorithm = EASimpleBatchProcessing(),
+            save_image_dir: str = None, device='cpu', algorithm: EAlgorithm = EASimpleForArrays(),
             target_candidate_weight: float = 2.0, candidate_target_weight: float = 1.0,
     ):
         super(DoubleArrayNearestNeighbourPointContoursExperiment, self).__init__(

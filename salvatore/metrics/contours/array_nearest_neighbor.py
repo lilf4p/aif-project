@@ -14,8 +14,8 @@ class TargetPointsArrayNearestNeighbourPointMetric(ArrayPointContoursMetric):
     def CHUNKSIZE(self):
         return 2
 
-    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
-                 bounds_high: TReal = 1.0, num_points: int = 20000, device='cpu'):
+    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low=0.0,
+                 bounds_high=1.0, num_points: int = 20000, device='cpu'):
         """
         :param image_path: Path of the target image.
         :param canny_low: Low threshold for cv2.Canny().
@@ -87,8 +87,8 @@ class TableTargetPointsNNContoursMetric(ArrayPointContoursMetric):
     def CHUNKSIZE(self):
         return 2
 
-    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
-                 bounds_high: TReal = 1.0, num_points: int = 20000, device='cpu'):
+    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low=0.0,
+                 bounds_high=1.0, num_points: int = 20000, device='cpu'):
         """
         :param image_path: Path of the target image.
         :param canny_low: Low threshold for cv2.Canny().
@@ -142,9 +142,9 @@ class DoubleArrayNearestNeighbourPointMetric(TargetPointsArrayNearestNeighbourPo
     the fitness as the sum of the minimum Manhattan distances from both each target
     point to the set of candidate points and vice versa.
     """
-    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
-                 bounds_high: TReal = 1.0, num_points: int = 20000, device='cpu',
-                 target_candidate_weight: TReal = 2.0, candidate_target_weight: TReal = 1.0):
+    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low=0.0,
+                 bounds_high=1.0, num_points: int = 20000, device='cpu',
+                 target_candidate_weight=2.0, candidate_target_weight=1.0):
         """
         :param target_candidate_weight: Weight to assign to the part of the fitness function
         that calculates the distance between each target point and its nearest candidate one.

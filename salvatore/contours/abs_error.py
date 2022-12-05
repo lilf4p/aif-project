@@ -12,11 +12,11 @@ class AbsErrorContoursExperiment(Experiment):
         return 4
 
     def __init__(
-            self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
-            bounds_high: TReal = 1.0, population_size: int = 200, p_crossover: TReal = 0.9,
-            p_mutation: TReal = 0.1, max_generations: int = 1000, hof_size: int = 20,
+            self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low=0.0,
+            bounds_high=1.0, population_size: int = 200, p_crossover=0.9,
+            p_mutation=0.1, max_generations: int = 1000, hof_size: int = 20,
             crowding_factor: int = 10.0, lineno: int = 200, random_seed: int = None,
-            save_image_dir: str = None, device='cpu', algorithm: EAlgorithm = EASimpleWithElitismAndCallback(),
+            save_image_dir: str = None, device='cpu', algorithm: EAlgorithm = EASimpleForArrays(),
     ):
         super(AbsErrorContoursExperiment, self).__init__(
             population_size, p_crossover, p_mutation, max_generations, hof_size,
@@ -44,7 +44,7 @@ def test_abs_error(
     common_test_part(
         experiment, save_image_gen_step=save_image_gen_step,
         other_callback_args=other_callback_args, logger=logger,
-        stopping_criterions=None,
+        stopping_criterions=stopping_criterions,
     )
 
 

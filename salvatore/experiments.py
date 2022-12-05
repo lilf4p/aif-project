@@ -1,9 +1,12 @@
 # Base classes for experiments
 from __future__ import annotations
+
+import os
+import pickle
+
 from salvatore.utils.types import *
 from salvatore.utils.algorithms import *
 from salvatore.utils.misc import *
-import os
 from datetime import datetime
 
 
@@ -17,10 +20,10 @@ class Experiment:
     def dir_exp_info(self):
         return f'_{self.population_size}pop_{self.max_generations}max_gen_{self.hof_size}hof_size'
 
-    def __init__(self, population_size: int = 200, p_crossover: TReal = 0.9,
-                 p_mutation: TReal = 0.5, max_generations: int = 1000, hof_size: int = 20,
+    def __init__(self, population_size: int = 200, p_crossover=0.9,
+                 p_mutation=0.5, max_generations: int = 1000, hof_size: int = 20,
                  random_seed: int = None, save_image_dir: str = None, device='cpu',
-                 algorithm: EAlgorithm = EASimpleWithElitismAndCallback(),
+                 algorithm: EAlgorithm = EASimpleForArrays(),
                  bounds_low: float = None, bounds_high: float = None):
         self.metric = None  # subclasses must initialize
         self.population_size = population_size
@@ -42,7 +45,7 @@ class Experiment:
         # Where to save experiment results
         dr = self.base_save_dir + self.dir_exp_info
         save_image_dir = dr if save_image_dir is None else os.path.join(save_image_dir, dr)
-        self.save_image_dir = os.path.join('results', save_image_dir)
+        self.save_image_dir = os.path.join('salvatore', 'results', save_image_dir)
         os.makedirs(self.save_image_dir, exist_ok=True)
 
         self._show_results = False
@@ -258,6 +261,19 @@ class Experiment:
 
         # save statistics at the end of the experiment
         self.save_stats(self.algorithm, show=True)
+
+        # save best image
+        best_image_file_name = os.path.join(self.save_image_dir, 'best.png')
+        best_image = self.metric.get_individual_image(best)
+        cv2.imwrite(best_image_file_name, best_image)
+
+        # save the best individual as NumPy array
+        best_ind_file_name = os.path.join(self.save_image_dir, 'best_numpy.pickle')
+        with open(best_ind_file_name, 'wb') as fp:
+            pickle.dump(best, fp)
+
+        # save gif of generated images
+        create_gif(self.save_image_dir)
 
 
 __all__ = [

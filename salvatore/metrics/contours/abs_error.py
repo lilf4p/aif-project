@@ -10,7 +10,7 @@ class AbsErrorLinesMetric(ContoursLineMetric):
         return 4  # size of chunks to be extracted from individuals
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
-                 bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu'):
+                 bounds_low=0.0, bounds_high=1.0, device='cpu'):
         """
         :param image_path: Path of the target image.
         :param canny_low: Low threshold for cv2.Canny().

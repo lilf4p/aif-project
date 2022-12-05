@@ -6,7 +6,7 @@ from ..base import ImageMetric
 class ContoursLineMetric(ImageMetric):
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
-                 bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu', **extra_args):
+                 bounds_low=0.0, bounds_high=1.0, device='cpu', **extra_args):
         self.canny_low = canny_low
         self.canny_high = canny_high
         self.image_width = None
@@ -69,7 +69,7 @@ class ArrayPointContoursMetric(ImageMetric):
         pass
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
-                 bounds_low: TReal = 0.0, bounds_high: TReal = 1.0, device='cpu', **extra_args):
+                 bounds_low=0.0, bounds_high=1.0, device='cpu', **extra_args):
         self.results = None
         self.canny_low = canny_low
         self.canny_high = canny_high

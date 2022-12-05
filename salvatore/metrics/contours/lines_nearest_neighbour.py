@@ -10,8 +10,8 @@ class LinesNNPointContoursMetric(ContoursLineMetric):
     def chunk_size(self):
         return 4
 
-    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low: TReal = 0.0,
-                 bounds_high: TReal = 1.0, lineno: int = 500, device='cpu',
+    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low=0.0,
+                 bounds_high=1.0, lineno: int = 500, device='cpu',
                  point_adherence_coeff: float = 10.0, line_adherence_coeff: float = 1.0,
                  line_l1_lambda: float = 5.0):
         """

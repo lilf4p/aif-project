@@ -1,21 +1,13 @@
 # Miscellaneous utils
 from __future__ import annotations
+
+import os
+import re
+
+import imageio
 from .types import *
 
 
-def timeit(msg: str):
-    def wrapper(func):
-        def new_f(*args, **kwargs):
-            crt = perf_counter()
-            result = func(*args, **kwargs)
-            crt = perf_counter() - crt
-            print(f'Elapsed time for {msg}: {crt} seconds')
-            return result
-        return new_f
-    return wrapper
-
-
-# noinspection PyUnresolvedReferences
 def pil_to_cv2(pil_image: Image, start_mode='RGB', end_mode='BGR'):
     """
     Converts the given Pillow image to CV2 format. If both modes are None, returns
@@ -45,8 +37,6 @@ def pil_to_cv2(pil_image: Image, start_mode='RGB', end_mode='BGR'):
         raise ValueError(f"Unrecognized start mode '{start_mode}'")
 
 
-# todo check if it alters cv2_image!
-# noinspection PyUnresolvedReferences
 def cv2_to_pil(cv2_image, start_mode='BGR', end_mode='RGB'):
     """
     Converts given CV2 image (array) into a Pillow one. If both start_mode and end_mode are None,
@@ -73,7 +63,6 @@ def cv2_to_pil(cv2_image, start_mode='BGR', end_mode='RGB'):
     return pil_image
 
 
-# noinspection PyUnresolvedReferences
 def find_contours(cv2_image, t_lower: TReal, t_upper: TReal, cv2_retr=cv2.RETR_EXTERNAL,
                   cv2_chain_approx=cv2.CHAIN_APPROX_NONE) -> tuple:
     """
@@ -91,6 +80,7 @@ def find_contours(cv2_image, t_lower: TReal, t_upper: TReal, cv2_retr=cv2.RETR_E
     return edged, contours, hierarchy
 
 
+# todo check uncommenting 'dtype=vp.uint8'
 def create_monochromatic_image(width: int, height: int, color: int | tuple[int] = 255,
                                mode='gray', device='cpu'):
     """
@@ -110,11 +100,11 @@ def create_monochromatic_image(width: int, height: int, color: int | tuple[int] 
         raise ValueError(f"Unknown device '{device}'")
 
     if mode == 'gray':
-        img = vp.zeros(shape=(height, width))#, dtype=vp.uint8)
+        img = vp.zeros(shape=(height, width), dtype=vp.uint8)
         if not isinstance(color, int) or not (0 <= color <= 255):
             raise TypeError(f"'color' should be an integer in the range [0, 255]; got {color}")
     elif mode == 'bgr':
-        img = vp.zeros(shape=(height, width, 3))#, dtype=vp.uint8)
+        img = vp.zeros(shape=(height, width, 3), dtype=vp.uint8)
         if not isinstance(color, tuple) or len(color) != 3 or not all([0 <= v <= 255 for v in color]):
             raise TypeError(f"'color' should be a tuple of 3 elements in the range [0, 255]; got {color}")
     else:
@@ -123,192 +113,11 @@ def create_monochromatic_image(width: int, height: int, color: int | tuple[int] 
     return img
 
 
-# todo operates in grayscale
-# noinspection PyUnresolvedReferences
 def draw_contours(image, contours, num_contours: int = -1,
                    color: int = 0, width: int = 1, copy: bool = True):
     image_copy = image.copy() if copy else image
     cv2.drawContours(image_copy, contours, num_contours, color, width)
     return image_copy
-
-
-def bresenham(start, end, as_list=False, as_tuple=False, device='cpu') -> list | np.ndarray | cp.ndarray | tuple[list, list]:
-    """
-    Bresenham's Line Generation Algorithm.
-    Credits: https://github.com/daQuincy/Bresenham-Algorithm (slightly modified).
-    """
-    vp = np if device == 'cpu' else cp
-    # step 1 get end-points of line
-    (x0, y0) = start
-    (x1, y1) = end
-
-    # step 2 calculate difference
-    dx = abs(x1 - x0)
-    dy = abs(y1 - y0)
-    m = dy / dx if dx != 0 else None
-
-    line_pixel = [(x0, y0)]
-
-    # step 3 if m is None then the two points are on the same x
-    if m is None:
-        if y0 > y1:
-            y0, y1 = y1, y0
-        for y in range(y0, y1 + 1):
-            line_pixel.append((x0, y))
-    else:
-        # step 4 perform test to check if pk < 0
-        flag = True
-
-        step = 1
-        if x0 > x1 or y0 > y1:
-            step = -1
-
-        mm = False
-        if m < 1:
-            x0, x1, y0, y1 = y0, y1, x0, x1
-            dx = abs(x1 - x0)
-            dy = abs(y1 - y0)
-            mm = True
-
-        p0 = 2 * dx - dy
-        x = x0
-        y = y0
-
-        p = p0  # not necessary since flag is always True at the start, but disables warning from IDE
-        for i in range(abs(y1 - y0)):
-            if flag:
-                x_previous = x0
-                p_previous = p0
-                p = p0
-                flag = False
-            else:
-                x_previous = x
-                p_previous = p
-
-            if p >= 0:
-                x = x + step
-
-            p = p_previous + 2 * dx - 2 * dy * (abs(x - x_previous))
-            y = y + 1
-
-            if mm:
-                line_pixel.append((y, x))
-            else:
-                line_pixel.append((x, y))
-
-    return line_pixel if as_list else vp.array(line_pixel)
-
-
-def bresenham_tuple(start, end, device='cpu') -> tuple[list, list]:
-    """
-    Bresenham's Line Generation Algorithm.
-    Credits: https://github.com/daQuincy/Bresenham-Algorithm (slightly modified).
-    """
-    vp = np if device == 'cpu' else cp
-    # step 1 get end-points of line
-    (x0, y0) = start
-    (x1, y1) = end
-
-    # step 2 calculate difference
-    dx = abs(x1 - x0)
-    dy = abs(y1 - y0)
-    m = dy / dx if dx != 0 else None
-
-    line_pixel = [[x0], [y0]]
-
-    # step 3 if m is None then the two points are on the same x
-    if m is None:
-        if y0 > y1:
-            y0, y1 = y1, y0
-        for y in range(y0, y1 + 1):
-            line_pixel[0].append(x0)
-            line_pixel[1].append(y)
-    else:
-        # step 4 perform test to check if pk < 0
-        flag = True
-
-        step = 1
-        if x0 > x1 or y0 > y1:
-            step = -1
-
-        mm = False
-        if m < 1:
-            x0, x1, y0, y1 = y0, y1, x0, x1
-            dx = abs(x1 - x0)
-            dy = abs(y1 - y0)
-            mm = True
-
-        p0 = 2 * dx - dy
-        x = x0
-        y = y0
-
-        p = p0  # not necessary since flag is always True at the start, but disables warning from IDE
-        for i in range(abs(y1 - y0)):
-            if flag:
-                x_previous = x0
-                p_previous = p0
-                p = p0
-                flag = False
-            else:
-                x_previous = x
-                p_previous = p
-
-            if p >= 0:
-                x = x + step
-
-            p = p_previous + 2 * dx - 2 * dy * (abs(x - x_previous))
-            y = y + 1
-
-            if mm:
-                line_pixel[0].append(y)
-                line_pixel[1].append(x)
-            else:
-                line_pixel[0].append(x)
-                line_pixel[1].append(y)
-    return line_pixel[0], line_pixel[1]
-
-
-def naive_line(r0, c0, r1, c1):
-    # The algorithm below works fine if c1 >= c0 and c1-c0 >= abs(r1-r0).
-    # If either of these cases are violated, do some switches.
-    if abs(c1 - c0) < abs(r1 - r0):
-        # Switch x and y, and switch again when returning.
-        xx, yy, val = naive_line(c0, r0, c1, r1)
-        return (yy, xx, val)
-
-    # At this point we know that the distance in columns (x) is greater
-    # than that in rows (y). Possibly one more switch if c0 > c1.
-    if c0 > c1:
-        return naive_line(r1, c1, r0, c0)
-
-    # We write y as a function of x, because the slope is always <= 1
-    # (in absolute value)
-    x = np.arange(c0, c1 + 1, dtype=float)
-    y = x * (r1 - r0) / (c1 - c0) + (c1 * r0 - c0 * r1) / (c1 - c0)
-
-    valbot = np.floor(y) - y + 1
-    valtop = y - np.floor(y)
-
-    return (np.concatenate((np.floor(y), np.floor(y) + 1)).astype(int), np.concatenate((x, x)).astype(int),
-            np.concatenate((valbot, valtop)))
-
-
-# Some Numba Functions (to rework)
-@nb.njit
-def _filter_out_nb(arr, out, cond_nb):
-    j = 0
-    for i in range(arr.size):
-        if cond_nb(arr[i]):
-            out[j] = arr[i]
-            j += 1
-    return j
-
-
-def filter_resize_xnb(arr, cond_nb):
-    result = np.empty_like(arr)
-    j = _filter_out_nb(arr, result, cond_nb)
-    result.resize(j, refcheck=False)  # unsupported in NoPython mode
-    return result
 
 
 def common_test_part(experiment, save_image_gen_step, other_callback_args, logger, stopping_criterions=None):
@@ -334,15 +143,45 @@ def common_test_part(experiment, save_image_gen_step, other_callback_args, logge
     experiment.run(show=True, callbacks=callbacks)
 
 
+def create_gif(
+        dir_path: str, regex: str = r'^After [0-9]+00 generations.png',
+        duration=1.0, final_duration=10, out_file_name='best_individuals.gif'
+):
+    """
+    Creates a gif from the results of an experiment by concatenating all images
+    within a given directory that matches the given regex.
+    :param dir_path: Directory in which images are contained.
+    :param duration: Duration of each frame of the image (except last).
+    :param final_duration: Duration (in frames) of the last image.
+    :param regex: String regex to use for filtering files.
+    :param out_file_name: Name of the output .gif file.
+    """
+    def key_fun(file_name: str):
+        splits = file_name.split()
+        return int(splits[1])
+    file_names = filter(
+        lambda file_name: re.match(regex, file_name) is not None,
+        os.listdir(dir_path)
+    )
+    file_names = sorted(file_names, key=key_fun)
+    # Artificially make last frame to last for final_duration * duration seconds
+    last_file_name = file_names[-1]
+    for i in range(1, final_duration):
+        file_names.append(last_file_name)
+    # solution taken from: https://stackoverflow.com/questions/41228209/making-gif-from-images-using-imageio-in-python
+    with imageio.get_writer(out_file_name, mode='I', duration=duration) as writer:
+        for filename in file_names:
+            image = imageio.imread(filename)
+            writer.append_data(image)
+    writer.close()
+
+
 __all__ = [
-    'timeit',
     'pil_to_cv2',
     'cv2_to_pil',
     'find_contours',
     'create_monochromatic_image',
     'draw_contours',
-    'bresenham',
-    'bresenham_tuple',
-    'filter_resize_xnb',
     'common_test_part',
+    'create_gif',
 ]

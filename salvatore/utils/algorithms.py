@@ -1,5 +1,4 @@
 from __future__ import annotations
-import elitism_callback
 from datetime import datetime
 from .types import *
 from bisect import bisect_right
@@ -135,35 +134,10 @@ class EAlgorithm(Callable):
         self.end_time = perf_counter()
 
 
-class EASimple(EAlgorithm):
-    """
-    eaSimple algorithm as in deap
-    """
-    def __call__(self, population: Sequence | np.ndarray, toolbox: dp_base.Toolbox, cxpb: float,
-                 mutpb: float, ngen: int, callbacks: TCallback = None, stats: dp_tools.Statistics = None,
-                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None,  logbook: dp_tools.Logbook = None,
-                 verbose=__debug__) \
-            -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
-        return dp_algorithms.eaSimple(population, toolbox, cxpb, mutpb, ngen, stats, halloffame, verbose)
-
-
-class EASimpleWithElitismAndCallback(EAlgorithm):
-    """
-    eaSimpleWithElitismAndCallback as in elitism_callback
-    """
-    def __call__(self, population: Sequence | np.ndarray, toolbox: dp_base.Toolbox, cxpb: float,
-                 mutpb: float, ngen: int, callbacks: TCallback = None, stats: dp_tools.Statistics = None,
-                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None, logbook: dp_tools.Logbook = None,
-                 verbose=__debug__) -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
-        return elitism_callback.eaSimpleWithElitismAndCallback(  # todo aggiustare!
-            population, toolbox, cxpb, mutpb, ngen, callbacks.keys(), stats, halloffame, verbose
-        )
-
-
-class EASimpleBatchProcessing(EAlgorithm):
+class EASimpleForArrays(EAlgorithm):
 
     def __init__(self):
-        super(EASimpleBatchProcessing, self).__init__()
+        super(EASimpleForArrays, self).__init__()
 
     def __call__(self, population: list, toolbox: dp_base.Toolbox, cxpb: float, mutpb: float,
                  ngen: int, callbacks: dict[Callable, dict[str, Any]] = None, stats: dp_tools.Statistics = None,
@@ -261,7 +235,5 @@ class EASimpleBatchProcessing(EAlgorithm):
 __all__ = [
     'ArrayHallOfFame',
     'EAlgorithm',
-    'EASimple',
-    'EASimpleWithElitismAndCallback',
-    'EASimpleBatchProcessing',
+    'EASimpleForArrays',
 ]
