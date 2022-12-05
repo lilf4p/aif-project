@@ -1,7 +1,7 @@
 # Base classes for experiments
 from __future__ import annotations
 from salvatore.utils.types import *
-from salvatore.utils.batch_algorithms import *
+from salvatore.utils.algorithms import *
 from salvatore.utils.misc import *
 import os
 from datetime import datetime

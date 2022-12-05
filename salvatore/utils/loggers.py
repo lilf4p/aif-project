@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import json
 from salvatore.utils.types import *
-from salvatore.utils.batch_algorithms import *
+from salvatore.utils.algorithms import *
 from salvatore.experiments import Experiment
 
 

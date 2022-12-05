@@ -2,7 +2,7 @@
 # WARNING: Such callbacks set the 'stop' attribute of EAlgorithm and so must be inserted BEFORE any other
 # ones in the callbacks dictionary.
 from __future__ import annotations
-from salvatore.utils.batch_algorithms import *
+from salvatore.utils.algorithms import *
 
 
 def max_time_stop(algorithm: EAlgorithm, max_time: float):

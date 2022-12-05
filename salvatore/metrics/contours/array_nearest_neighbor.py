@@ -32,14 +32,13 @@ class TargetPointsArrayNearestNeighbourPointMetric(ArrayPointContoursMetric):
             image_path, canny_low, canny_high, bounds_low, bounds_high, device=device
         )
         self.fitness_calc = self.cpu_fitness_calc_min if device == 'cpu' else self.gpu_fitness_calc_min
-        self.results = self.vp.zeros(self.num_targets)
+        self.results = self.vp.zeros(self.num_targets)  # todo -> num_points!
         self.target_individuals = self.vp.zeros((2, self.num_targets, self.num_points))
 
-    # noinspection PyUnresolvedReferences
     def standardize_target(self):
-        aux, pil_image, cv2_image, _ = extract_contours(self.image_path, self.canny_low, self.canny_high, self.device)
+        aux, pil_image, cv2_image, contours = extract_contours(self.image_path, self.canny_low, self.canny_high, self.device)
         self.image_width, self.image_height = cv2_image.shape[1], cv2_image.shape[0]
-        self.target = self.vp.zeros((2, tot_contours, self.num_points))
+        self.target = self.vp.zeros((2, len(aux), self.num_points))
         for j in range(self.num_points):    # todo check if this double slice works!
             self.target[0, :, j] = aux[:, 0]
             self.target[1, :, j] = aux[:, 1]
@@ -48,9 +47,6 @@ class TargetPointsArrayNearestNeighbourPointMetric(ArrayPointContoursMetric):
         target_cv2 = draw_contours(target_cv2, contours, copy=False)
         self.target_pil = Image.fromarray(target_cv2)
         self.num_targets = len(aux)
-
-        # cleanup
-        del contours_list, aux, target_cv2
 
     def check_individual_repr(self, individual) -> TBoolStr:
         return True, None   # no interest in actual checking (by now)
@@ -113,9 +109,8 @@ class TableTargetPointsNNContoursMetric(ArrayPointContoursMetric):
     def check_individual_repr(self, individual) -> TBoolStr:
         return True, None   # no interest in actual checking (by now)
 
-    # noinspection PyUnresolvedReferences
     def standardize_target(self):
-        aux, pil_image, cv2_image, _ = extract_contours(self.image_path, self.canny_low, self.canny_high, self.device)
+        aux, pil_image, cv2_image, contours = extract_contours(self.image_path, self.canny_low, self.canny_high, self.device)
         self.image_width, self.image_height = cv2_image.shape[1], cv2_image.shape[0]
         self.num_targets = len(aux)
         self.target = build_distance_table(
@@ -125,9 +120,6 @@ class TableTargetPointsNNContoursMetric(ArrayPointContoursMetric):
         target_cv2 = create_monochromatic_image(self.image_width, self.image_height)
         target_cv2 = draw_contours(target_cv2, contours, copy=False)
         self.target_pil = Image.fromarray(target_cv2)
-
-        # cleanup
-        del contours_list, aux, target_cv2
 
     def standardize_individual(self, individual: TArray, check_repr=False):
         # reshape and rescale

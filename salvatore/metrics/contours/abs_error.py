@@ -29,7 +29,6 @@ class AbsErrorLinesMetric(ContoursLineMetric):
     def get_target_image(self) -> Image:
         return self.target_pil
 
-    # noinspection PyUnresolvedReferences
     def standardize_target(self):
         pil_image = Image.open(self.image_path)
         cv2_image = pil_to_cv2(pil_image)

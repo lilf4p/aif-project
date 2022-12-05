@@ -106,6 +106,7 @@ class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
 
 def test_table_target_points_nn(
         dir_path='../..', image_path='images/torre eiffel.jpg',
+        canny_low=100, canny_high=200,
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
         save_image_gen_step=50, other_callback_args=None,
@@ -113,7 +114,7 @@ def test_table_target_points_nn(
 ):
     os.chdir(dir_path)
     experiment = TableTargetPointsNNContoursExperiment(
-        image_path, 100, 200, population_size=population_size,
+        image_path, canny_low, canny_high, population_size=population_size,
         max_generations=max_generations, random_seed=random_seed,
         num_of_points=num_of_points, hof_size=hof_size, device=device,
     )
@@ -126,6 +127,7 @@ def test_table_target_points_nn(
 
 def test_double_nn(
         dir_path='../..', image_path='images/torre eiffel.jpg',
+        canny_low=100, canny_high=200,
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
         target_candidate_weight=2.0, candidate_target_weight=1.0,
@@ -135,7 +137,7 @@ def test_double_nn(
     os.chdir(dir_path)
 
     experiment = DoubleArrayNearestNeighbourPointContoursExperiment(
-        image_path, 100, 200, population_size=population_size, max_generations=max_generations,
+        image_path, canny_low, canny_high, population_size=population_size, max_generations=max_generations,
         random_seed=random_seed, num_of_points=num_of_points, hof_size=hof_size, device=device,
         target_candidate_weight=target_candidate_weight, candidate_target_weight=candidate_target_weight,
     )
@@ -148,6 +150,7 @@ def test_double_nn(
 
 def test_target_points_nn(
         dir_path='../..', image_path='images/torre eiffel.jpg',
+        canny_low=100, canny_high=200,
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
         save_image_gen_step=50, other_callback_args=None,
@@ -155,7 +158,7 @@ def test_target_points_nn(
 ):
     os.chdir(dir_path)
     experiment = TargetPointsArrayNearestNeighbourPointContoursExperiment(
-        image_path, 100, 200, population_size=population_size, max_generations=max_generations,
+        image_path, canny_low, canny_high, population_size=population_size, max_generations=max_generations,
         random_seed=random_seed, num_of_points=num_of_points, hof_size=hof_size, device=device,
     )
     common_test_part(
