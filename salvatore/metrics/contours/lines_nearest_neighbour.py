@@ -96,7 +96,7 @@ class LinesNNPointContoursMetric(ContoursLineMetric):
         else:
             raise NotImplementedError
         results = self.results[:n_ind] if self.device == 'cpu' else cp.asnumpy(self.results[:n_ind])
-        return results.copy()   # fixme check if this is necessary
+        return results,
 
 
 __all__ = [

@@ -118,7 +118,7 @@ class ArrayPointContoursMetric(ImageMetric):
                     self._core_get_difference(individuals[index], index)
                 stream.synchronize()
         results = self.results[:n_ind] if self.device == 'cpu' else cp.asnumpy(self.results[:n_ind])
-        return results.copy()   # fixme check if this is necessary
+        return results,   # fixme check if this is necessary
 
 
 __all__ = [

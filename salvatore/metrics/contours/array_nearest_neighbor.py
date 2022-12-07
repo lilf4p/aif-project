@@ -171,8 +171,71 @@ class DoubleArrayNearestNeighbourPointMetric(TargetPointsArrayNearestNeighbourPo
         self.results[index] = self._gpu_fitness_calc_min(x, y)
 
 
+class TableTargetPointsOverlapPenaltyContoursMetric(ArrayPointContoursMetric):
+
+    @property
+    def CHUNKSIZE(self):
+        return 2
+
+    def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal, bounds_low=0.0,
+                 bounds_high=1.0, num_points: int = 20000, device='cpu'):
+        """
+        :param image_path: Path of the target image.
+        :param canny_low: Low threshold for cv2.Canny().
+        :param canny_high: High threshold for cv2.Canny().
+        :param bounds_low: Lower bounds for representing coordinates. Defaults to 0.0.
+        :param bounds_high: Higher bounds for representing coordinates. Defaults to 1.0.
+        """
+        self.target = None  # target image as a (2, num_contours, num_points) tensor of integers
+        self.target_pil = None  # target image as PIL.Image object
+        self.num_targets = 0
+        self.num_points = num_points
+        self.vp = np if device == 'cpu' else cp
+        super(TableTargetPointsOverlapPenaltyContoursMetric, self).__init__(
+            image_path, canny_low, canny_high, bounds_low, bounds_high, device=device
+        )
+        self.results = self.vp.zeros(self.num_targets, dtype=self.vp.int32)
+
+    def check_individual_repr(self, individual) -> TBoolStr:
+        return True, None   # no interest in actual checking (by now)
+
+    def standardize_target(self):
+        aux, pil_image, cv2_image, contours = extract_contours(self.image_path, self.canny_low, self.canny_high, self.device)
+        self.image_width, self.image_height = cv2_image.shape[1], cv2_image.shape[0]
+        self.num_targets = len(aux)
+        self.target = build_distance_table(
+            self.image_height, self.image_width, self.num_targets, aux, device=self.device
+        )
+        # create and store contour image in memory
+        target_cv2 = create_monochromatic_image(self.image_width, self.image_height)
+        target_cv2 = draw_contours(target_cv2, contours, copy=False)
+        self.target_pil = Image.fromarray(target_cv2)
+
+    def standardize_individual(self, individual: TArray, check_repr=False):
+        # reshape and rescale
+        individual = individual if self.device == 'cpu' else cp.asarray(individual)
+        reshaped = self.vp.reshape(individual, (self.num_points, 2))
+        r0, r1 = reshaped[:, 0], reshaped[:, 1]
+        r0 *= self.image_width
+        r1 *= self.image_height
+        return reshaped.astype(dtype=self.vp.int32).T
+
+    def _core_get_difference(self, individual: TArray, index: int = 0):
+        standardized = self.standardize_individual(individual)
+        aux = self.target[standardized[1], standardized[0]]
+        self.results[index] = self.vp.sum(aux)
+        img = self.vp.zeros((self.image_height, self.image_width), dtype=self.vp.int32)
+        for i in range(standardized.shape[1]):
+            w, h = standardized[0, i], standardized[1, i]
+            img[h, w] += 1
+        img[img > 0] -= 1
+        penalty = img.sum()
+        self.results[index] += penalty
+
+
 __all__ = [
     'TargetPointsArrayNearestNeighbourPointMetric',
     'TableTargetPointsNNContoursMetric',
     'DoubleArrayNearestNeighbourPointMetric',
+    'TableTargetPointsOverlapPenaltyContoursMetric',
 ]

@@ -77,7 +77,7 @@ class AbsErrorLinesMetric(ContoursLineMetric):
             result = np.zeros((self.image_height, self.image_width))
             sub.download(dst=result)
             result = np.sum(np.abs(result))
-            return result
+            return result,
 
 
 __all__ = [

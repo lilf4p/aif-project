@@ -169,7 +169,7 @@ class EASimpleForArrays(EAlgorithm):
         invalid_ind = [ind for ind in population if not ind.fitness.valid]
         # noinspection PyUnresolvedReferences
         fitnesses = toolbox.evaluate(invalid_ind)
-        for ind, fit in zip(invalid_ind, fitnesses):
+        for ind, fit in zip(invalid_ind, *fitnesses):
             ind.fitness.values = (fit,)  # we are not using a tuple in the function evaluation
 
         if self.hof is None:
@@ -201,7 +201,7 @@ class EASimpleForArrays(EAlgorithm):
             invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
             # noinspection PyUnresolvedReferences
             fitnesses = toolbox.evaluate(invalid_ind)  # fixme need to check it this is 1-dim and can iterate with zip
-            for ind, fit in zip(invalid_ind, fitnesses):
+            for ind, fit in zip(invalid_ind, *fitnesses):
                 ind.fitness.values = (fit,)
 
             # add the best back to population:
