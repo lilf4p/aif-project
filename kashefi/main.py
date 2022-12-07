@@ -115,6 +115,7 @@ toolbox.register("evaluate", getDiff)
 # toolbox.register("select", tools.selBest, fit_attr='fitness')
 toolbox.register("select", tools.selTournament, tournsize=2)
 SELECTION_METHOD = "Tournament"
+
 # toolbox.register("mate",tools.cxUniform, indpb=0.5)
 toolbox.register("mate",tools.cxSimulatedBinaryBounded,low=BOUNDS_LOW,up=BOUNDS_HIGH,eta=CROWDING_FACTOR)
 MATE_METHODE = "SimulatedBinaryBounded"
@@ -122,7 +123,6 @@ MATE_METHODE = "SimulatedBinaryBounded"
 # toolbox.register("mutate",tools.mutFlipBit,indpb=1.0/NUM_OF_PARAMS)
 toolbox.register("mutate",tools.mutPolynomialBounded,low=BOUNDS_LOW,up=BOUNDS_HIGH,eta=CROWDING_FACTOR,indpb=1.0/NUM_OF_PARAMS)
 MUTATE_METHODE = "PolynomialBounded"
-
 
 # save the best current drawing every 100 generations (used as a callback):
 def saveImage(gen, polygonData):
