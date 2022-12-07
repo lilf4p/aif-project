@@ -3,6 +3,7 @@ import random
 import imageio
 from PIL import Image, ImageDraw
 import numpy as np
+from sewar import msssim
 from skimage.metrics import structural_similarity
 import cv2
 import matplotlib.pyplot as plt
@@ -40,19 +41,20 @@ class ImageTest:
         # start with a new image:
         image = Image.new('RGB', (self.width, self.height),(127,127,127,127))#TODO
         draw = ImageDraw.Draw(image, 'RGBA')
-        # image = Image.new('L', (self.width, self.height), 255)#TODO
+        # image = Image.new('L', (self.width, self.height), 127)#TODO
         # draw = ImageDraw.Draw(image, 'L')
 
         # divide the polygonData to chunks, each containing the data for a single polygon:
-        # chunkSize = self.polygonSize * 2 + 4 # (x,y) per vertex + (RGBA) default
-        chunkSize = self.polygonSize * 2 + 5 # (x,y,r) per vertex + (RGBA)
-        polygons = self.list2Chunks(polygonData, chunkSize)
-        max_radius = self.width/8 if self.width > self.height else self.height/8
+        chunkSize = self.polygonSize * 2 + 4 # (x,y) per vertex + (RGBA) default
+        # chunkSize = self.polygonSize * 2 + 5 # (x,y,r) per vertex + (RGBA)
+        polygons = self.list2Chunks(polygonData, c6hunkSize)
+        radius = self.width/20 if self.width < self.height else self.height/20
+        # max_radius = self.width/20 if self.width < self.height else self.height/20
         # iterate over all polygons and draw each of them into the image:
         for poly in polygons:
             index = 0
             # calc the fixed radius for all vertices of polygon
-            radius = int((poly[self.polygonSize * 2 + 4] * max_radius) % max_radius)
+            # radius = int((poly[self.polygonSize * 2 + 4] * max_radius) % max_radius)
             # extract the vertices of the current polygon:
             vertices = []
             for vertex in range(self.polygonSize):
@@ -76,6 +78,7 @@ class ImageTest:
             # draw the polygon into the image:
             # draw.polygon(vertices, (red, green, blue, alpha))
             draw.regular_polygon(vertices[0], self.polygonSize, 0, (red, green, blue, alpha))
+            # draw.regular_polygon(vertices[0], self.polygonSize, 0, gray)
             # start, end = self.get_random_angles()
             # start, end = 0, 90
             # arc_width = int(poly[index] * self.width) % self.width
@@ -114,8 +117,10 @@ class ImageTest:
 
         if method == "MSE":
             return self.getMse(image)
+        elif method == "SSIM":
+            return self.getSsim(image)
         else:
-            return 1.0 - self.getSsim(image)
+            return 1.0 - self.getMsssim(image)
 
     def plotImages(self, image, header=None):
         """
@@ -181,6 +186,9 @@ class ImageTest:
         # (Kashefi) Changed Multichannel = true to channel_axis = -1 as in https://github.com/pytorch/ignite/pull/2360
         return structural_similarity(self.toCv2(image), self.refImageCv2, channel_axis=-1)
 
+    def getMsssim(self, image):
+        """calculates mean structural similarity index between the given image and the reference image"""
+        return msssim(self.toCv2(image), self.refImageCv2)
     def list2Chunks(self, list, chunkSize):
         """divides a given list to fixed size chunks, returns a generator iterator"""
         for chunk in range(0, len(list), chunkSize):
