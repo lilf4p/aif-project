@@ -1,35 +1,22 @@
 from __future__ import annotations
 from datetime import datetime
 from .types import *
+from .operators import np_varAnd
 from bisect import bisect_right
 from operator import eq
+from copy import deepcopy
 
 
 class ArrayHallOfFame(object):
-    """The hall of fame contains the best individual that ever lived in the
-    population during the evolution. It is lexicographically sorted at all
-    time so that the first element of the hall of fame is the individual that
-    has the best first fitness value ever seen, according to the weights
-    provided to the fitness at creation time.
-
-    The insertion is made so that old individuals have priority on new
-    individuals. A single copy of each individual is kept at all time, the
-    equivalence between two individuals is made by the operator passed to the
-    *similar* argument.
-
-    :param maxsize: The maximum number of individual to keep in the hall of
-                    fame.
-
-    The class :class:`HallOfFame` provides an interface similar to a list
-    (without being one completely). It is possible to retrieve its length, to
-    iterate on it forward and backward and to get an item or a slice from it.
+    """
+    See the documentation of deap.tools.HallOfFame.
     """
     def __init__(self, maxsize):
         self.maxsize = maxsize
         self.keys = list()
         self.items = list()
 
-    def update(self, population):
+    def update(self, population, copy=False):
         """Update the hall of fame with the *population* by replacing the
         worst individuals in it by the best individuals present in
         *population* (if they are better). The size of the hall of fame is
@@ -42,7 +29,7 @@ class ArrayHallOfFame(object):
             if len(self) == 0 and self.maxsize != 0:
                 # Working on an empty hall of fame is problematic for the
                 # "for else"
-                self.insert(population[0])
+                self.insert(population[0], copy=copy)
                 continue
             if ind.fitness > self[-1].fitness or len(self) < self.maxsize:
                 for hofer in self:
@@ -55,9 +42,9 @@ class ArrayHallOfFame(object):
                     # the worst
                     if len(self) >= self.maxsize:
                         self.remove(-1)
-                    self.insert(ind)
+                    self.insert(ind, copy=copy)
 
-    def insert(self, item):
+    def insert(self, item, copy=False):
         """Insert a new individual in the hall of fame using the
         :func:`~bisect.bisect_right` function. The inserted individual is
         inserted on the right side of an equal individual. Inserting a new
@@ -70,8 +57,9 @@ class ArrayHallOfFame(object):
                      hall of fame.
         """
         i = bisect_right(self.keys, item.fitness)
-        self.items.insert(len(self) - i, item)
-        self.keys.insert(i, item.fitness)
+        inserted_item = deepcopy(item) if copy else item
+        self.items.insert(len(self) - i, inserted_item)
+        self.keys.insert(i, inserted_item.fitness)
 
     def remove(self, index):
         """Remove the specified *index* from the hall of fame.
@@ -122,9 +110,7 @@ class EAlgorithm(Callable):
 
     @abstractmethod
     def __call__(self, population: Sequence | np.ndarray, toolbox: dp_base.Toolbox, cxpb: float,
-                 mutpb: float, ngen: int, callbacks: TCallback = None, stats: dp_tools.Statistics = None,
-                 halloffame: dp_tools.HallOfFame | ArrayHallOfFame = None, logbook: dp_tools.Logbook = None,
-                 verbose=__debug__) \
+                 mutpb: float, ngen: int, callbacks: TCallback = None, *args, **kwargs) \
             -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         pass
 

@@ -6,14 +6,14 @@ from ..base import ImageMetric
 class ContoursLineMetric(ImageMetric):
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
-                 bounds_low=0.0, bounds_high=1.0, device='cpu', **extra_args):
+                 bounds_low=0.0, bounds_high=1.0, results=None, **extra_args):
         self.canny_low = canny_low
         self.canny_high = canny_high
         self.image_width = None
         self.image_height = None
         self.bounds_low = bounds_low
         self.bounds_high = bounds_high
-        self.device = device
+        self.results = results
         super(ContoursLineMetric, self).__init__(image_path)
 
     @property
@@ -69,15 +69,14 @@ class ArrayPointContoursMetric(ImageMetric):
         pass
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
-                 bounds_low=0.0, bounds_high=1.0, device='cpu', **extra_args):
-        self.results = None
+                 bounds_low=0.0, bounds_high=1.0, results=None, **extra_args):
+        self.results = results
         self.canny_low = canny_low
         self.canny_high = canny_high
         self.image_width = None
         self.image_height = None
         self.bounds_low = bounds_low
         self.bounds_high = bounds_high
-        self.device = device
         if not hasattr(self, 'target_pil'):
             self.target_pil = None
         super(ArrayPointContoursMetric, self).__init__(image_path)
@@ -109,16 +108,10 @@ class ArrayPointContoursMetric(ImageMetric):
     def get_difference(self, individuals: TArray):
         n_ind = len(individuals)
         self.results[:] = 0
-        if self.device == 'cpu':
-            for index in range(n_ind):
-                self._core_get_difference(individuals[index], index)
-        else:
-            with cp.cuda.Stream() as stream:
-                for index in range(n_ind):
-                    self._core_get_difference(individuals[index], index)
-                stream.synchronize()
-        results = self.results[:n_ind] if self.device == 'cpu' else cp.asnumpy(self.results[:n_ind])
-        return results,   # fixme check if this is necessary
+        for index in range(n_ind):
+            self._core_get_difference(individuals[index], index)
+        results = self.results[:n_ind]
+        return results[:n_ind],   # fixme check if this is necessary
 
 
 __all__ = [

@@ -49,7 +49,6 @@ def pil_to_cv2(pil_image: Image, start_mode='RGB', end_mode='BGR'):
         raise ValueError(f"Unrecognized start mode '{start_mode}'")
 
 
-# todo check if it alters cv2_image!
 # noinspection PyUnresolvedReferences
 def cv2_to_pil(cv2_image, start_mode='BGR', end_mode='RGB'):
     """
@@ -127,7 +126,6 @@ def create_monochromatic_image(width: int, height: int, color: int | tuple[int] 
     return img
 
 
-# todo operates in grayscale
 # noinspection PyUnresolvedReferences
 def draw_contours(image, contours, num_contours: int = -1,
                    color: int = 0, width: int = 1, copy: bool = True):
@@ -354,21 +352,23 @@ def create_gif(
     def key_fun(file_name: str):
         splits = file_name.split()
         return int(splits[1])
-    file_names = filter(
+    file_names = list(filter(
         lambda file_name: re.match(regex, file_name) is not None,
         os.listdir(dir_path)
-    )
-    file_names = sorted(file_names, key=key_fun)
-    # Artificially make last frame to last for final_duration * duration seconds
-    last_file_name = file_names[-1]
-    for i in range(1, final_duration):
-        file_names.append(last_file_name)
-    # solution taken from: https://stackoverflow.com/questions/41228209/making-gif-from-images-using-imageio-in-python
-    with imageio.get_writer(out_file_name, mode='I', duration=duration) as writer:
-        for filename in file_names:
-            image = imageio.imread(filename)
-            writer.append_data(image)
-    writer.close()
+    ))
+    if len(file_names) > 0:
+        file_names = sorted(file_names, key=key_fun)
+        # Artificially make last frame to last for final_duration * duration seconds
+        last_file_name = file_names[-1]
+        for i in range(1, final_duration):
+            file_names.append(last_file_name)
+        # solution taken from:
+        # https://stackoverflow.com/questions/41228209/making-gif-from-images-using-imageio-in-python
+        with imageio.get_writer(out_file_name, mode='I', duration=duration) as writer:
+            for filename in file_names:
+                image = imageio.imread(filename)
+                writer.append_data(image)
+        writer.close()
 
 
 __all__ = [

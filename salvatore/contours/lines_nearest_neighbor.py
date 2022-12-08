@@ -16,18 +16,19 @@ class LinesNNPointContoursExperiment(Experiment):
             bounds_high=1.0, population_size: int = 200, p_crossover=0.9,
             p_mutation=0.5, max_generations: int = 1000, hof_size: int = 20,
             crowding_factor: int = 10.0, lineno: int = 500, random_seed: int = None,
-            save_image_dir: str = None, device='cpu', algorithm: EAlgorithm = EASimpleForArrays(),
+            save_image_dir: str = None, algorithm: EAlgorithm = EASimpleForArrays(),
             point_adherence_coeff: float = 10.0, line_adherence_coeff: float = 1.0,
             line_l1_lambda: float = 5.0,
     ):
         super(LinesNNPointContoursExperiment, self).__init__(
             population_size, p_crossover, p_mutation, max_generations, hof_size,
-            random_seed, save_image_dir, device=device, algorithm=algorithm,
+            random_seed, save_image_dir, algorithm=algorithm,
         )
+        results = np.zeros(population_size, dtype=np.int32)
         self.metric = LinesNNPointContoursMetric(
-            image_path, canny_low, canny_high, bounds_low, bounds_high, lineno=lineno, device=device,
+            image_path, canny_low, canny_high, bounds_low, bounds_high, lineno=lineno,
             point_adherence_coeff=point_adherence_coeff, line_adherence_coeff=line_adherence_coeff,
-            line_l1_lambda=line_l1_lambda,
+            line_l1_lambda=line_l1_lambda, results=results,
         )
         self.point_adherence_coeff = point_adherence_coeff
         self.line_adherence_coeff = line_adherence_coeff
@@ -54,9 +55,8 @@ def test_lines_nn(
     os.chdir(dir_path)
     experiment = LinesNNPointContoursExperiment(
         image_path, 100, 200, population_size=population_size, max_generations=max_generations,
-        hof_size=hof_size, lineno=lineno, random_seed=random_seed, device=device,
+        hof_size=hof_size, lineno=lineno, random_seed=random_seed, line_l1_lambda=line_l1_lambda,
         point_adherence_coeff=point_adherence_coeff, line_adherence_coeff=line_adherence_coeff,
-        line_l1_lambda=line_l1_lambda,
     )
     common_test_part(
         experiment, save_image_gen_step=save_image_gen_step,

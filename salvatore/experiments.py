@@ -262,10 +262,10 @@ class Experiment:
         # save statistics at the end of the experiment
         self.save_stats(self.algorithm, show=True)
 
-        # save best image
+        # save best image  # fixme mode 'F' is incompatible with 'png'
         best_image_file_name = os.path.join(self.save_image_dir, 'best.png')
-        best_image = self.metric.get_individual_image(best)
-        cv2.imwrite(best_image_file_name, best_image)
+        best_image = self.metric.get_individual_image(best).convert('L')
+        best_image.save(best_image_file_name)
 
         # save the best individual as NumPy array
         best_ind_file_name = os.path.join(self.save_image_dir, 'best_numpy.pickle')
