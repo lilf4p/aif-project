@@ -5,6 +5,7 @@ import os
 import pickle
 
 from salvatore.utils.types import *
+from salvatore.utils.operators import *
 from salvatore.utils.algorithms import *
 from salvatore.utils.misc import *
 from datetime import datetime
@@ -196,7 +197,8 @@ class Experiment:
 
     def set_select(self):
         # genetic operators
-        self.toolbox.register('select', dp_tools.selTournament, tournsize=2)
+        # self.toolbox.register('select', dp_tools.selTournament, tournsize=2)
+        self.toolbox.register('select', np_selTournament, tournsize=2)
 
     def set_mate(self):
         self.toolbox.register(

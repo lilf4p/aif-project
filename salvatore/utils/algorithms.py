@@ -4,6 +4,7 @@ from .types import *
 from bisect import bisect_right
 from operator import eq
 from copy import deepcopy
+from .operators import *
 
 
 class ArrayHallOfFame(object):
@@ -126,7 +127,7 @@ class EASimpleForArrays(EAlgorithm):
 
     def __call__(self, population: list, toolbox: dp_base.Toolbox, cxpb: float, mutpb: float,
                  ngen: int, callbacks: dict[Callable, dict[str, Any]] = None, stats: dp_tools.Statistics = None,
-                 halloffame: ArrayHallOfFame = None, logbook: dp_tools.Logbook = None,
+                 halloffame: ArrayHallOfFame = None, logbook: dp_tools.Logbook = None, copy_during_selection=True,
                  verbose=__debug__) -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         """
         Specialized version of eaSimpleWithElitismAndCallback for working with numpy/cupy arrays for population
@@ -136,7 +137,14 @@ class EASimpleForArrays(EAlgorithm):
         1. evaluate(individuals: list[TArray], batch_size: int = 1) -> TArray for evaluating a set of individuals
         2. select(individuals: list[TArray], num: int) -> list[TArray] for selection (as standard operators)
         3. mate(ind1: TArray, ind2: TArray) -> tuple[TArray, TArray] for crossover (as standard operators)
-        4. mutate(individual: TArray, ...) -> tuple[TArray, None] for mutation (as standard operators)
+        4. mutate(individual: TArray, ...) -> tuple[TArray, None] for mutation (as standard operators).
+
+        :param copy_during_selection: If True, signals to the algorithm that the selection operator (toolbox.select)
+        makes copies of the individuals that selects more than one time, so HallOfFame (HOF) individuals must be copied
+        since they can get altered, while crossover won't make a copy of the input individuals. If False, signals
+        to the algorithm that the selection operator does not make any copy of the individuals, and so HOF individuals
+        won't be copied and instead only the selected individuals for the crossover operation will be copied.
+        Defaults to True.
         """
         self.population = population
         self.cxpb = cxpb
@@ -160,7 +168,7 @@ class EASimpleForArrays(EAlgorithm):
         if self.hof is None:
             raise ValueError("halloffame parameter must not be empty!")
 
-        self.hof.update(self.population)
+        self.hof.update(self.population, copy=copy_during_selection)
         hof_size = len(self.hof.items) if self.hof.items else 0
         pop_hof = len(self.population) - hof_size
 
@@ -175,12 +183,12 @@ class EASimpleForArrays(EAlgorithm):
             if self.stop:
                 break
 
-            # Select the next generation individuals
+            # Select the next generation individuals (noinspection for select because it is not known statically)
             # noinspection PyUnresolvedReferences
             offspring = toolbox.select(self.population, pop_hof)  # todo should be TArray!
 
             # Vary the pool of individuals
-            offspring = dp_algorithms.varAnd(offspring, toolbox, cxpb, mutpb)  # todo cambiare!
+            offspring = np_varAnd(offspring, toolbox, cxpb, mutpb, copy=(not copy_during_selection))  # todo cambiare!
 
             # Evaluate the individuals with an invalid fitness
             invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
@@ -193,7 +201,7 @@ class EASimpleForArrays(EAlgorithm):
             offspring.extend(self.hof.items)
 
             # Update the hall of fame with the generated individuals
-            self.hof.update(offspring)
+            self.hof.update(offspring, copy=copy_during_selection)
 
             # Replace the current population by the offspring
             self.population[:] = offspring
