@@ -39,7 +39,7 @@ class TableTargetPointsNNContoursExperiment(Experiment):
         self.toolbox.register("evaluate", self.metric.get_difference)
 
     def set_mate(self):
-        self.toolbox.register('mate', np_cxSwapPoints)
+        self.toolbox.register('mate', np_cx_swap_points)
 
 
 class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):

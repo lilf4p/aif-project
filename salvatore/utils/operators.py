@@ -8,7 +8,7 @@ def __get_ith_ind_fitness(individuals, fit_attr):
     return lambda index: getattr(individuals[index], fit_attr)
 
 
-def np_selRandom(individuals, k):
+def selection_random(individuals, k):
     """
     See the documentation for deap.tools.selRandom.
     """
@@ -18,14 +18,14 @@ def np_selRandom(individuals, k):
     # return [random.choice(individuals) for i in range(k)]
 
 
-def np_selTournament(individuals, k, tournsize, fit_attr="fitness"):
+def selection_tournament(individuals, k, tournsize, fit_attr="fitness"):
     """
     See the documentation for deap.tools.selTournament.
     """
     chosen = []
     chosen_indexes = set()
     for i in range(k):
-        aspirants_indexes = np_selRandom(individuals, tournsize)
+        aspirants_indexes = selection_random(individuals, tournsize)
         winner_index = max(aspirants_indexes, key=__get_ith_ind_fitness(individuals, fit_attr))
         winner_individual = individuals[winner_index]
         if winner_index in chosen_indexes:
@@ -33,15 +33,10 @@ def np_selTournament(individuals, k, tournsize, fit_attr="fitness"):
             winner_individual = deepcopy(winner_individual)
         chosen_indexes.add(winner_index)
         chosen.append(winner_individual)
-    """
-    for i in range(k):
-        aspirants = np_selRandom(individuals, tournsize)
-        chosen.append(max(aspirants, key=attrgetter(fit_attr)))
-    """
     return chosen
 
 
-def np_varAnd(offspring, toolbox, cxpb, mutpb, copy=True):
+def vary_and(offspring, toolbox, cxpb, mutpb, copy=True):
     """
     See the documentation of deap.tools.varAnd.
     """
@@ -58,13 +53,12 @@ def np_varAnd(offspring, toolbox, cxpb, mutpb, copy=True):
     for i in range(len(offspring)):
         if random.random() < mutpb:
             toolbox.mutate(offspring[i])
-            # offspring[i], = toolbox.mutate(offspring[i])
             del offspring[i].fitness.values
 
     return offspring
 
 
-def np_cxSimulatedBinaryBounded(ind1: np.ndarray, ind2: np.ndarray, eta, low, up):
+def np_cx_simulated_binary_bounded(ind1: np.ndarray, ind2: np.ndarray, eta, low, up):
     size = min(len(ind1), len(ind2))
     for i in range(size):
         if random.random() <= 0.5:
@@ -106,7 +100,7 @@ def np_cxSimulatedBinaryBounded(ind1: np.ndarray, ind2: np.ndarray, eta, low, up
     return ind1, ind2
 
 
-def np_mutPolynomialBounded(individual, eta, low, up, indpb):
+def np_mut_polynomial_bounded(individual, eta, low, up, indpb):
     size = len(individual)
     for i in range(size):
         if random.random() <= indpb:
@@ -131,7 +125,7 @@ def np_mutPolynomialBounded(individual, eta, low, up, indpb):
     return individual,
 
 
-def np_cxSwapPoints(ind1, ind2):
+def np_cx_swap_points(ind1, ind2):
     """
     Swap point with random probability.
     """
@@ -143,9 +137,9 @@ def np_cxSwapPoints(ind1, ind2):
 
 
 __all__ = [
-    'np_selTournament',
-    'np_varAnd',
-    'np_cxSwapPoints',
-    'np_cxSimulatedBinaryBounded',
-    'np_mutPolynomialBounded',
+    'selection_tournament',
+    'vary_and',
+    'np_cx_swap_points',
+    'np_cx_simulated_binary_bounded',
+    'np_mut_polynomial_bounded',
 ]

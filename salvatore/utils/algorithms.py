@@ -188,7 +188,7 @@ class EASimpleForArrays(EAlgorithm):
             offspring = toolbox.select(self.population, pop_hof)  # todo should be TArray!
 
             # Vary the pool of individuals
-            offspring = np_varAnd(offspring, toolbox, cxpb, mutpb, copy=(not copy_during_selection))  # todo cambiare!
+            offspring = vary_and(offspring, toolbox, cxpb, mutpb, copy=(not copy_during_selection))  # todo cambiare!
 
             # Evaluate the individuals with an invalid fitness
             invalid_ind = [ind for ind in offspring if not ind.fitness.valid]

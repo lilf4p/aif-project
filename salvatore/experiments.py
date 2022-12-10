@@ -198,7 +198,7 @@ class Experiment:
     def set_select(self):
         # genetic operators
         # self.toolbox.register('select', dp_tools.selTournament, tournsize=2)
-        self.toolbox.register('select', np_selTournament, tournsize=2)
+        self.toolbox.register('select', selection_tournament, tournsize=2)
 
     def set_mate(self):
         self.toolbox.register(
