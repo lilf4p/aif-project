@@ -111,7 +111,7 @@ class ArrayPointContoursMetric(ImageMetric):
         for index in range(n_ind):
             self._core_get_difference(individuals[index], index)
         results = self.results[:n_ind]
-        return results[:n_ind],   # fixme check if this is necessary
+        return results[:n_ind],
 
 
 __all__ = [

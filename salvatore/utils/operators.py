@@ -1,5 +1,6 @@
 # Optimized implementation of the standard varAnd, cxSimulatedBinaryBounded and cxMutPolynomialBounded for
 # this specific use case
+from salvatore.utils.types import *
 import random
 
 
@@ -11,8 +12,8 @@ def np_varAnd(offspring, toolbox, cxpb, mutpb):
     for i in range(1, len(offspring), 2):
         if random.random() < cxpb:
             # toolbox.mate(offspring[i - 1], offspring[i])
-            # offspring[i - 1], offspring[i] = toolbox.mate(offspring[i - 1],
-            #                                               offspring[i])
+            offspring[i - 1], offspring[i] = toolbox.mate(offspring[i - 1],
+                                                          offspring[i])
             del offspring[i - 1].fitness.values, offspring[i].fitness.values
 
     for i in range(len(offspring)):
@@ -24,29 +25,7 @@ def np_varAnd(offspring, toolbox, cxpb, mutpb):
     return offspring
 
 
-def np_cxSimulatedBinaryBounded(ind1, ind2, eta, low, up):
-    """Executes a simulated binary crossover that modify in-place the input
-    individuals. The simulated binary crossover expects :term:`sequence`
-    individuals of floating point numbers.
-
-    :param ind1: The first individual participating in the crossover.
-    :param ind2: The second individual participating in the crossover.
-    :param eta: Crowding degree of the crossover. A high eta will produce
-                children resembling to their parents, while a small eta will
-                produce solutions much more different.
-    :param low: A value or a :term:`python:sequence` of values that is the lower
-                bound of the search space.
-    :param up: A value or a :term:`python:sequence` of values that is the upper
-               bound of the search space.
-    :returns: A tuple of two individuals.
-
-    This function uses the :func:`~random.random` function from the python base
-    :mod:`random` module.
-
-    .. note::
-       This implementation is similar to the one implemented in the
-       original NSGA-II C code presented by Deb.
-    """
+def np_cxSimulatedBinaryBounded(ind1: np.ndarray, ind2: np.ndarray, eta, low, up):
     size = min(len(ind1), len(ind2))
     for i in range(size):
         if random.random() <= 0.5:
@@ -89,19 +68,6 @@ def np_cxSimulatedBinaryBounded(ind1, ind2, eta, low, up):
 
 
 def np_mutPolynomialBounded(individual, eta, low, up, indpb):
-    """Polynomial mutation as implemented in original NSGA-II algorithm in
-    C by Deb.
-
-    :param individual: :term:`Sequence <sequence>` individual to be mutated.
-    :param eta: Crowding degree of the mutation. A high eta will produce
-                a mutant resembling its parent, while a small eta will
-                produce a solution much more different.
-    :param low: A value or a :term:`python:sequence` of values that
-                is the lower bound of the search space.
-    :param up: A value or a :term:`python:sequence` of values that
-               is the upper bound of the search space.
-    :returns: A tuple of one individual.
-    """
     size = len(individual)
     for i in range(size):
         if random.random() <= indpb:
@@ -123,6 +89,15 @@ def np_mutPolynomialBounded(individual, eta, low, up, indpb):
             x = x + delta_q * (up - low)
             x = min(max(x, low), up)
             individual[i] = x
-    return individual
+    return individual,
 
 
+def np_cxSwapPoints(ind1, ind2):
+    """
+    Swap point with random probability.
+    """
+    size = len(ind1)
+    for i in range(size):
+        if random.random() <= 0.5:
+            ind1[i], ind2[i] = ind2[i], ind1[i]
+    return ind1, ind2

@@ -38,6 +38,9 @@ class TableTargetPointsNNContoursExperiment(Experiment):
         # register evaluation
         self.toolbox.register("evaluate", self.metric.get_difference)
 
+    def set_mate(self):
+        self.toolbox.register('mate', np_cxSwapPoints)
+
 
 class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
 
@@ -62,7 +65,8 @@ class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
         self.metric = DoubleArrayNearestNeighbourPointMetric(
             image_path, canny_low, canny_high, bounds_low, bounds_high,
             num_points=num_of_points, device=device, results=self.results,
-            target_candidate_weight=target_candidate_weight, candidate_target_weight=candidate_target_weight,
+            target_candidate_weight=target_candidate_weight,
+            candidate_target_weight=candidate_target_weight,
         )
         self.tc_weight, self.ct_weight = target_candidate_weight, candidate_target_weight
         self.crowding_factor = crowding_factor
@@ -94,17 +98,16 @@ class TableTargetPointsOverlapPenaltyContoursExperiment(Experiment):
             population_size, p_crossover, p_mutation, max_generations, hof_size,
             random_seed, save_image_dir, device=device, algorithm=algorithm,
         )
+        results = np.zeros(population_size, dtype=np.float64)
         self.metric = TableTargetPointsOverlapPenaltyContoursMetric(
             image_path, canny_low, canny_high, bounds_low, bounds_high,
-            num_points=num_of_points, device=device,
+            num_points=num_of_points, results=results, penalty_const=penalty_const,
         )
-        self.vp = np if device == 'cpu' else cp
         self.crowding_factor = crowding_factor
         self.num_of_points = num_of_points
         self.bounds_low = bounds_low
         self.bounds_high = bounds_high
         self.num_params = self.chunk_size * self.num_of_points
-        self.results = self.vp.zeros(population_size, dtype=self.vp.float32)
 
     def set_evaluate(self):
         # register evaluation

@@ -1,7 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
 from .types import *
-from .operators import np_varAnd
 from bisect import bisect_right
 from operator import eq
 from copy import deepcopy

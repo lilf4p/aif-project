@@ -40,7 +40,7 @@ class TableTargetPointsNNContoursMetric(ArrayPointContoursMetric):
         target_cv2 = draw_contours(target_cv2, contours, copy=False)
         self.target_pil = Image.fromarray(target_cv2)
 
-    def standardize_individual(self, individual: TArray, check_repr=False):
+    def standardize_individual(self, individual, check_repr=False):
         # reshape and rescale
         reshaped = np.reshape(individual, (self.num_points, 2))
         r0, r1 = reshaped[:, 0], reshaped[:, 1]
@@ -148,7 +148,7 @@ class DoubleArrayNearestNeighbourPointMetric(ArrayPointContoursMetric):
                     self._core_get_difference(individuals[index], index)
                 stream.synchronize()
         results = self.results[:n_ind] if self.device == 'cpu' else cp.asnumpy(self.results[:n_ind])
-        return results,   # fixme check if this is necessary
+        return results,
 
 
 class TableTargetPointsOverlapPenaltyContoursMetric(ArrayPointContoursMetric):
@@ -158,7 +158,8 @@ class TableTargetPointsOverlapPenaltyContoursMetric(ArrayPointContoursMetric):
         return 2
 
     def __init__(self, image_path: str, canny_low: TReal, canny_high: TReal,
-                 bounds_low=0.0, bounds_high=1.0, results=None, num_points: int = 20000):
+                 bounds_low=0.0, bounds_high=1.0, results=None,
+                 num_points: int = 20000, penalty_const=1.0):
         """
         :param image_path: Path of the target image.
         :param canny_low: Low threshold for cv2.Canny().
@@ -170,6 +171,7 @@ class TableTargetPointsOverlapPenaltyContoursMetric(ArrayPointContoursMetric):
         self.target_pil = None  # target image as PIL.Image object
         self.num_targets = 0
         self.num_points = num_points
+        self.penalty_const = penalty_const
         super(TableTargetPointsOverlapPenaltyContoursMetric, self).__init__(
             image_path, canny_low, canny_high, bounds_low, bounds_high, results=results,
         )
@@ -199,12 +201,12 @@ class TableTargetPointsOverlapPenaltyContoursMetric(ArrayPointContoursMetric):
         standardized = self.standardize_individual(individual)
         aux = self.target[standardized[1], standardized[0]]
         self.results[index] = np.sum(aux)
-        img = np.zeros((self.image_height, self.image_width), dtype=np.int32)
+        img = np.zeros((self.image_height, self.image_width), dtype=np.float64)
         for i in range(standardized.shape[1]):
             w, h = standardized[0, i], standardized[1, i]
-            img[h, w] += 1
-        img[img > 0] -= 1
-        penalty = img.sum()
+            img[h, w] += 1.0
+        img[img > 0.0] -= 1.0
+        penalty = img.sum() * self.penalty_const
         self.results[index] += penalty
 
 
