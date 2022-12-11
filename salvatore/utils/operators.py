@@ -2,6 +2,7 @@
 # this specific use case
 from copy import deepcopy
 from salvatore.utils.types import *
+from salvatore.individuals import *
 
 
 def __get_ith_ind_fitness(individuals, fit_attr):
@@ -132,8 +133,23 @@ def np_cx_swap_points(ind1, ind2):
     size = len(ind1)
     for i in range(size):
         if random.random() <= 0.5:
-            ind1[i], ind2[i] = ind2[i], ind1[i]
+            # Swap (correctly?) variables
+            tmp = ind1[i]
+            ind1[i] = ind2[i]
+            ind2[i] = tmp
     return ind1, ind2
+
+
+def individual_cx_swap_points(ind1: Individual, ind2: Individual):
+    ind1_arr, ind2_arr = ind1.get_array(), ind2.get_array()
+    np_cx_swap_points(ind1_arr, ind2_arr)
+    return ind1, ind2
+
+
+def individual_mut_polynomial_bounded(individual: Individual, eta, low, up, indpb):
+    ind_arr = individual.get_array()
+    np_mut_polynomial_bounded(ind_arr, eta, low, up, indpb)
+    return individual,
 
 
 __all__ = [
@@ -142,4 +158,6 @@ __all__ = [
     'np_cx_swap_points',
     'np_cx_simulated_binary_bounded',
     'np_mut_polynomial_bounded',
+    'individual_cx_swap_points',
+    'individual_mut_polynomial_bounded',
 ]

@@ -97,7 +97,7 @@ def test_table_op_eiffel_tower():
 
 def tests_table_op_mona_lisa():
     test_table_target_points_overlap_penalty(
-        dir_path='..', image_path='images/Mona_Lisa_head.png', max_generations=500,
+        dir_path='..', image_path='images/Mona_Lisa_head.png', max_generations=10000,
         num_of_points=6000, save_image_gen_step=50, canny_low=150, canny_high=200,
         logger=Logger(dir_path='.', stats_gen_step=50, csv_gen_step=50, stats_fields=('min', 'avg')),
         stopping_criterions={
@@ -112,7 +112,6 @@ if __name__ == '__main__':
     # Uncomment the following that you want to test
     test_table_eiffel_tower()
     """
-    tests_table_op_mona_lisa()
     test_table_op_eiffel_tower()
     test_table_eiffel_tower()
     tests_table_mona_lisa()

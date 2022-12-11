@@ -78,6 +78,7 @@ class Logger:
                 'stop_message': algorithm.stop_msg,
             }
             json.dump(self.dict, fp=self.json_fp, indent=2)
+            self.close()
 
     def close(self):
         self.json_fp.flush()

@@ -80,7 +80,7 @@ class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
         self.toolbox.register("evaluate", self.metric.get_difference)
 
 
-class TableTargetPointsOverlapPenaltyContoursExperiment(Experiment):
+class TableTargetPointsOverlapPenaltyExperiment(Experiment):
 
     @property
     def chunk_size(self):
@@ -94,7 +94,7 @@ class TableTargetPointsOverlapPenaltyContoursExperiment(Experiment):
             random_seed: int = None, save_image_dir: str = None, device='cpu',
             algorithm: EAlgorithm = EASimpleForArrays(),
     ):
-        super(TableTargetPointsOverlapPenaltyContoursExperiment, self).__init__(
+        super(TableTargetPointsOverlapPenaltyExperiment, self).__init__(
             population_size, p_crossover, p_mutation, max_generations, hof_size,
             random_seed, save_image_dir, device=device, algorithm=algorithm,
         )
@@ -112,6 +112,9 @@ class TableTargetPointsOverlapPenaltyContoursExperiment(Experiment):
     def set_evaluate(self):
         # register evaluation
         self.toolbox.register("evaluate", self.metric.get_difference)
+
+    def set_mate(self):
+        self.toolbox.register('mate', np_cx_swap_points)
 
 
 def test_table_target_points_nn(
@@ -167,7 +170,7 @@ def test_table_target_points_overlap_penalty(
         logger=None, stopping_criterions=None,
 ):
     os.chdir(dir_path)
-    experiment = TableTargetPointsOverlapPenaltyContoursExperiment(
+    experiment = TableTargetPointsOverlapPenaltyExperiment(
         image_path, canny_low, canny_high, population_size=population_size,
         max_generations=max_generations, random_seed=random_seed,
         num_of_points=num_of_points, hof_size=hof_size, device=device,
@@ -180,7 +183,6 @@ def test_table_target_points_overlap_penalty(
 
 
 __all__ = [
-    'DoubleArrayNearestNeighbourPointContoursExperiment',
     'test_table_target_points_nn',
     'test_double_nn',
     'test_table_target_points_overlap_penalty',

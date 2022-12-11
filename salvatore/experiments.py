@@ -80,7 +80,7 @@ class Experiment:
             plt.xlabel('Generation')
             plt.ylabel('Min / Average Fitness')
             plt.title('Min and Average fitness over Generations')
-            plt.savefig(os.path.join(self.save_image_dir, f'Stats after {gen} generations.png'))
+            plt.savefig(os.path.join(self.save_image_dir, f'Stats.png'))
             if show:
                 plt.show()
 
@@ -202,13 +202,13 @@ class Experiment:
 
     def set_mate(self):
         self.toolbox.register(
-            "mate", dp_tools.cxSimulatedBinaryBounded, low=self.bounds_low,
+            "mate", np_cx_simulated_binary_bounded, low=self.bounds_low,
             up=self.bounds_high, eta=self.crowding_factor
         )
 
     def set_mutate(self):
         self.toolbox.register(
-            "mutate", dp_tools.mutPolynomialBounded, low=self.bounds_low, up=self.bounds_high,
+            "mutate", np_mut_polynomial_bounded, low=self.bounds_low, up=self.bounds_high,
             eta=self.crowding_factor, indpb=1.0 / self.num_params
         )
 
@@ -264,13 +264,13 @@ class Experiment:
         # save statistics at the end of the experiment
         self.save_stats(self.algorithm, show=True)
 
-        # save best image  # fixme mode 'F' is incompatible with 'png'
+        # save best image
         best_image_file_name = os.path.join(self.save_image_dir, 'best.png')
         best_image = self.metric.get_individual_image(best).convert('L')
         best_image.save(best_image_file_name)
 
         # save the best individual as NumPy array
-        best_ind_file_name = os.path.join(self.save_image_dir, 'best_numpy.pickle')
+        best_ind_file_name = os.path.join(self.save_image_dir, 'best.pkl')
         with open(best_ind_file_name, 'wb') as fp:
             pickle.dump(best, fp)
 
