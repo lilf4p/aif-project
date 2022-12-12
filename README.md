@@ -10,16 +10,20 @@ use-cases.
 ### Installation and Usage ###
 `pip install -r requirements.txt`
 
-NOTE: For compilation with Cython, after the above steps the following script
+#### Cython usage ####
+For compilation with Cython, after the above steps the following script
 **must** be run:
 
-`./cython_compile.sh`
+`./cython_compile.sh build`
 
 It will produce `cython_algos.c` source file, a `.pyd` (for Windows) or `.so` (for Linux) shared library,
 a `build` directory and a `cython_algos.html` file, that is an annotation file created
 by Cython that highlights how each part of the code is translated into `C` code
 (see https://cython.readthedocs.io/en/latest/src/tutorial/cython_tutorial.html).
 
+For cleaning the output of the previous script, run the following:
+
+`./cython_compile.sh clean`
 
 ### Development Notes ###
 #### Cython Support ####
