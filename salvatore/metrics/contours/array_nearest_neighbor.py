@@ -42,7 +42,7 @@ class TableTargetPointsNNContoursMetric(ArrayPointContoursMetric):
 
     def standardize_individual(self, individual, check_repr=False):
         # reshape and rescale
-        reshaped = np.reshape(individual, (self.num_points, 2))
+        reshaped = np.reshape(individual, (self.num_points, 2)).copy()
         r0, r1 = reshaped[:, 0], reshaped[:, 1]
         r0 *= self.image_width
         r1 *= self.image_height
@@ -96,7 +96,7 @@ class DoubleArrayNearestNeighbourPointMetric(ArrayPointContoursMetric):
         )
         self.image_width, self.image_height = cv2_image.shape[1], cv2_image.shape[0]
         self.target = self.vp.zeros((2, len(aux), self.num_points))
-        for j in range(self.num_points):    # todo check if this double slice works!
+        for j in range(self.num_points):
             self.target[0, :, j] = aux[:, 0]
             self.target[1, :, j] = aux[:, 1]
         # create and store contour image in memory

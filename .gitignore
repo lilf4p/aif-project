@@ -1,7 +1,8 @@
 .idea/
 .vscode/
 venv/
-results/old
 ignore*
 __pycache__/
+*.c
+*.pyd
 ```

@@ -174,7 +174,7 @@ class Experiment:
     def set_individual(self):  # individual class and individualCreator
         # create the Individual class based on list:
         # noinspection PyUnresolvedReferences
-        dp_creator.create("Individual", list, fitness=dp_creator.FitnessMin)
+        dp_creator.create("Individual", np.ndarray, fitness=dp_creator.FitnessMin)
 
         # register an operator that randomly returns a float in the given range
         self.toolbox.register(
@@ -221,6 +221,9 @@ class Experiment:
         self.set_mate()
         self.set_mutate()
 
+    def standard_hall_of_fame(self):
+        return ArrayHallOfFame(self.hof_size, similar=lambda a, b: np.all(a-b))
+
     # noinspection PyUnresolvedReferences
     def run(self, show: bool = False, callbacks: TCallback = None, verbose: bool = True):
         # todo we can extend calculated statistics by passing a dict
@@ -236,7 +239,7 @@ class Experiment:
         stats.register("avg", np.mean)
 
         # define the hall-of-fame object:
-        hof = ArrayHallOfFame(self.hof_size)
+        hof = self.standard_hall_of_fame()
 
         # perform the Genetic Algorithm flow with elitism and 'save_image' callback:
         # noinspection PyUnusedLocal

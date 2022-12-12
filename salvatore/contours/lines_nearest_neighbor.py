@@ -49,7 +49,7 @@ def test_lines_nn(
         population_size=250, max_generations=1000, random_seed=10,
         lineno=500, hof_size=25, point_adherence_coeff=10.0,
         line_adherence_coeff=1.0, line_l1_lambda=5.0,
-        save_image_gen_step=50, other_callback_args=None,
+        save_image_gen_step=100, other_callback_args=None,
         logger=None, stopping_criterions=None,
 ):
     os.chdir(dir_path)

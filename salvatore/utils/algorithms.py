@@ -11,10 +11,11 @@ class ArrayHallOfFame(object):
     """
     See the documentation of deap.tools.HallOfFame.
     """
-    def __init__(self, maxsize):
+    def __init__(self, maxsize, similar=eq):
         self.maxsize = maxsize
         self.keys = list()
         self.items = list()
+        self.similar = similar
 
     def update(self, population, copy=False):
         """Update the hall of fame with the *population* by replacing the
@@ -35,7 +36,7 @@ class ArrayHallOfFame(object):
                 for hofer in self:
                     # Loop through the hall of fame to check for any
                     # similar individual
-                    if eq(ind, hofer):
+                    if self.similar(ind, hofer):
                         break
                 else:
                     # The individual is unique and strictly better than
@@ -185,15 +186,15 @@ class EASimpleForArrays(EAlgorithm):
 
             # Select the next generation individuals (noinspection for select because it is not known statically)
             # noinspection PyUnresolvedReferences
-            offspring = toolbox.select(self.population, pop_hof)  # todo should be TArray!
+            offspring = toolbox.select(self.population, pop_hof)
 
             # Vary the pool of individuals
-            offspring = vary_and(offspring, toolbox, cxpb, mutpb, copy=(not copy_during_selection))  # todo cambiare!
+            offspring = vary_and(offspring, toolbox, cxpb, mutpb, copy=(not copy_during_selection))
 
             # Evaluate the individuals with an invalid fitness
             invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
             # noinspection PyUnresolvedReferences
-            fitnesses = toolbox.evaluate(invalid_ind)  # fixme need to check it this is 1-dim and can iterate with zip
+            fitnesses = toolbox.evaluate(invalid_ind)
             for ind, fit in zip(invalid_ind, *fitnesses):
                 ind.fitness.values = (fit,)
 

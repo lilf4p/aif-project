@@ -32,7 +32,6 @@ def extract_contours(image: np.ndarray | str, canny_low, canny_high, device='cpu
         i += k
     # now aux contains a column with all the widths of the target points and another one with the heights
     # and it will be transferred to gpu if specified in constructor
-    # aux = aux.astype(np.int32)  # todo pass integer type as parameter!
     aux = aux if device == 'cpu' else cp.asarray(aux)
     return aux, pil_image, cv2_image, contours
 

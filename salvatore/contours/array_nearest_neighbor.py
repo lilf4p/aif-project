@@ -39,7 +39,11 @@ class TableTargetPointsNNContoursExperiment(Experiment):
         self.toolbox.register("evaluate", self.metric.get_difference)
 
     def set_mate(self):
-        self.toolbox.register('mate', np_cx_swap_points)
+        self.toolbox.register('mate', cy_swap_points)
+
+    def set_mutate(self):
+        self.toolbox.register('mutate', cy_mut_polynomial_bounded, low=self.bounds_low, up=self.bounds_high,
+                              eta=self.crowding_factor, indpb=1.0/self.num_params)
 
 
 class DoubleArrayNearestNeighbourPointContoursExperiment(Experiment):
@@ -122,7 +126,7 @@ def test_table_target_points_nn(
         canny_low=100, canny_high=200,
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25,
-        save_image_gen_step=50, other_callback_args=None,
+        save_image_gen_step=100, other_callback_args=None,
         logger=None, stopping_criterions=None,
 ):
     os.chdir(dir_path)
@@ -144,7 +148,7 @@ def test_double_nn(
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
         target_candidate_weight=2.0, candidate_target_weight=1.0,
-        save_image_gen_step=50, other_callback_args=None,
+        save_image_gen_step=100, other_callback_args=None,
         logger=None, stopping_criterions=None,
 ):
     os.chdir(dir_path)
@@ -166,7 +170,7 @@ def test_table_target_points_overlap_penalty(
         canny_low=100, canny_high=200,
         population_size=250, max_generations=1000, random_seed=10,
         num_of_points=2500, hof_size=25, device='cpu',
-        save_image_gen_step=50, other_callback_args=None,
+        save_image_gen_step=100, other_callback_args=None,
         logger=None, stopping_criterions=None,
 ):
     os.chdir(dir_path)
