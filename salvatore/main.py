@@ -8,7 +8,7 @@ from salvatore.contours import test_table_target_points_nn, test_double_nn, test
 
 def test_table_eiffel_tower():
     test_table_target_points_nn(
-        dir_path='..', max_generations=12000, num_of_points=4000, save_image_gen_step=100,
+        dir_path='..', max_generations=12000, num_of_points=4000, save_image_gen_step=100, use_gpu=True,
         logger=Logger(dir_path='.', stats_gen_step=50, csv_gen_step=100, stats_fields=('min', 'avg')),
         stopping_criterions={
             max_time_stop: {'max_time': 72. * 60.}, min_fitness_stop: {'min_fitness_value': 100.},
@@ -21,7 +21,7 @@ def test_table_eiffel_tower():
 def tests_table_mona_lisa():
     test_table_target_points_nn(
         dir_path='..', image_path='images/Mona_Lisa_head.png', max_generations=10000,
-        num_of_points=6000, save_image_gen_step=100, canny_low=150, canny_high=200,
+        num_of_points=6000, save_image_gen_step=100, canny_low=150, canny_high=200, use_gpu=True,
         logger=Logger(dir_path='.', stats_gen_step=50, csv_gen_step=100, stats_fields=('min', 'avg')),
         stopping_criterions={
             max_time_stop: {'max_time': 420. * 60.}, min_fitness_stop: {'min_fitness_value': 100.},
@@ -136,9 +136,24 @@ def test_table_ann_salvatore():
 """
 
 
+def test_table_singapore(resolution: str = '400x300'):
+    test_table_target_points_nn(
+        dir_path='..', image_path=f'images/Singapore_skyline_{resolution}.jpg', max_generations=50_000,
+        num_of_points=10_000, save_image_gen_step=100, canny_low=100, canny_high=200, use_gpu=True,
+        logger=Logger(dir_path='.', stats_gen_step=100, csv_gen_step=100, stats_fields=('min', 'avg')),
+        stopping_criterions={
+            max_time_stop: {'max_time': 180. * 60.}, min_fitness_stop: {'min_fitness_value': 100.},
+            min_fitness_percentage_gain_stop: {'percentage': 0.0001},
+            flat_percentage_fitness_stop: {'epsilon_perc': 0.001, 'gen_num': 500}
+        }
+    )
+
+
 if __name__ == '__main__':
     # Uncomment the following that you want to test
     # test_table_ann_salvatore()
+    test_table_singapore()
+    # test_table_eiffel_tower()
     """
     test_table_op_eiffel_tower()
     test_table_eiffel_tower()
