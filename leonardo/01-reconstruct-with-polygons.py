@@ -11,12 +11,11 @@ import elitism_callback as elitism_callback
 
 import matplotlib.pyplot as plt
 import seaborn as sns
-import imageio
 
 # problem related constants
 POLYGON_SIZE = 2
-NUM_OF_POLYGONS = 400
-DISTANCE_METRIC = "MSE+SSIM"
+NUM_OF_POLYGONS = 100
+DISTANCE_METRIC = "RMSE+UQI"
 
 # calculate total number of params in chromosome:
 # For each polygon we have:
@@ -29,23 +28,16 @@ NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 1)
 POPULATION_SIZE = 200
 P_CROSSOVER = 0.9  # probability for crossover
 P_MUTATION = 0.7   # probability for mutating an individual
-MAX_GENERATIONS = 2000
+MAX_GENERATIONS = 5000
 HALL_OF_FAME_SIZE = 5
-CROWDING_FACTOR = 10.0  # crowding factor for crossover and mutation
+CROWDING_FACTOR = 20.0  # crowding factor for crossover and mutation
 
 # set the random seed:
 RANDOM_SEED = 42
 random.seed(RANDOM_SEED)
 
 # create the image test class instance:
-imageTest = image_test.ImageTest("/Users/lilf4p/Developer/aif/aif-project/images/monalisabw.jpeg", POLYGON_SIZE)
-
-# calculate total number of params in chromosome:
-# For each polygon we have:
-# two coordinates per vertex, 3 color values, one alpha value
-#NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 4)
-#garayscale version:
-NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 1)
+imageTest = image_test.ImageTest("/Users/lilf4p/Developer/aif/aif-project/images/Mona_Lisa_head.png", POLYGON_SIZE)
 
 # all parameter values are bound between 0 and 1, later to be expanded:
 BOUNDS_LOW, BOUNDS_HIGH = 0.0, 1.0  # boundaries for all dimensions
@@ -53,7 +45,7 @@ BOUNDS_LOW, BOUNDS_HIGH = 0.0, 1.0  # boundaries for all dimensions
 toolbox = base.Toolbox()
 
 # define a single objective, minimizing fitness strategy:
-creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+creator.create("FitnessMin", base.Fitness, weights=(-1.0,-1.0))
 # maximize fitness:
 #creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 
@@ -85,8 +77,7 @@ toolbox.register("populationCreator",
 
 # fitness calculation using MSE as difference metric:
 def getDiff(individual):
-    return imageTest.getDifference(individual, DISTANCE_METRIC),
-    #return imageTest.getDifference(individual, "SSIM"),
+    return imageTest.getDifference(individual, "RMSE"), imageTest.getDifference(individual, "UQI") # return a tuple
 
 toolbox.register("evaluate", getDiff)
 
@@ -115,7 +106,7 @@ def saveImage(gen, polygonData):
     if gen % 100 == 0:
 
         # create folder if does not exist:
-        folder = "result/grayscale/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}".format(DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR)
+        folder = "result/grayscale-{}/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}".format(DISTANCE_METRIC,DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR)
         if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -159,7 +150,7 @@ def main():
     print()
 
     # draw best image next to reference image:
-    folder = "result/grayscale/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}".format(DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR)
+    folder = "result/grayscale-{}/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}".format(DISTANCE_METRIC,DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR)
     imageTest.saveImage(best,"{}/best.png".format(folder),
                             "Best Solution\nBest Score = {}".format(best.fitness.values[0]))
 
@@ -169,17 +160,21 @@ def main():
     # plot statistics:
     sns.set_style("whitegrid")
     plt.figure("Stats:")
+    #logscale for y axis:
+    #plt.yscale('log')
     plt.plot(minFitnessValues, color='red')
     plt.plot(meanFitnessValues, color='green')
     plt.xlabel('Generation')
     plt.ylabel('Min / Average Fitness')
     plt.title('Min and Average fitness over Generations')
 
+    #todo : logscale for y axis
+
     # save both plots:
-    plt.savefig("result/grayscale/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}/stats.png".format(DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR))
+    plt.savefig("result/grayscale-{}/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}/stats.png".format(DISTANCE_METRIC,DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR))
 
     # save gif
-    imageTest.saveGif("result/grayscale/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}/result.gif".format(DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR))
+    imageTest.saveGif("result/grayscale-{}/run-{}-{}-{}/ga-{}-{}-{}-{}-{}-{}/result.gif".format(DISTANCE_METRIC,DISTANCE_METRIC,POLYGON_SIZE, NUM_OF_POLYGONS, POPULATION_SIZE, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS, HALL_OF_FAME_SIZE, CROWDING_FACTOR))
 
 if __name__ == "__main__":
     main()
