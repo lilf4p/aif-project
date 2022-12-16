@@ -144,7 +144,7 @@ class ImageTest:
         :param header: text used as a header for the plot
         """
 
-        # create an image from th epolygon data:
+        # create an image from the polygon data:
         image = self.polygonDataToImage(polygonData)
 
         # save image for gif animation 

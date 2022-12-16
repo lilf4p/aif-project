@@ -37,7 +37,7 @@ if [[ "$1" == "build" ]]; then
       python setup.py build_ext --inplace
       ;;
     "mac")
-      python setup.py build_ext --inplace  # todo check that this actually works for MAC!
+      Python setup.py build_ext --inplace  # todo check that this actually works for MAC!
       ;;
     *)
       python setup.py build_ext --inplace

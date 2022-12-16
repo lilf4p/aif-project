@@ -222,7 +222,7 @@ class Experiment:
         self.set_mutate()
 
     def standard_hall_of_fame(self):
-        return ArrayHallOfFame(self.hof_size, similar=lambda a, b: np.all(a-b))
+        return ArrayHallOfFame(self.hof_size, similar=np.array_equal)
 
     # noinspection PyUnresolvedReferences
     def run(self, show: bool = False, callbacks: TCallback = None, verbose: bool = True):
