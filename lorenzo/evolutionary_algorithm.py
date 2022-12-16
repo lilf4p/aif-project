@@ -6,7 +6,7 @@ PRINT_EVERY_GEN = 25  # Print fitness value every x generations
 SAVE_EVERY = 100  # Save best image every x generations for gif creation
 
 
-def ea(img_path,n_of_generation, population_n, mutation_change, mutation_strength, elitism, elitism_n):
+def ea(img_path, distance, n_of_generation, population_n, mutation_change, mutation_strength, elitism, elitism_n):
     
     load_image(img_path)
     
@@ -21,19 +21,22 @@ def ea(img_path,n_of_generation, population_n, mutation_change, mutation_strengt
         # Calculate similarity of each image in population to original image
         fitnesses = []
         for img in population:
-            actual_fitness = evaluate_fitness(img)
+            actual_fitness = evaluate_fitness(img, distance)
             fitnesses.append(actual_fitness)
         
         stats.append(statistics.fmean(fitnesses))
         
         # Get ids of best images in population
-        top_population_ids = np.argsort(fitnesses)[-elitism_n:]
+        if (distance == "mse"):
+            top_population_ids = np.argsort(fitnesses)[:elitism_n] #decreasing fitness
+        else:            
+            top_population_ids = np.argsort(fitnesses)[-elitism_n:] #inceasing fitness
 
         # Start creating new population for next generation
         new_population = []
 
         # Connect parent into pairs
-        parents_list = get_parents(population, fitnesses)
+        parents_list = get_parents(population, fitnesses, distance)
 
         # Create childs
         for i in range(0, population_n):

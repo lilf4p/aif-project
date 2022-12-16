@@ -7,6 +7,7 @@ import argparse
 
 #hyperparam tuning
 parser = argparse.ArgumentParser(description='genetic algorithm from text')
+parser.add_argument('-d', '--distance', type=str ,default="ssim", help="psnr, mse")
 parser.add_argument('-n_gen', '--number_of_generations', type=int ,default=7000) 
 parser.add_argument('-pop_n', '--population_number', type=int ,default=50) 
 parser.add_argument('-m_c', '--mutation_change', type=float ,default=0.1)
@@ -20,6 +21,7 @@ args = parser.parse_args()
 image_path  = "images/cubismo_picasso15072.jpg"
 
 #Adjust hyperparameters
+DISTANCE_METRIC = args.distance 
 NUMBER_OF_GENERATIONS = args.number_of_generations
 POPULATION_NUMBER = args.population_number  # How many images in 1 generation (without elitism)
 MUTATION_CHANCE = args.mutation_change  # Chance of mutating (adding random shapes)
@@ -28,12 +30,8 @@ ELITISM = args.elitism  # Turn on/off elitism (transfering best images to next g
 ELITISM_NUMBER = args.elitism_number  # How many best images transfer to next generation (elitism)
 
 
-save_gif, stats = ea(image_path, NUMBER_OF_GENERATIONS, 
-                        POPULATION_NUMBER, 
-                        MUTATION_CHANCE, 
-                        MUTATION_STRENGTH, 
-                        ELITISM,
-                        ELITISM_NUMBER)
+save_gif, stats = ea(image_path, DISTANCE_METRIC, NUMBER_OF_GENERATIONS, POPULATION_NUMBER, MUTATION_CHANCE, 
+                        MUTATION_STRENGTH,  ELITISM, ELITISM_NUMBER)
 
 
 plt.plot(stats, color='blue')
@@ -41,16 +39,23 @@ plt.xlabel('generations')
 plt.ylabel('average fitness')
 
 if ELITISM:
-    save_dir = "psns_gens{}_pop{}_mchance{}_mstrength{}_elit{}".format(
-        NUMBER_OF_GENERATIONS, POPULATION_NUMBER,MUTATION_CHANCE,
-        MUTATION_STRENGTH,ELITISM_NUMBER
+    save_dir = "{}_gens{}_pop{}_mchance{}_mstrength{}_elit{}".format(
+        DISTANCE_METRIC, NUMBER_OF_GENERATIONS, POPULATION_NUMBER,
+        MUTATION_CHANCE,MUTATION_STRENGTH,ELITISM_NUMBER
     )
 else:
-    save_dir = "psns_gens{}_pop{}_mchance{}_mstrength{}".format(
-        NUMBER_OF_GENERATIONS, POPULATION_NUMBER,MUTATION_CHANCE,MUTATION_STRENGTH
+    save_dir = "{}_gens{}_pop{}_mchance{}_mstrength{}".format(
+        DISTANCE_METRIC, NUMBER_OF_GENERATIONS, POPULATION_NUMBER,
+        MUTATION_CHANCE,MUTATION_STRENGTH
     )
 
-save_path = os.path.join("lorenzo", "results", save_dir)
+result_path = os.path.join("lorenzo", "results", DISTANCE_METRIC)
+
+if not os.path.exists(result_path):
+    os.mkdir(result_path)
+
+save_path = os.path.join(result_path, save_dir)
+os.mkdir(save_path)
 
 # Save plot, gif and best output 
 if not os.path.exists(save_path):
