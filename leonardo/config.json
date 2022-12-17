@@ -1,0 +1,62 @@
+{
+    "monalisa-ellissi-mse": {   
+        "image_path" : "images/monalisabw.jpg" ,
+        "polygon_size" :  2 ,
+        "num_polygons" :  400 ,
+        "multi_objective" :  false ,
+        "distance_metric" :  "MSE" ,
+        "population_size" :  500 ,
+        "p_crossover" :  0.9 ,
+        "p_mutation" :  0.9 ,
+        "max_generations" :  1000 ,
+        "hof_size" :  50 ,
+        "crowding_factor" :  10.0,
+        "output_path" : "./output"
+        },
+       
+    "monalisa-ellissi-mse+ssim": { 
+        "image_path" : "images/monalisabw.jpg" ,
+        "polygon_size" :  2 ,
+        "num_polygons" :  400 ,
+        "multi_objective" :  false ,
+        "distance_metric" :  "MSE+SSIM" ,
+        "population_size" :  100 ,
+        "p_crossover" :  0.9 ,
+        "p_mutation" :  0.7 ,
+        "max_generations" :  7500 ,
+        "hof_size" :  5 ,
+        "crowding_factor" :  10.0,
+        "output_path" : "./output"
+    },
+
+    "monalisa-ellissi-uqi": { 
+        "image_path" : "images/monalisabw.jpg" ,
+        "polygon_size" :  2 ,
+        "num_polygons" :  400 ,
+        "multi_objective" :  false ,
+        "distance_metric" :  "UQI" ,
+        "population_size" :  100 ,
+        "p_crossover" :  0.9 ,
+        "p_mutation" :  0.7 ,
+        "max_generations" :  5000 ,
+        "hof_size" :  5 ,
+        "crowding_factor" :  10.0,
+        "output_path" : "./output"
+    },
+
+    "monalisa-ellissi-mse-uqi": { 
+        "image_path" : "images/monalisabw.jpg" ,
+        "polygon_size" :  2 ,
+        "num_polygons" :  100 ,
+        "multi_objective" :  true ,
+        "distance_metric" :  "MSE,UQI" ,
+        "population_size" :  200 ,
+        "p_crossover" :  0.9 ,
+        "p_mutation" :  0.7 ,
+        "max_generations" :  5000 ,
+        "hof_size" :  10 ,
+        "crowding_factor" :  10.0,
+        "output_path" : "./output"
+    }
+
+}
