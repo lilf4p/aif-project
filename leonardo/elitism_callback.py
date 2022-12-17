@@ -1,7 +1,7 @@
 from deap import tools
 from deap import algorithms
 
-def eaSimpleWithElitismAndCallback(population, toolbox, cxpb, mutpb, ngen, callback=None, stats=None,
+def eaSimpleWithElitismAndCallback(population, toolbox, cxpb, mutpb, ngen, callback=None, image=None, config=None, stats=None,
              halloffame=None, verbose=__debug__):
     """This algorithm is similar to DEAP eaSimple() algorithm, with two additions:
     1. halloffame is used to implement an elitism mechanism. The individuals contained in the
@@ -61,6 +61,6 @@ def eaSimpleWithElitismAndCallback(population, toolbox, cxpb, mutpb, ngen, callb
             print(logbook.stream)
 
         if callback:
-            callback(gen, halloffame.items[0])
+            callback(gen, halloffame.items[0], image, config)
 
     return population, logbook
