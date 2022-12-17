@@ -13,7 +13,7 @@ import elitism_callback as elitism_callback
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from config import get_config
+from config import get_config, get_experiment_names
 
 # setup the algorithm with the given experiment name
 def setup (experiment):
@@ -180,9 +180,24 @@ def main(experiment):
 
 
 if __name__ == "__main__":
-    #get the experiment name 
+
+    #if no argument is given, print help message
     if len(sys.argv) < 2:
-        print("Usage: python main.py <experiment>")
+        print("Usage: python main.py <experiment> [-h | --help]")
         sys.exit(1)
+
+    #print help message if one of the arguments is -h or --help
+    if sys.argv.__contains__("-h") or sys.argv.__contains__("--help"):
+        #read the readme file and print it
+        with open("readme.txt", "r") as f:
+            print(f.read())
+        sys.exit(1)
+
+    #if the experiment name is not valid, print default experiment
+    if sys.argv[1] not in get_experiment_names():
+        print("Invalid experiment name. Valid experiment names are:")
+        print(get_experiment_names())
+        sys.exit(1)
+
     experiment = sys.argv[1]
     main(experiment)
