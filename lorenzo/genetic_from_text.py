@@ -36,7 +36,7 @@ save_gif, stats = ea(image_path, DISTANCE_METRIC, NUMBER_OF_GENERATIONS, POPULAT
 
 plt.plot(stats, color='blue')
 plt.xlabel('generations')
-plt.ylabel('average fitness')
+plt.ylabel('top fitness')
 
 if ELITISM:
     save_dir = "{}_gens{}_pop{}_mchance{}_mstrength{}_elit{}".format(
