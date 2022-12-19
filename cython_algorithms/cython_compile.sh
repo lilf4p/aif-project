@@ -1,5 +1,6 @@
 # Compile Cython files (.pyx) into a complete (local) Python extension.
 # This is required to use Cython version of crossover and mutation operators for testing.
+# If compilation fails, try to run the same command (<python_name_in_your_machine> setup.py build_ext --inplace)
 # Solution for multi-OS is taken from: https://stackoverflow.com/questions/394230/how-to-detect-the-os-from-a-bash-script
 
 # Detect Operating System
@@ -37,7 +38,7 @@ if [[ "$1" == "build" ]]; then
       python setup.py build_ext --inplace
       ;;
     "mac")
-      python3 setup.py build_ext --inplace  # todo check that this actually works for MAC!
+      python3 setup.py build_ext --inplace
       ;;
     *)
       python setup.py build_ext --inplace
