@@ -11,3 +11,8 @@ def get_experiment_names():
         data = json.load(json_file)
         return list(data.keys())
 
+#function to load a json and return a dictionary
+def load_json(file):
+    with open(file) as json_file:
+        data = json.load(json_file)
+        return data
