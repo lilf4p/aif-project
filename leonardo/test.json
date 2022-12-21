@@ -2,6 +2,6 @@
     "type": "ellissi-bw",
     "data": {
         "builtin": true,
-        "name": "monalisa-ellissi-mse"
+        "name" : "monalisa-ellissi-mse"
     }
 }

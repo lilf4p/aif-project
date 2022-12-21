@@ -10,13 +10,13 @@ import numpy
 import os
 import sys
 
-import image_test as image_test
-import elitism_callback as elitism_callback
+import modules.image_test as image_test
+import modules.elitism_callback as elitism_callback
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from .config import get_config, get_experiment_names, load_json
+from modules.config import get_config, get_experiment_names, load_json
 
 # setup the algorithm with the given experiment name
 def setup (config : dict):
@@ -27,7 +27,37 @@ def setup (config : dict):
             raise ValueError("Experiment not found")
         else:
             config = get_config(experiment)
-        
+    else:
+        # use parameters of dict in input
+        # check if all parameters are present
+        if "num_polygons" not in config:
+            config["num_polygons"] = 400
+        if "polygon_size" not in config:
+            config["polygon_size"] = 2
+        if "population_size" not in config:
+            config["population_size"] = 100
+        if "p_crossover" not in config:
+            config["p_crossover"] = 0.9
+        if "p_mutation" not in config:
+            config["p_mutation"] = 0.7
+        if "max_generations" not in config:
+            config["max_generations"] = 1000
+        if "hof_size" not in config:
+            config["hof_size"] = 5
+        if "crowding_factor" not in config:
+            config["crowding_factor"] = 10.0
+        if "distance_metric" not in config:
+            config["distance_metric"] = "MSE+SSIM"
+        if "multi_objective" not in config:
+            config["multi_objective"] = False
+        if "image_path" not in config:
+            raise ValueError("image_path not found")
+        if "output_path" not in config:
+            # add entry to config
+            config["output_path"] = "./output"
+
+    
+
     # calculate total number of params in chromosome:
     # For each polygon we have:
     # two coordinates per vertex, 3 color values, one alpha value
