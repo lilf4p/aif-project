@@ -8,7 +8,7 @@ def load_json_file(json_path):
 def get_experiment_config(config):
     if config['builtin']:
         name = config['name']
-        builtin_experiments = load_json_file("builtin_config.json")
+        builtin_experiments = load_json_file("lorenzo/builtin_config.json")
         if name not in list(builtin_experiments.keys()):
             raise ValueError("builtin experiment not present")
         else:

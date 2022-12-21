@@ -1,10 +1,11 @@
-import imageio # For gif saving
-from genetic_algorithm import ea
+import imageio  # For gif saving
+from .genetic_algorithm import ea
 import cv2
 import matplotlib.pyplot as plt
 import os
 import argparse
-from utils import get_experiment_config, load_json_file, check_config
+from .utils import get_experiment_config, load_json_file, check_config
+
 
 def text_reconstruction(user_config):
 
@@ -63,4 +64,4 @@ if __name__ == "__main__":
 
     json_file = load_json_file(args.config_path)
     config = json_file['data']
-    text_reconstruction(config) 
+    text_reconstruction(config)

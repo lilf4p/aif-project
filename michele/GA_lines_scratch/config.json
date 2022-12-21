@@ -1,7 +1,7 @@
 {
-  "monalisa-countourn":
+  "monalisa-contour":
   {
-    "image_path" : "Images/Mona_Lisa_head.jpg",
+    "image_path" : "images/mona_lisa_bn.jpg",
     "numlines": 800,
     "max_generation": 500,
     "num_population": 100,

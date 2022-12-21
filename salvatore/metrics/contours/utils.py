@@ -2,6 +2,7 @@
 Common utility functions for the metrics.
 """
 from __future__ import annotations
+import math
 from salvatore.utils import *
 
 
@@ -34,6 +35,33 @@ def extract_contours(image: np.ndarray | str, canny_low, canny_high, device='cpu
     # and it will be transferred to gpu if specified in constructor
     aux = aux if device == 'cpu' else cp.asarray(aux)
     return aux, pil_image, cv2_image, contours
+
+
+@timeit()
+def build_distance_table_2(
+        image_height: int, image_width: int, num_targets: int, aux, device='cpu', block_height=5000,
+):
+    vp = np if device == 'cpu' else cp
+    # Number of 'blocks'
+    blocks_number = math.ceil(image_height / block_height)
+    # At each iteration we will calculate the minimum of the values that get memorized there
+    target_aux_blocks = vp.zeros((blocks_number, image_width), dtype=np.intp)
+    # Build table of distances
+    target_table = vp.full((image_height, image_width), -1, dtype=np.intp)
+    target_aux_0 = vp.zeros((2, block_height, image_width), dtype=np.intp)
+    if device == 'gpu':
+        aux = cp.asarray(aux)
+    for i in range(image_height):
+        for k in range(blocks_number):
+            start_index, end_index = k * block_height, min((k+1) * block_height, num_targets)
+            current_length = end_index - start_index
+            for j in range(image_width):
+                target_aux_0[0, 0:current_length, j] = vp.abs(aux[start_index:end_index, 0] - j)
+                target_aux_0[1, 0:current_length, j] = vp.abs(aux[start_index:end_index, 1] - i)
+            target_aux_1 = vp.sum(target_aux_0, axis=0)[0:current_length]
+            target_aux_blocks[k, :] = vp.min(target_aux_1, axis=0)
+        target_table[i, :] = vp.min(target_aux_blocks, axis=0)
+    return target_table
 
 
 @timeit()

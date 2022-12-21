@@ -1,5 +1,5 @@
 {
-    "type": "ellissi-bw",
+    "type": "grayscale_ellipses",
     "data": {
         "builtin": true,
         "name" : "monalisa-ellissi-mse"

@@ -1,13 +1,10 @@
 from PIL import Image
 
 
-import utils
-
+import michele.GA_lines_scratch.utils as utils
 
 
 # DefaultConstant ##########################
-SRC_IMAGE_PATH = "Images/Mona_Lisa_head.jpg"
-SRC_IMAGE_PATH = "Images/Mona_Lisa_bn.jpg"
 NUM_LINES = 800
 MAX_GENERATIONS = 500
 
@@ -61,4 +58,3 @@ def runAlghoritm(config):
 
 
     print("Terminato")
-

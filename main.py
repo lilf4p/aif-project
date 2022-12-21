@@ -1,9 +1,12 @@
 import os
 import json
 import sys
+import traceback
 
 from salvatore.config import parse_experiment_data as salvatore_parse_experiment_data
-from leonardo.bw_algo import bw_algo as leonardo_parse_experiment_data
+from leonardo import bw_algo as leonardo_parse_experiment_data
+from lorenzo import text_reconstruction as lorenzo_parse_experiment_data
+from michele.GA_lines_scratch import loadconfig as michele_parse_experiment_data
 
 
 RGB_POLYGONS = 'rgb_polygons'
@@ -36,11 +39,11 @@ def file_main(config_file_path: str):
     elif config_type == RGB_ELLIPSES:
         pass  # todo code for RGB ellipses
     elif config_type == GRAYSCALE_ELLIPSES:
-        ...  # todo Leonardo's code for grayscale ellipses
+        leonardo_parse_experiment_data(config_experiment_data)
     elif config_type == GRAYSCALE_LINES:
-        ...  # todo Michele's code for grayscale lines
+        michele_parse_experiment_data(config_experiment_data)
     elif config_type == GRAYSCALE_TEXT:
-        ...  # todo Lorenzo's code for grayscale text
+        lorenzo_parse_experiment_data(config_experiment_data)
     elif config_type == CONTOURS_POINTS:
         salvatore_parse_experiment_data(config_experiment_data)
     else:
@@ -48,5 +51,10 @@ def file_main(config_file_path: str):
 
 
 if __name__ == '__main__':
-    config_file_path = sys.argv[1]  # todo considerare anche -h o --help come opzione
-    file_main(config_file_path)
+    while True:
+        try:
+            config_file_path = input('Path to config file> ')
+            # config_file_path = sys.argv[1]  # todo considerare anche -h o --help come opzione
+            file_main(config_file_path)
+        except Exception as ex:
+            traceback.print_exception(*sys.exc_info())

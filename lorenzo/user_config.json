@@ -1,5 +1,5 @@
 {
-    "type": "text-bw",
+    "type": "grayscale_text",
     "data": {
         "builtin": false,
         "name": "picasso-text",

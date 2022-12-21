@@ -2,8 +2,10 @@ import math
 import random
 
 from matplotlib import pyplot as plt
-from individual import Individual
-from main import source_image
+from .individual import Individual
+
+# SRC_IMAGE_PATH = "Images/Mona_Lisa_head.jpg"
+SRC_IMAGE_PATH = "images/mona_lisa_bn.jpg"
 
 
 def createPopulation(numPopulation, xsize, ysize, numLines, maxSegLen):
@@ -64,7 +66,7 @@ def plotImages(image, header=None):
 
     # plot the reference image on the left:
     ax = fig.add_subplot(1, 2, 1)
-    plt.imshow(source_image, cmap=plt.get_cmap('gray'))
+    plt.imshow(SRC_IMAGE_PATH, cmap=plt.get_cmap('gray'))
     ticksOff(plt)
 
     # plot the given image on the right:

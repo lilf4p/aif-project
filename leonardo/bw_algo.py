@@ -10,13 +10,13 @@ import numpy
 import os
 import sys
 
-import modules.image_test as image_test
-import modules.elitism_callback as elitism_callback
+import leonardo.modules.image_test as image_test
+import leonardo.modules.elitism_callback as elitism_callback
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from modules.config import get_config, get_experiment_names, load_json
+from .modules.config import get_config, get_experiment_names, load_json
 
 # setup the algorithm with the given experiment name
 def setup (config : dict):
