@@ -1,5 +1,5 @@
 import cv2
-from utils import *
+from genetic_operations import *
 import statistics
 
 PRINT_EVERY_GEN = 25  # Print fitness value every x generations

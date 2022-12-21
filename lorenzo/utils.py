@@ -1,100 +1,44 @@
-#from genetic_from_text import original_image, original_height, original_width
-import string
-import random
-from skimage.metrics import peak_signal_noise_ratio as psnr 
-from skimage.metrics import mean_squared_error as mse
-from skimage.metrics import structural_similarity as ssim
-from PIL import Image, ImageDraw, ImageFont
-import numpy as np
+import json
 
+def load_json_file(json_path):
+    with open(json_path) as json_file:
+        data = json.load(json_file)
+        return data
 
-def load_image(image_path):
-    global original_image 
-    global original_height, original_width 
-    original_image = Image.open(image_path).convert("L")
-    original_height, original_width  = original_image.size
+def get_experiment_config(config):
+    if config['builtin']:
+        name = config['name']
+        builtin_experiments = load_json_file("builtin_config.json")
+        if name not in list(builtin_experiments.keys()):
+            raise ValueError("builtin experiment not present")
+        else:
+            return builtin_experiments[name]
+    else:
+        return config
 
-def draw_text(image, size=20):
-    """Draw random text on image with given size."""
-    #font = ImageFont.truetype("arial.ttf", size)
-    font = ImageFont.load_default()
-    text_length = random.randint(1,3)
-    text = "".join(random.choice(string.ascii_letters) for i in range(text_length))
+def check_config(config):
 
-    x = random.randint(0,original_width-1)
-    y = random.randint(0,original_height-1)
-
-    color = (random.randint(0,255))
-    image.text((y,x), text, fill=color, font=font)
-
-def add_random_shape_to_image(image, number_of_shapes):
-    """Add shape with random proporties to image number_of_shapes times."""
-    image_filled = image.copy()
-    for _ in range(0, number_of_shapes):
-        draw = ImageDraw.Draw(image_filled)
-        draw_text(draw)
-    return image_filled
-
-def create_random_population(size, mutation_strength):
-    """Create first generation with random population."""
-    first_population = []
-    for _ in range(0, size):
-        blank_image = Image.new("L", (original_height, original_width))
-        filled_image = add_random_shape_to_image(blank_image, mutation_strength)
-        first_population.append(filled_image)
-    return first_population
-
-def evaluate_fitness(image, distance):
-    """Evaluate similarity of image with original."""
-    if (distance == "psns"):
-        return psnr(np.array(image), np.array(original_image))
-
-    if (distance == "mse"):
-        return mse(np.array(image), np.array(original_image))
-
-    return psnr(np.array(image), np.array(original_image))
-
-# Crossover operations with alternatives and helpers
-
-def images_to_arrays(image1, image2):
-    """Represent images as arrays."""
-    img1_arr = np.array(image1)
-    img2_arr = np.array(image2)
-    return img1_arr ,img2_arr
-
-def random_horizontal_swap(image1, image2):
-    """Swap random rows of two images."""
-    img1_arr, img2_arr = images_to_arrays(image1, image2)
-    horizontal_random_choice = np.random.choice(original_width,
-                                                int(original_width/2),
-                                                replace=False)
-    img1_arr[horizontal_random_choice] = img2_arr[horizontal_random_choice]
-    return Image.fromarray(img1_arr)
-
-def crossover(image1, image2):
-    """Make crossover operation on two images."""
-    return random_horizontal_swap(image1, image2)
-
-def mutate(image, number_of_times):
-    """Mutate image adding random shape number_of_times."""
-    mutated = add_random_shape_to_image(image, number_of_times)
-    return mutated
-
-def get_parents(local_population, local_fitnesses, distance):
-    """Connect parents in pairs based on fitnesses as weights using softmax."""
-
-    if(distance == "mse"):
-            local_fitnesses = 1 / np.array(local_fitnesses)
+    params = list(config.keys())
+    error_message = "x"
+    if 'image_path' not in params:
+        error_message = "image_path is missing"
+    elif 'distance_metric' not in params:
+        error_message = "distance_metric is missing"
+    elif 'max_epochs' not in params:
+        error_message = "max_epochs is missing"
+    elif 'population_size' not in params:
+        error_message = "population_size is missing"
+    elif 'mutation_chance' not in params:
+        error_message = "mutation_chance is missing"
+    elif 'mutation_strength' not in params:
+        error_message = "mutation_strength is missing"
+    elif 'elitism' not in params:
+        error_message = "elitism is missing"
+    elif 'elitism_size' not in params:
+        error_message = "elitism_size is missing"
     
-    fitness_normalized = []
-    for f in local_fitnesses:
-        newf = (f - min(local_fitnesses)) / (max(local_fitnesses) - min(local_fitnesses))
-        fitness_normalized.append(newf)
-    
-    fitness_sum = sum(np.exp(fitness_normalized))
-    fitness_activated = np.exp(fitness_normalized) / fitness_sum
-    local_parents_list = []
-    for _ in range(0, len(local_population)):
-        parents = random.choices(local_population, weights=fitness_activated, k=2)
-        local_parents_list.append(parents)
-    return local_parents_list
+    if error_message == "x": 
+        print("configuration checked!")
+    else:
+        raise ValueError(error_message + "!\nThe configuration needs the following parameters:" + 
+        "image_path, distance_metric, max_epochs, population_size, mutation_chance, mutation_strength, elitism, elitism_size")
