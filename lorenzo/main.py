@@ -11,7 +11,7 @@ def text_reconstruction(user_config):
 
     config = get_experiment_config(user_config)
     experiment_name = user_config['name']
-    check_config(config)
+    config = check_config(config)
     print("running {} experiment with the following configuration:".format(experiment_name))
     print(config)
     IMAGE_PATH = config['image_path']

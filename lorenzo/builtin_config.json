@@ -1,6 +1,6 @@
 { 
     "picasso-text-long": { 
-        "image_path" :"images/cubismo_picasso.jpg" ,
+        "image_path" :"images/cubismo_picasso.jpg" ,     
         "distance_metric" :  "mse" ,
         "max_epochs" : 15000,
         "population_size" :  50 ,
