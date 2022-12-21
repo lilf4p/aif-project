@@ -1,4 +1,6 @@
 # Cython (if compiled) or Python crossover/mutation etc. operators
+from .python_algos import *
+
 try:
     import cython_algos
     IS_CYTHON_VERSION = True
@@ -9,10 +11,15 @@ try:
 except ImportError:
     cython_algos = None
     IS_CYTHON_VERSION = False
-    from salvatore.utils.operators import *
     cy_simulated_binary_bounded = np_cx_simulated_binary_bounded
     cy_mut_polynomial_bounded = np_mut_polynomial_bounded
     cy_swap_points = np_cx_swap_points
+
+
+# Fallback Python versions
+py_simulated_binary_bounded = np_cx_simulated_binary_bounded
+py_mut_polynomial_bounded = np_mut_polynomial_bounded
+py_swap_points = np_cx_swap_points
 
 
 __all__ = [
@@ -20,4 +27,12 @@ __all__ = [
     'cy_mut_polynomial_bounded',
     'cy_swap_points',
     'IS_CYTHON_VERSION',
+
+    'py_simulated_binary_bounded',
+    'py_mut_polynomial_bounded',
+    'py_swap_points',
+
+    'np_cx_swap_points',
+    'np_cx_simulated_binary_bounded',
+    'np_mut_polynomial_bounded',
 ]

@@ -1,7 +1,7 @@
 {
   "type": "contours_points",
   "data": {
-    "name": "table_nn_eiffel_tower",
+    "name": "table_nn_eiffel_tower_no_cython",
     "builtin": true
   }
 }

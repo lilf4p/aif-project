@@ -3,7 +3,7 @@ import json
 import sys
 
 from salvatore.config import parse_experiment_data as salvatore_parse_experiment_data
-from leonardo.bw_reconstruct import main as leonardo_parse_experiment_data
+from leonardo.bw_algo import bw_algo as leonardo_parse_experiment_data
 
 
 RGB_POLYGONS = 'rgb_polygons'
@@ -17,6 +17,7 @@ CONTOURS_POINTS = 'contours_points'
 
 
 def file_main(config_file_path: str):
+    print(os.getcwd())
     with open(config_file_path, 'r') as fp:
         config_data = json.load(fp)
 

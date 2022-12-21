@@ -47,7 +47,7 @@ class ImageTest:
         # divide the polygonData to chunks, each containing the data for a single polygon:
         chunkSize = self.polygonSize * 2 + 4 # (x,y) per vertex + (RGBA) default
         # chunkSize = self.polygonSize * 2 + 5 # (x,y,r) per vertex + (RGBA)
-        polygons = self.list2Chunks(polygonData, c6hunkSize)
+        polygons = self.list2Chunks(polygonData, chunkSize)
         radius = self.width/20 if self.width < self.height else self.height/20
         # max_radius = self.width/20 if self.width < self.height else self.height/20
         # iterate over all polygons and draw each of them into the image:
