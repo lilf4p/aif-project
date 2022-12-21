@@ -2,12 +2,50 @@
 from __future__ import annotations
 import os
 import json
+import schema as sch
 from salvatore.utils.algorithms import *
 from salvatore.experiments import Experiment
 
 
 class Logger:
     # For logging general data
+
+    @staticmethod
+    def logger_schema():
+        return {
+            'dir_path': str,
+            sch.Optional('json_file_path'): str,
+            sch.Optional('csv_file_path'): str,
+            sch.Optional('stats_gen_step'): int,
+            sch.Optional('csv_gen_step'): int,
+            sch.Optional('headers'): list[str],
+            sch.Optional('stats_fields'): sch.Or(list, tuple),
+        }
+
+    @classmethod
+    def from_config(cls, config: dict) -> Logger:
+        schema = sch.Schema(cls.logger_schema())
+        config = schema.validate(config)
+        return cls(**config)
+
+    def __init__(self, dir_path, json_file_path='exp_data.json', csv_file_path='exp_log.csv',
+                 stats_gen_step: int = 50, csv_gen_step: int = 25, headers=None,
+                 stats_fields=(), experiment: Experiment = None):
+        self.dir_path = dir_path
+        # Set output files paths
+        self.json_file_path = os.path.join(dir_path, json_file_path)
+        self.csv_file_path = os.path.join(dir_path, csv_file_path)
+        self.json_fp = None
+        self.csv_fp = None
+
+        self.stats_gen_step = stats_gen_step
+        self.csv_gen_step = csv_gen_step
+        self.last_gen_recorded = 0
+        self.dict = {'experiment': {'stats': []}}
+        self.headers = headers if headers is not None else ['gen', 'nevals', 'time'] + list(stats_fields)
+        # Initialize logging output if the user has already given the experiment
+        if experiment is not None:
+            self.set_experiment_vals(experiment)
 
     def set_experiment_vals(self, experiment: Experiment):
         # Deferred experiment initialization data logging. Call it if you cannot pass the experiment
@@ -31,25 +69,6 @@ class Logger:
             'hof_size': experiment.hof_size,
             'stats': [],
         }
-
-    def __init__(self, dir_path, json_file_path='exp_data.json', csv_file_path='exp_log.csv',
-                 stats_gen_step: int = 50, csv_gen_step: int = 25, headers=None,
-                 stats_fields=(), experiment: Experiment = None):
-        self.dir_path = dir_path
-        # Set output files paths
-        self.json_file_path = os.path.join(dir_path, json_file_path)
-        self.csv_file_path = os.path.join(dir_path, csv_file_path)
-        self.json_fp = None
-        self.csv_fp = None
-
-        self.stats_gen_step = stats_gen_step
-        self.csv_gen_step = csv_gen_step
-        self.last_gen_recorded = 0
-        self.dict = {'experiment': {'stats': []}}
-        self.headers = headers if headers is not None else ['gen', 'nevals', 'time'] + list(stats_fields)
-        # Initialize logging output if the user has already given the experiment
-        if experiment is not None:
-            self.set_experiment_vals(experiment)
 
     def __call__(self, algorithm: EAlgorithm):
         # Handles case in which the user has not specified the experiment

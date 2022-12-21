@@ -53,12 +53,13 @@ class LinesNNPointContoursMetric(ContoursLineMetric):
         length = len(individual)
         for chunk in range(0, length // 2, self.chunk_size // 2):
             start = (int(individual[chunk] * self.image_width), int(individual[chunk+1] * self.image_height))
-            end = (int(individual[length-2-chunk] * self.image_width), int(individual[length-1-chunk] * self.image_height))
+            end = (int(individual[length-2-chunk] * self.image_width),
+                   int(individual[length-1-chunk] * self.image_height))
             yield start, end
 
     def standardize_individual(self, individual, check_repr=False) -> tuple[np.ndarray, np.ndarray]:
-        # reshape and rescale
-        reshaped = np.reshape(individual, (self.num_points, 2))
+        reshaped = individual.copy()
+        reshaped = np.reshape(reshaped, (self.num_points, 2))
         r0, r1 = reshaped[:, 0], reshaped[:, 1]
         r0 *= self.image_width
         r1 *= self.image_height
@@ -66,7 +67,7 @@ class LinesNNPointContoursMetric(ContoursLineMetric):
         img = create_monochromatic_image(self.image_width, self.image_height, device='cpu')
         for start, end in self.list_to_chunks(individual):
             img = cv2.line(img, start, end, color=0)
-        return img, reshaped.astype(dtype=np.int32).T  # first numpy/cupy image, then array for distances
+        return img, reshaped.astype(dtype=np.intp).T  # first array image, then array for distances
 
     def _core_get_difference(self, individual: TArray, index: int = 0):
         individual_img, individual_points = self.standardize_individual(individual)
