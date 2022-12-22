@@ -1,5 +1,9 @@
 {
   "table_nn_eiffel_tower_cython": {
+    "__description__": [
+      "Experiment that uses the distances table approach for reconstructing contours ",
+      "of the Eiffel Tower image (160x316), and by using Cython functions for faster execution."
+    ],
     "function": "test_table_target_points_nn",
     "dir_path": ".",
     "image_path": "images/torre eiffel.jpg",
@@ -41,6 +45,10 @@
     }
   },
   "table_nn_eiffel_tower_no_cython": {
+    "__description__": [
+      "Same as `table_nn_eiffel_tower_cython`, but without using Cython. ",
+      "A fallback experiment in case Cython compilation fails or one does not want to install Cython."
+    ],
     "function": "test_table_target_points_nn",
     "dir_path": ".",
     "image_path": "images/torre eiffel.jpg",
@@ -83,6 +91,10 @@
   },
 
   "table_nn_mona_lisa_cython": {
+    "__description__": [
+      "Experiment that uses the distances table approach for reconstructing contours ",
+      "of the Mona Lisa RGB image (165x190), and by using Cython functions for faster execution."
+    ],
     "function": "test_table_target_points_nn",
     "dir_path": ".",
     "image_path": "images/Mona_Lisa_head.png",
@@ -124,6 +136,10 @@
     }
   },
   "table_nn_mona_lisa_no_cython": {
+    "__description__": [
+      "Same as `table_nn_mona_lisa_cython`, but without using Cython. ",
+      "A fallback experiment in case Cython compilation fails or one does not want to install Cython."
+    ],
     "function": "test_table_target_points_nn",
     "dir_path": ".",
     "image_path": "images/Mona_Lisa_head.png",
@@ -166,6 +182,10 @@
   },
 
   "table_nn_singapore_400x300_cython": {
+    "__description__": [
+      "Experiment that uses the distances table approach for reconstructing contours of the 400x300 ",
+      "version of the Singapore skyline image, and by using Cython functions for faster execution."
+    ],
     "function": "test_table_target_points_nn",
     "dir_path": ".",
     "image_path": "images/Singapore_skyline_400x300.jpg",
@@ -208,6 +228,10 @@
   },
 
   "table_nn_singapore_600x450_cython": {
+    "__description__": [
+      "Experiment that uses the distances table approach for reconstructing contours of the 600x450 ",
+      "version of the Singapore skyline image, and by using Cython functions for faster execution."
+    ],
     "function": "test_table_target_points_nn",
     "dir_path": ".",
     "image_path": "images/Singapore_skyline_600x450.jpg",
@@ -250,6 +274,11 @@
   },
 
   "lines_nn_eiffel_tower_cython": {
+    "__description__": [
+      "Experiment that uses the combined approach of MSE for lines and distances table for line extremes ",
+      "for reconstructing contours of the Eiffel Tower image (160x316) ",
+      "and by using Cython functions for faster execution."
+    ],
     "function": "test_lines_nn",
     "dir_path": ".",
     "image_path": "images/torre eiffel.jpg",
@@ -292,6 +321,11 @@
   },
 
   "lines_nn_mona_lisa_cython": {
+    "__description__": [
+      "Experiment that uses the combined approach of MSE for lines and distances table for line extremes ",
+      "for reconstructing contours of the Mona Lisa RGB image (165x190) ",
+      "and by using Cython functions for faster execution."
+    ],
     "function": "test_lines_nn",
     "dir_path": ".",
     "image_path": "images/Mona_Lisa_head.png",
@@ -334,6 +368,11 @@
   },
 
   "table_op_eiffel_tower_cython": {
+    "__description__": [
+      "Experiment that uses the distances table approach with a penalty for overlapping ",
+      "individual points for reconstructing contours of the Eiffel Tower image ",
+      "(160x316), and by using Cython functions for faster execution."
+    ],
     "function": "test_table_target_points_overlap_penalty",
     "dir_path": ".",
     "image_path": "images/torre eiffel.jpg",
@@ -376,6 +415,11 @@
   },
 
   "table_op_mona_lisa_cython": {
+    "__description__": [
+      "Experiment that uses the distances table approach with a penalty for overlapping ",
+      "individual points for reconstructing contours of the Mona Lisa RGB image ",
+      "(165x190), and by using Cython functions for faster execution."
+    ],
     "function": "test_table_target_points_overlap_penalty",
     "dir_path": ".",
     "image_path": "images/Mona_Lisa_head.png",

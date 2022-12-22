@@ -31,6 +31,19 @@ def _parse_stopping_criterions(data: dict):
     return result
 
 
+def print_builtin_help():
+    with open(_BUILTINS_FILE_PATH, 'r') as _builtins_fp:
+        _BUILTINS_DATA: dict = json.load(_builtins_fp)
+    results = {}
+    for name, data in _BUILTINS_DATA.items():
+        description = data.pop('__description__', None)
+        if description is None:
+            description = ["<missing description>"]
+        description = ''.join(description)
+        results[name] = description
+    return results
+
+
 def parse_experiment_data(data: dict):
     is_builtin = data.get('builtin', False)
     if is_builtin:
@@ -42,6 +55,7 @@ def parse_experiment_data(data: dict):
         experiment_data = _BUILTINS_DATA.get(builtin_name, None).copy()
         if experiment_data is None:
             raise ValueError(f"Unknown builtin experiment {builtin_name}")
+        experiment_data.pop('__description__')
     else:
         experiment_data = data.copy()
         experiment_data.pop('builtin')
@@ -58,4 +72,4 @@ def parse_experiment_data(data: dict):
     return function(**experiment_data)
 
 
-__all__ = ['parse_experiment_data']
+__all__ = ['print_builtin_help', 'parse_experiment_data']

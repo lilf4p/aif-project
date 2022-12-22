@@ -45,10 +45,10 @@ def build_distance_table_2(
     # Number of 'blocks'
     blocks_number = math.ceil(image_height / block_height)
     # At each iteration we will calculate the minimum of the values that get memorized there
-    target_aux_blocks = vp.zeros((blocks_number, image_width), dtype=np.intp)
+    target_aux_blocks = vp.zeros((blocks_number, image_width), dtype=vp.intp)
     # Build table of distances
-    target_table = vp.full((image_height, image_width), -1, dtype=np.intp)
-    target_aux_0 = vp.zeros((2, block_height, image_width), dtype=np.intp)
+    target_table = vp.full((image_height, image_width), -1, dtype=vp.intp)
+    target_aux_0 = vp.zeros((2, block_height, image_width), dtype=vp.intp)
     if device == 'gpu':
         aux = cp.asarray(aux)
     for i in range(image_height):
@@ -96,7 +96,36 @@ def build_distance_table(image_height, image_width, num_targets, aux, device='cp
     return target_table
 
 
+@timeit()
+def build_distance_table_new(image_height, image_width, num_targets, aux, device='cpu'):
+    vp = np if device == 'cpu' else cp
+    target_aux_0 = vp.zeros((2, num_targets, image_width), dtype=np.intp)
+    aux_height = vp.zeros(len(aux), dtype=np.intp)
+    # target_aux_0[0]/[1] contains the image widths and heights for all the target points for all
+    # the x coordinates
+    if device == 'gpu':
+        aux = cp.asarray(aux)
+
+    # Build table of distances
+    target_table = vp.full((image_height, image_width), -1, dtype=np.intp)
+    # Ciclo sull'altezza prima e poi sulla larghezza, quindi per l'altezza posso sottrarre la stessa
+    # quantità da tutto target_aux_1[1], mentre per l'ampiezza devo sottrarre ogni volta l'ampiezza
+    # corrispondente (sto facendo il calcolo per i punti (i<costante>, j=0,...,image_width-1)
+    for i in range(image_height):
+        vp.abs(aux[:, 1] - i, out=aux_height)
+        for j in range(image_width):
+            target_aux_0[0, :, j] = vp.abs(aux[:, 0] - j)
+            target_aux_0[1, :, j] = aux_height  # vp.abs(aux[:, 1] - i)
+        target_aux_0 = vp.abs(target_aux_0)
+        target_aux_2 = vp.sum(target_aux_0, axis=0)
+        result = vp.min(target_aux_2, axis=0)
+        target_table[i, :] = result
+    return target_table
+
+
 __all__ = [
     'extract_contours',
     'build_distance_table',
+    'build_distance_table_new',
+    'build_distance_table_2',
 ]
