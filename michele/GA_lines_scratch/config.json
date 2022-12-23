@@ -2,6 +2,7 @@
   "monalisa-contour":
   {
     "image_path" : "images/mona_lisa_bn.jpg",
+    "output_folder": "output",
     "num_lines": 800,
     "max_generation": 500,
     "num_population": 100,
