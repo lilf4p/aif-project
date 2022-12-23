@@ -1,5 +1,5 @@
 from PIL import Image
-
+import pathlib
 
 import michele.GA_lines_scratch.utils as utils
 
@@ -20,6 +20,7 @@ def experiment_schema():
     return {
         # Experiment-proper parameters
         'image_path': str,
+        'output_folder': str,
         schema.Optional('num_lines', default=800): int,
         schema.Optional('max_generation', default=500): int,
         schema.Optional('num_population', default=100): int,
@@ -91,6 +92,7 @@ def runAlghoritm(config):
     MUTANT_PERC = config["mutant_per"]
     INHERITANCE_RATE = config["inheritance_rate"]
     LEN_LINES = config["len_lines"]
+    OUT_FOLDER = config["output_folder"]
 
     # carica immagine
     source_image = Image.open(SRC_IMAGE_PATH)
@@ -112,7 +114,8 @@ def runAlghoritm(config):
         print(f"Generation {generation}")
         if generation % 5 == 0:
             img = sortedPopulation[0].matrixToImage()
-            filename = "output"
+            filename = OUT_FOLDER
+            pathlib.Path(filename).mkdir(parents=True, exist_ok=True)
             saveImage(SRC_IMAGE_PATH, img,
                       "{}/after-{}-gen.jpg".format(filename, generation),
                       "After {} Generations".format(generation))
