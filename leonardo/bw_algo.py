@@ -20,7 +20,7 @@ from schema import Schema, Optional, And, Or, Use, SchemaError
 
 from schema import Schema, Optional, And, Or, Use, SchemaError
 
-from modules.config import get_config, get_experiment_names, load_json
+from .modules.config import get_config, get_experiment_names, load_json
 
 # setup the algorithm with the given experiment name
 def setup (config : dict):
