@@ -1,13 +1,10 @@
 {
-    "type": "text-bw",
+    "type": "grayscale_text",
     "data": {
-        "builtin": false,
+        "builtin": true,
         "name": "picasso-text",
         "distance_metric" :  "mse" ,
-        "image_path" :"images/cubismo_picasso15072.jpg" ,    
-        "max_epochs" : 8000,
-        "population_size" :  50 ,
-        "elitism" : true,
-        "elitism_size" : 5  
+        "image_path" :"images/cubismo_picasso.jpg" ,    
+        "max_epochs" : 8000
     }
 }

@@ -125,8 +125,8 @@ def test_table_singapore(resolution: str = '400x300', use_cython=True):
 if __name__ == '__main__':
     # Uncomment the following that you want to test
     # test_table_singapore(use_cython=True)
-    # test_table_eiffel_tower(use_cython=True)
-    test_lines_nn_eiffel_tower(use_cython=True)
+    test_table_eiffel_tower(use_cython=True)
+    # test_lines_nn_eiffel_tower(use_cython=True)
     """
     test_table_op_eiffel_tower(use_cython=True)
     test_table_eiffel_tower(use_cython=True)

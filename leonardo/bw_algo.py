@@ -10,11 +10,13 @@ import numpy
 import os
 import sys
 
-import modules.image_test as image_test
-import modules.elitism_callback as elitism_callback
+import leonardo.modules.image_test as image_test
+import leonardo.modules.elitism_callback as elitism_callback
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+from schema import Schema, Optional, And, Or, Use, SchemaError
 
 from schema import Schema, Optional, And, Or, Use, SchemaError
 

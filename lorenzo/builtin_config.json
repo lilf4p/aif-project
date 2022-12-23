@@ -1,6 +1,6 @@
 { 
     "picasso-text-long": { 
-        "image_path" :"images/cubismo_picasso15072.jpg" ,     
+        "image_path" :"images/cubismo_picasso.jpg" ,     
         "distance_metric" :  "mse" ,
         "max_epochs" : 15000,
         "population_size" :  50 ,
@@ -11,7 +11,7 @@
     },
 
     "picasso-text": { 
-        "image_path" :"images/cubismo_picasso15072.jpg" ,     
+        "image_path" :"images/cubismo_picasso.jpg" ,
         "distance_metric" :  "mse" ,
         "max_epochs" : 8000,
         "population_size" :  50 ,
@@ -21,7 +21,7 @@
         "elitism_size" : 5  
     },
 
-    "monalisa": { 
+    "monalisa-text": {
         "image_path" :"images/Mona_Lisa_head.png" ,     
         "distance_metric" :  "mse" ,
         "max_epochs" : 5000,

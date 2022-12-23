@@ -3,6 +3,8 @@
 # If compilation fails, try to run the same command (<python_name_in_your_machine> setup.py build_ext --inplace)
 # Solution for multi-OS is taken from: https://stackoverflow.com/questions/394230/how-to-detect-the-os-from-a-bash-script
 
+SETUP="cython_algorithms/setup.py"
+
 # Detect Operating System
 OS=""
 case "$OSTYPE" in
@@ -32,16 +34,16 @@ if [[ "$1" == "build" ]]; then
   # Build case
   case "$OS" in
     "linux")
-      python3 setup.py build_ext --inplace
+      python3 "$SETUP" build_ext --inplace
       ;;
     "windows")
-      python setup.py build_ext --inplace
+      python "$SETUP" build_ext --inplace
       ;;
     "mac")
-      python3 setup.py build_ext --inplace
+      python3 "$SETUP" build_ext --inplace
       ;;
     *)
-      python setup.py build_ext --inplace
+      python "$SETUP" build_ext --inplace
       ;;
   esac
 elif [[ "$1" == "clean" ]]; then

@@ -1,5 +1,5 @@
 {
-    "type": "ellissi-bw",
+    "type": "grayscale_ellipses",
     "data": {
         "builtin": false,
         "image_path" : "images/monalisabw.jpg" ,

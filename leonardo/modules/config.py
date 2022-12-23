@@ -2,12 +2,12 @@
 import json
 
 def get_config(experiment_name: str):
-    with open('default_experiments.json') as json_file:
+    with open('leonardo/default_experiments.json') as json_file:
         data = json.load(json_file)
         return data[experiment_name]
 
 def get_experiment_names():
-    with open('default_experiments.json') as json_file:
+    with open('leonardo/default_experiments.json') as json_file:
         data = json.load(json_file)
         return list(data.keys())
 
