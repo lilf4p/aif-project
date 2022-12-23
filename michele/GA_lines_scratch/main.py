@@ -1,5 +1,7 @@
 from PIL import Image
 import pathlib
+import schema
+import matplotlib.pyplot as plt
 
 import michele.GA_lines_scratch.utils as utils
 
@@ -60,7 +62,7 @@ def plotImages(source_image, image, header=None):
 
     # plot the reference image on the left:
     ax = fig.add_subplot(1, 2, 1)
-    plt.imshow(source_image, cmap=plt.get_cmap('gray'))
+    plt.imshow(image, cmap=plt.get_cmap('gray'))
     ticksOff(plt)
 
     # plot the given image on the right:
@@ -80,7 +82,7 @@ def saveImage(source_image, image, imageFilePath, header=None):
 
 
 def runAlghoritm(config):
-    sch = Schema(experiment_schema())
+    sch = schema.Schema(experiment_schema())
     config = sch.validate(config)
 
     SRC_IMAGE_PATH = config["image_path"]
@@ -109,7 +111,8 @@ def runAlghoritm(config):
     while generation < MAX_GENERATIONS:
         generation += 1
         sortedPopulation = utils.nextGeneration(source_image,sortedPopulation,HALL_OF_FAME_SIZE,
-                                                growthRate=GROWTH_RATE, mutantPerc=MUTANT_PERC,inheritanceRate=INHERITANCE_RATE)
+                                                growthRate=GROWTH_RATE, mutantPerc=MUTANT_PERC,
+                                                inheritanceRate=INHERITANCE_RATE)
         print(f"Error of the best individual: {sortedPopulation[0].error}")
         print(f"Generation {generation}")
         if generation % 5 == 0:
