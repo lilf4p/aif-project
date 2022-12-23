@@ -2,12 +2,12 @@
   "monalisa-contour":
   {
     "image_path" : "images/mona_lisa_bn.jpg",
-    "numlines": 800,
+    "num_lines": 800,
     "max_generation": 500,
     "num_population": 100,
-    "hall_of_fame_size": 100,
+    "hall_of_fame_size": 30,
     "growth_rate": 0.5,
-    "mutant_perc": 0.1,
+    "mutant_per": 0.1,
     "inheritance_rate": 0.2,
     "len_lines": 5
   }
