@@ -1,7 +1,15 @@
 {
     "type": "ellissi-bw",
     "data": {
-        "builtin": true,
-        "name" : "monalisa-ellissi-mse"
+        "builtin": false,
+        "image_path" : "images/monalisabw.jpg" ,
+        "polygon_size" :  2 ,
+        "multi_objective" :  false ,
+        "distance_metric" :  "MSE" ,
+        "population_size" :  500 ,
+        "max_generations" :  1000 ,
+        "hof_size" :  50 ,
+        "crowding_factor" :  10.0,
+        "output_path" : "./output"    
     }
 }

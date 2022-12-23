@@ -16,6 +16,8 @@ import modules.elitism_callback as elitism_callback
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from schema import Schema, Optional, And, Or, Use, SchemaError
+
 from modules.config import get_config, get_experiment_names, load_json
 
 # setup the algorithm with the given experiment name
@@ -30,33 +32,53 @@ def setup (config : dict):
     else:
         # use parameters of dict in input
         # check if all parameters are present
-        if "num_polygons" not in config:
-            config["num_polygons"] = 400
-        if "polygon_size" not in config:
-            config["polygon_size"] = 2
-        if "population_size" not in config:
-            config["population_size"] = 100
-        if "p_crossover" not in config:
-            config["p_crossover"] = 0.9
-        if "p_mutation" not in config:
-            config["p_mutation"] = 0.7
-        if "max_generations" not in config:
-            config["max_generations"] = 1000
-        if "hof_size" not in config:
-            config["hof_size"] = 5
-        if "crowding_factor" not in config:
-            config["crowding_factor"] = 10.0
-        if "distance_metric" not in config:
-            config["distance_metric"] = "MSE+SSIM"
-        if "multi_objective" not in config:
-            config["multi_objective"] = False
-        if "image_path" not in config:
-            raise ValueError("image_path not found")
-        if "output_path" not in config:
-            # add entry to config
-            config["output_path"] = "./output"
+        #if "num_polygons" not in config:
+        #    config["num_polygons"] = 400
+        #if "polygon_size" not in config:
+        #    config["polygon_size"] = 2
+        #if "population_size" not in config:
+        #    config["population_size"] = 100
+        #if "p_crossover" not in config:
+        #    config["p_crossover"] = 0.9
+        #if "p_mutation" not in config:
+        #    config["p_mutation"] = 0.7
+        #if "max_generations" not in config:
+        #    config["max_generations"] = 1000
+        #if "hof_size" not in config:
+        #    config["hof_size"] = 5
+        #if "crowding_factor" not in config:
+        #    config["crowding_factor"] = 10.0
+        #if "distance_metric" not in config:
+        #    config["distance_metric"] = "MSE+SSIM"
+        #if "multi_objective" not in config:
+        #    config["multi_objective"] = False
+        #if "image_path" not in config:
+        #    raise ValueError("image_path not found")
+        #if "output_path" not in config:
+        #    # add entry to config
+        #    config["output_path"] = "./output"
 
-    
+        # define the schema for the config add the default values
+        schema = Schema({
+            Optional("num_polygons", default=400): int,
+            Optional("polygon_size", default=2): int,
+            Optional("population_size", default=100): int,
+            Optional("p_crossover", default=0.9): float,
+            Optional("p_mutation", default=0.7): float,
+            Optional("max_generations", default=1000): int,
+            Optional("hof_size", default=5): int,
+            Optional("crowding_factor", default=10.0): float,
+            Optional("distance_metric", default="MSE+SSIM"): str,
+            Optional("multi_objective", default=False): bool,
+            "image_path": str,
+            Optional("output_path", default="./output"): str,
+            })
+        
+        # validate the config
+        config.pop('builtin')
+        config = schema.validate(config)
+
+    print (config)
 
     # calculate total number of params in chromosome:
     # For each polygon we have:
