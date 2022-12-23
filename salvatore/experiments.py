@@ -330,6 +330,7 @@ def generic_experiment_test(
     logger=None, stopping_criterions=None, *args, **kwargs
 ):
     os.chdir(dir_path)
+
     experiment = experiment_class(
         image_path, population_size=population_size, p_crossover=p_crossover, p_mutation=p_mutation,
         max_generations=max_generations, hof_size=hof_size, random_seed=random_seed, save_image_dir=save_image_dir,

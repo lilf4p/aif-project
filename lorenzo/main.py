@@ -10,14 +10,14 @@ from .utils import get_experiment_config, load_json_file, check_config
 def text_reconstruction(user_config):
 
     config = get_experiment_config(user_config)
-    experiment_name = user_config['name']
+    experiment_name = user_config.get('name', 'custom')
     config = check_config(config)
     print("running {} experiment with the following configuration:".format(experiment_name))
     print(config)
     IMAGE_PATH = config['image_path']
     # Hyperparameters
-    DISTANCE_METRIC = config['distance_metric'] # Metric used for the fitness evaluation
-    NUMBER_OF_GENERATIONS = config['max_epochs'] # Max generations run
+    DISTANCE_METRIC = config['distance_metric']  # Metric used for the fitness evaluation
+    NUMBER_OF_GENERATIONS = config['max_epochs']  # Max generations run
     POPULATION_NUMBER = config['population_size']  # How many images in 1 generation (without elitism)
     MUTATION_CHANCE = config['mutation_chance']  # Chance of mutating (adding random shapes)
     MUTATION_STRENGTH = config['mutation_strength']  # How many shapes to add in mutation
@@ -36,12 +36,12 @@ def text_reconstruction(user_config):
     if ELITISM:
         save_dir = "{}_{}_gens{}_pop{}_mchance{}_mstrength{}_elit{}".format(
             experiment_name, DISTANCE_METRIC, NUMBER_OF_GENERATIONS, POPULATION_NUMBER,
-            MUTATION_CHANCE,MUTATION_STRENGTH,ELITISM_NUMBER
+            MUTATION_CHANCE, MUTATION_STRENGTH, ELITISM_NUMBER
         )
     else:
         save_dir = "{}_{}_gens{}_pop{}_mchance{}_mstrength{}".format(
             experiment_name, DISTANCE_METRIC, NUMBER_OF_GENERATIONS, POPULATION_NUMBER,
-            MUTATION_CHANCE,MUTATION_STRENGTH
+            MUTATION_CHANCE, MUTATION_STRENGTH
         )
 
     # save plot, gif and best output 

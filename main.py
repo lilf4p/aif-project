@@ -12,7 +12,6 @@ from michele.GA_lines_scratch import loadconfig as michele_parse_experiment_data
 
 
 RGB_POLYGONS = 'rgb_polygons'
-RGB_ELLIPSES = 'rgb_ellipses'
 
 GRAYSCALE_ELLIPSES = 'grayscale_ellipses'
 GRAYSCALE_LINES = 'grayscale_lines'
@@ -23,7 +22,7 @@ CONTOURS_LINES = 'contours_lines'
 
 
 TYPES = [
-    RGB_POLYGONS, RGB_ELLIPSES, GRAYSCALE_ELLIPSES, GRAYSCALE_LINES, GRAYSCALE_TEXT, CONTOURS_POINTS, CONTOURS_LINES
+    RGB_POLYGONS, GRAYSCALE_ELLIPSES, GRAYSCALE_LINES, GRAYSCALE_TEXT, CONTOURS_POINTS, CONTOURS_LINES
 ]
 
 
@@ -65,33 +64,34 @@ def file_run(config_file_path: str):
     Syntax for each experiment type can be displayed with the
     `syntax [--type=<experiment_type>]` command.
     """
-    with open(config_file_path, 'r') as fp:
-        config_data = json.load(fp)
+    try:
+        with open(config_file_path, 'r') as fp:
+            config_data = json.load(fp)
 
-    config_type = config_data.get('type', None)
-    config_experiment_data = config_data.get('data', None)
+        config_type = config_data.get('type', None)
+        config_experiment_data = config_data.get('data', None)
 
-    # Check for both not-None
-    if config_type is None:
-        raise ValueError("Must specify a type for your experiment config file!")
-    if config_experiment_data is None:
-        raise ValueError("Must specify experiment data in config file!")
+        # Check for both not-None
+        if config_type is None:
+            raise ValueError("Must specify a type for your experiment config file!")
+        if config_experiment_data is None:
+            raise ValueError("Must specify experiment data in config file!")
 
-    # Dispatch to target code
-    if config_type == RGB_POLYGONS:
-        pass  # todo Mohammed's code for RGB polygons
-    elif config_type == RGB_ELLIPSES:
-        pass  # todo code for RGB ellipses
-    elif config_type == GRAYSCALE_ELLIPSES:
-        leonardo_parse_experiment_data(config_experiment_data)
-    elif config_type == GRAYSCALE_LINES:
-        michele_parse_experiment_data(config_experiment_data)
-    elif config_type == GRAYSCALE_TEXT:
-        lorenzo_parse_experiment_data(config_experiment_data)
-    elif config_type == CONTOURS_POINTS:
-        salvatore_parse_experiment_data(config_experiment_data)
-    else:
-        raise ValueError(f"Unknown configuration type {config_type}")
+        # Dispatch to target code
+        if config_type == RGB_POLYGONS:
+            pass  # todo Mohammed's code for RGB polygons
+        elif config_type == GRAYSCALE_ELLIPSES:
+            leonardo_parse_experiment_data(config_experiment_data)
+        elif config_type in [GRAYSCALE_LINES, CONTOURS_LINES]:
+            michele_parse_experiment_data(config_experiment_data)
+        elif config_type == GRAYSCALE_TEXT:
+            lorenzo_parse_experiment_data(config_experiment_data)
+        elif config_type == CONTOURS_POINTS:
+            salvatore_parse_experiment_data(config_experiment_data)
+        else:
+            raise ValueError(f"Unknown configuration type {config_type}")
+    except Exception as ex:
+        traceback.print_exception(*sys.exc_info())
 
 
 @app.command()
