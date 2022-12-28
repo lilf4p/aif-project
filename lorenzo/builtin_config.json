@@ -1,5 +1,6 @@
 { 
     "picasso-text-long": { 
+        "description" : "Image reconstruction from text of the Picasso image. Long run version",
         "image_path" :"images/cubismo_picasso.jpg" ,     
         "distance_metric" :  "mse" ,
         "max_epochs" : 15000,
@@ -11,6 +12,7 @@
     },
 
     "picasso-text": { 
+        "description" : "Image reconstruction from text of the Picasso image.",
         "image_path" :"images/cubismo_picasso.jpg" ,
         "distance_metric" :  "mse" ,
         "max_epochs" : 8000,
@@ -22,6 +24,7 @@
     },
 
     "monalisa-text": {
+        "description" : "Image reconstruction from text of the Mona Lisa image.",
         "image_path" :"images/Mona_Lisa_head.png" ,     
         "distance_metric" :  "mse" ,
         "max_epochs" : 5000,
