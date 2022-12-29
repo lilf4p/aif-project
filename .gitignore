@@ -1,7 +1,11 @@
 .idea/
 .vscode/
 venv/
-results/old
 ignore*
 __pycache__/
+*.c
+*.pyd
+leonardo/__pycache__/
+./leonardo/build/
+.gitignore
 ```

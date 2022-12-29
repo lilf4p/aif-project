@@ -1,0 +1,10 @@
+{
+    "type": "grayscale_text",
+    "data": {
+        "builtin": false,
+        "name": "picasso-text",
+        "distance_metric" :  "mse" ,
+        "image_path" :"images/cubismo_picasso.jpg" ,    
+        "max_epochs" : 1000
+    }
+}

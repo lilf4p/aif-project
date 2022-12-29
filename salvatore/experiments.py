@@ -1,9 +1,9 @@
 # Base classes for experiments
 from __future__ import annotations
-from salvatore.utils.types import *
-from salvatore.utils.batch_algorithms import *
-from salvatore.utils.misc import *
+
 import os
+import pickle
+from salvatore.utils import *
 from datetime import datetime
 
 
@@ -17,11 +17,42 @@ class Experiment:
     def dir_exp_info(self):
         return f'_{self.population_size}pop_{self.max_generations}max_gen_{self.hof_size}hof_size'
 
-    def __init__(self, population_size: int = 200, p_crossover: TReal = 0.9,
-                 p_mutation: TReal = 0.5, max_generations: int = 1000, hof_size: int = 20,
+    @classmethod
+    @abstractmethod
+    def experiment_schema(cls):
+        return {
+            # Experiment-proper parameters
+            'image_path': str,
+            sch.Optional('population_size', default=250): int,
+            sch.Optional('p_crossover', default=0.9): float,
+            sch.Optional('p_mutation', default=0.5): float,
+            sch.Optional('max_generations', default=1000): int,
+            sch.Optional('hof_size', default=25): int,
+            sch.Optional('random_seed', default=10): int,
+            sch.Optional('save_image_dir', default=None): str,
+            sch.Optional('bounds_low', default=0.0): float,
+            sch.Optional('bounds_high', default=1.0): float,
+            sch.Optional('use_cython', default=True): bool,
+
+            # Other parameters (directory, loggers, callbacks etc.)  todo move to a 'generic experiment function'
+            'dir_path': str,
+            sch.Optional('save_image_gen_step', default=100): int,
+            sch.Optional('logger', default=None): Logger.logger_schema(),
+            sch.Optional('other_callback_args', default=None): {str: Any},
+            sch.Optional('stopping_criterions', default=None): {str: {str: Any}}
+        }
+
+    @classmethod
+    def from_config(cls, config: dict) -> Experiment:
+        schema = sch.Schema(cls.experiment_schema())
+        config = schema.validate(config)
+        return cls(**config)
+
+    def __init__(self, image_path: str, population_size: int = 250, p_crossover=0.9,
+                 p_mutation=0.5, max_generations: int = 1000, hof_size: int = 25,
                  random_seed: int = None, save_image_dir: str = None, device='cpu',
-                 algorithm: EAlgorithm = EASimpleWithElitismAndCallback(),
-                 bounds_low: float = None, bounds_high: float = None):
+                 algorithm: EAlgorithm = EASimpleForArrays(), bounds_low: float = None,
+                 bounds_high: float = None, use_cython: bool = True):
         self.metric = None  # subclasses must initialize
         self.population_size = population_size
         self.p_crossover = p_crossover
@@ -32,6 +63,7 @@ class Experiment:
         self.bounds_high = bounds_high
         self.crowding_factor = None
         self.num_params = None
+        self.use_cython = use_cython
 
         self.seed = random_seed
         if self.seed is not None:
@@ -42,7 +74,7 @@ class Experiment:
         # Where to save experiment results
         dr = self.base_save_dir + self.dir_exp_info
         save_image_dir = dr if save_image_dir is None else os.path.join(save_image_dir, dr)
-        self.save_image_dir = os.path.join('results', save_image_dir)
+        self.save_image_dir = os.path.join('salvatore', 'results', save_image_dir)
         os.makedirs(self.save_image_dir, exist_ok=True)
 
         self._show_results = False
@@ -76,7 +108,7 @@ class Experiment:
             plt.xlabel('Generation')
             plt.ylabel('Min / Average Fitness')
             plt.title('Min and Average fitness over Generations')
-            plt.savefig(os.path.join(self.save_image_dir, f'Stats after {gen} generations.png'))
+            plt.savefig(os.path.join(self.save_image_dir, f'Stats.png'))
             if show:
                 plt.show()
 
@@ -170,7 +202,7 @@ class Experiment:
     def set_individual(self):  # individual class and individualCreator
         # create the Individual class based on list:
         # noinspection PyUnresolvedReferences
-        dp_creator.create("Individual", list, fitness=dp_creator.FitnessMin)
+        dp_creator.create("Individual", np.ndarray, fitness=dp_creator.FitnessMin)
 
         # register an operator that randomly returns a float in the given range
         self.toolbox.register(
@@ -193,19 +225,32 @@ class Experiment:
 
     def set_select(self):
         # genetic operators
-        self.toolbox.register('select', dp_tools.selTournament, tournsize=2)
+        # self.toolbox.register('select', dp_tools.selTournament, tournsize=2)
+        self.toolbox.register('select', selection_tournament, tournsize=2)
 
     def set_mate(self):
-        self.toolbox.register(
-            "mate", dp_tools.cxSimulatedBinaryBounded, low=self.bounds_low,
-            up=self.bounds_high, eta=self.crowding_factor
-        )
+        if self.use_cython:
+            self.toolbox.register(
+                'mate', cy_simulated_binary_bounded, low=self.bounds_low,
+                up=self.bounds_high, eta=self.crowding_factor,
+            )
+        else:
+            self.toolbox.register(
+                "mate", py_simulated_binary_bounded, low=self.bounds_low,
+                up=self.bounds_high, eta=self.crowding_factor
+            )
 
     def set_mutate(self):
-        self.toolbox.register(
-            "mutate", dp_tools.mutPolynomialBounded, low=self.bounds_low, up=self.bounds_high,
-            eta=self.crowding_factor, indpb=1.0 / self.num_params
-        )
+        if self.use_cython:
+            self.toolbox.register(
+                "mutate", cy_mut_polynomial_bounded, low=self.bounds_low, up=self.bounds_high,
+                eta=self.crowding_factor, indpb=1.0 / self.num_params
+            )
+        else:
+            self.toolbox.register(
+                "mutate", py_mut_polynomial_bounded, low=self.bounds_low, up=self.bounds_high,
+                eta=self.crowding_factor, indpb=1.0 / self.num_params
+            )
 
     def setup(self):
         self.set_fitness()
@@ -215,6 +260,9 @@ class Experiment:
         self.set_select()
         self.set_mate()
         self.set_mutate()
+
+    def standard_hall_of_fame(self):
+        return ArrayHallOfFame(self.hof_size, similar=np.array_equal)
 
     # noinspection PyUnresolvedReferences
     def run(self, show: bool = False, callbacks: TCallback = None, verbose: bool = True):
@@ -231,7 +279,7 @@ class Experiment:
         stats.register("avg", np.mean)
 
         # define the hall-of-fame object:
-        hof = ArrayHallOfFame(self.hof_size)
+        hof = self.standard_hall_of_fame()
 
         # perform the Genetic Algorithm flow with elitism and 'save_image' callback:
         # noinspection PyUnusedLocal
@@ -259,7 +307,41 @@ class Experiment:
         # save statistics at the end of the experiment
         self.save_stats(self.algorithm, show=True)
 
+        # save best image
+        best_image_file_name = os.path.join(self.save_image_dir, 'best.png')
+        best_image = self.metric.get_individual_image(best).convert('L')
+        best_image.save(best_image_file_name)
+
+        # save the best individual as NumPy array
+        best_ind_file_name = os.path.join(self.save_image_dir, 'best.pkl')
+        with open(best_ind_file_name, 'wb') as fp:
+            pickle.dump(best, fp)
+
+        # save gif of generated images
+        create_gif(self.save_image_dir)
+
+
+def generic_experiment_test(
+    experiment_class: Type[Experiment], dir_path: str, image_path: str,
+    p_crossover=0.9, p_mutation=0.5, population_size=250, max_generations=1000,
+    random_seed=10, hof_size=25, save_image_dir: str = None,
+    bounds_low=0.0, bounds_high=1.0, use_cython=True,
+    save_image_gen_step=100, other_callback_args=None,
+    logger=None, stopping_criterions=None, *args, **kwargs
+):
+    os.chdir(dir_path)
+
+    experiment = experiment_class(
+        image_path, population_size=population_size, p_crossover=p_crossover, p_mutation=p_mutation,
+        max_generations=max_generations, hof_size=hof_size, random_seed=random_seed, save_image_dir=save_image_dir,
+        bounds_low=bounds_low, bounds_high=bounds_high, use_cython=use_cython, *args, **kwargs
+    )
+    common_test_part(
+        experiment, save_image_gen_step, other_callback_args, logger, stopping_criterions
+    )
+
 
 __all__ = [
     'Experiment',
+    'generic_experiment_test',
 ]

@@ -1,4 +1,5 @@
 from .types import *
 from .misc import *
-from .batch_algorithms import *
+from .operators import *
+from .algorithms import *
 from .loggers import *
