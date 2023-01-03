@@ -65,8 +65,15 @@ class Logger:
             'population': experiment.population_size,
             'cxpb': experiment.p_crossover,
             'mutpb': experiment.p_mutation,
+            'crowding_factor': experiment.crowding_factor,
             'max_generations': experiment.max_generations,
             'hof_size': experiment.hof_size,
+            'selection_operator': str(experiment.toolbox.select),
+            'crossover_operator': str(experiment.toolbox.mate),
+            'mutation_operator': str(experiment.toolbox.mutate),
+            'use_cython': experiment.use_cython,
+            'device': experiment.device,
+            'metric': type(experiment.metric).__name__,
             'stats': [],
         }
 

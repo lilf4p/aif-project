@@ -1,2 +1,2 @@
-from .array_nearest_neighbor import *
-from .lines_nearest_neighbor import *
+from .distance_table import *
+from .lines_distance_table import *

@@ -1,0 +1,9 @@
+{
+  "type": "contours_points",
+  "data": {
+    "function": "distance_table",
+    "builtin": false,
+    "population_size": 200,
+    "image_path": 2
+  }
+}

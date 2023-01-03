@@ -2,6 +2,7 @@ from __future__ import annotations
 from salvatore.utils import *
 from .base import ArrayPointContoursMetric
 from .utils import *
+from cython_algorithms import cy_get_overlap_penalty
 
 
 class TableTargetPointsNNContoursMetric(ArrayPointContoursMetric):
@@ -103,24 +104,20 @@ class TableTargetPointsOverlapPenaltyContoursMetric(ArrayPointContoursMetric):
         self.target_pil = Image.fromarray(target_cv2)
 
     def standardize_individual(self, individual: TArray, check_repr=False):
-        # reshape and rescale
-        reshaped = np.reshape(individual, (self.num_points, 2))
+        reshaped = individual.copy()
+        reshaped = np.reshape(reshaped, (self.num_points, 2))
         r0, r1 = reshaped[:, 0], reshaped[:, 1]
         r0 *= self.image_width
         r1 *= self.image_height
-        return reshaped.astype(dtype=np.int32).T
+        return reshaped.astype(dtype=np.intp).T
 
-    def _core_get_difference(self, individual: TArray,index: int = 0):
+    def _core_get_difference(self, individual: TArray, index: int = 0):
         standardized = self.standardize_individual(individual)
         aux = self.target[standardized[1], standardized[0]]
         self.results[index] = np.sum(aux)
-        img = np.zeros((self.image_height, self.image_width), dtype=np.float64)
-        for i in range(standardized.shape[1]):
-            w, h = standardized[0, i], standardized[1, i]
-            img[h, w] += 1.0
-        img[img > 0.0] -= 1.0
-        penalty = img.sum() * self.penalty_const
-        self.results[index] += penalty
+        self.results[index] += cy_get_overlap_penalty(
+            standardized, self.image_width, self.image_height, self.penalty_const
+        )
 
 
 __all__ = [

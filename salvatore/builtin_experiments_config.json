@@ -30,16 +30,16 @@
     },
     "stopping_criterions": {
       "max_time_stop": {
-        "max_time": 4320.0
+        "max_time": 3600.0
       },
       "min_fitness_stop": {
-        "min_fitness_value": 100.0
+        "min_fitness_value": 0.0
       },
       "min_fitness_percentage_gain_stop": {
-        "percentage": 0.0001
+        "percentage": 0.0
       },
       "flat_percentage_fitness_stop": {
-        "epsilon_perc": 0.001,
+        "epsilon_perc": 0.0,
         "gen_num": 500
       }
     }
@@ -75,16 +75,16 @@
     },
     "stopping_criterions": {
       "max_time_stop": {
-        "max_time": 4320.0
+        "max_time": 7200.0
       },
       "min_fitness_stop": {
-        "min_fitness_value": 100.0
+        "min_fitness_value": 0.0
       },
       "min_fitness_percentage_gain_stop": {
-        "percentage": 0.0001
+        "percentage": 0.0
       },
       "flat_percentage_fitness_stop": {
-        "epsilon_perc": 0.001,
+        "epsilon_perc": 0.0,
         "gen_num": 500
       }
     }
@@ -379,7 +379,7 @@
     "p_crossover": 0.9,
     "p_mutation": 0.5,
     "population_size": 250,
-    "max_generations": 10000,
+    "max_generations": 15000,
     "random_seed": 10,
     "hof_size": 25,
     "use_cython": true,
@@ -399,16 +399,16 @@
     },
     "stopping_criterions": {
       "max_time_stop": {
-        "max_time": 14400.0
+        "max_time": 3600.0
       },
       "min_fitness_stop": {
-        "min_fitness_value": 100.0
+        "min_fitness_value": 0.0
       },
       "min_fitness_percentage_gain_stop": {
-        "percentage": 0.0001
+        "percentage": 0.0
       },
       "flat_percentage_fitness_stop": {
-        "epsilon_perc": 0.001,
+        "epsilon_perc": 0.0,
         "gen_num": 500
       }
     }

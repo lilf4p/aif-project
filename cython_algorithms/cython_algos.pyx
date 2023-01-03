@@ -1,12 +1,54 @@
+"""
+The following is a Cython source file that uses Cython-specific syntax.
+Cython syntax is a superset of Python one, and in particular every Python code
+is also valid Cython code. Additionally, Cython supports extra syntax to interface
+with C functions and declarations and to define functions/variables/classes at C
+level. In particular:
+* cimport statements allow to use C names in code, i.e. they are equivalent to "include <...>";
+* cdef keyword is used to define functions and variables at C level that will NOT
+  be visible from external Python code (i.e., they cannot be imported).
+  A C variable is declared with 'cdef [<type>] <name> [= <value>]', while a function
+  is declared as a Python function by replacing 'def' with 'cdef';
+* C functions can be declared as 'inline', which is equivalent to C inline functions;
+* Types of a C variable or function are a superset of C datatypes, and in particular
+  Cython types 'int', 'long', 'double', 'float' are equivalent to corresponding C ones;
+* There are several decorators that can be used for enabling/disabling some behaviours:
+  
+  cython.cdivision allows to execute division between two C numeric variables as C division
+  (default behavior is to convert them to Python numerical objects, execute division between
+  them and if the variable is a cdef one, extract C number from the resulting Python object)
+
+  cython.boundscheck and cython.nonecheck can be set to False to disable automatic checks on
+  indexing values and not-None arrays when it is sure that arguments will NEVER be wrong for
+  faster code (if argument is wrong, can get a Segmentation Fault or other errors);
+
+* Cython allows to define and use so-called 'typed memoryview', which are special buffer-like
+  objects that allow to access data at C level without worrying of memory management or indexing
+  "by-hand" on raw data. Memoryviews can be used with every object that implements the buffer
+  interface, and are defined as <type>[:, ...] with N ':' for an N-dimensional buffer (e.g. a
+  numpy.ndarray). For example, the following declaration defines a memoryview on the content of
+  a numpy int array:
+
+  np_array = np.arange(24, dtype=np.intc).reshape((3, 2, 4))  # A usual 3d numpy array
+  cdef int[:, :, :] np_memview = np_array  # np_memview can be used for accessing content of np_array
+  cdef Py_ssize_t i = 0  # defining as a Py_ssize_t allows to translate for-loop into a C one
+  for i in range(3):
+    print(np_memview[i, 0, 0])
+"""
 import numpy as np
 import cython
+# cimport statements allow to use C names in code
 from libc.stdlib cimport rand, RAND_MAX
 
 np.import_array()
 
+# C declarations of numpy
 cimport numpy as np
 
 
+# cdef keyword allows to define variables/functions at C level
+# Py_ssize_t is the numerical type for indexing sequences, in general equivalent to long
+# inline Cython functions are exactly like inline C ones
 cdef inline Py_ssize_t cmin(Py_ssize_t a, Py_ssize_t b):
     if a > b:
         return b
@@ -21,6 +63,7 @@ cdef inline Py_ssize_t cmax(Py_ssize_t a, Py_ssize_t b):
         return b
 
 
+# double is C double type
 cdef inline double double_cmin(double a, double b):
     if a > b:
         return b
@@ -41,6 +84,9 @@ cdef inline double double_cabs(double ind1, double ind2):
         return ind2 - ind1
 
 
+# cython.cdivision allows to execute divisions between C data types, instead of converting them
+# to Python objects (e.g. int) and execute the division between them, and after that reconverting
+# into C values
 @cython.cdivision(True)
 cdef double double_random(double low, double high):
     cdef int int_result = rand()
@@ -52,6 +98,8 @@ cdef double double_random(double low, double high):
     return result
 
 
+# boundscheck and nonecheck can be set to False for eliminating automatic checks generated
+# by Cython when it is sure that the given arrays will always be well-defined for more speed
 @cython.cdivision(True)
 @cython.boundscheck(False)
 @cython.nonecheck(False)
@@ -70,8 +118,6 @@ def cy_cxSimulatedBinaryBounded(np.ndarray[np.float_t, ndim=1] individual1, np.n
 
     for i in range(size):
         if double_random(0., 1.) <= 0.5:
-            # This epsilon should probably be changed for 0 since
-            # doubleing point arithmetic in Python is safer
             if double_cabs(ind1[i], ind2[i]) > 1e-14:
                 x1 = double_cmin(ind1[i], ind2[i])
                 x2 = double_cmax(ind1[i], ind2[i])
@@ -163,3 +209,25 @@ def cxSwapPoints(np.ndarray[np.float_t, ndim=1] individual1, np.ndarray[np.float
             ind1[i] = ind2[i]
             ind2[i] = temp
     return individual1, individual2
+
+
+@cython.boundscheck(False)
+@cython.nonecheck(False)
+def get_overlap_penalty(long[:, :] standardized, long image_width, long image_height, double penalty_const):
+    img_array = np.zeros((image_height, image_width), dtype=np.float64)
+    cdef double[:, :] img = img_array
+    cdef Py_ssize_t m = standardized.shape[0]
+    cdef Py_ssize_t n = standardized.shape[1]
+    cdef Py_ssize_t i
+    cdef long w, h
+    cdef double sum = 0.0
+    for i in range(n):
+        w, h = standardized[0, i], standardized[1, i]
+        img[h, w] += 1.0
+    for p in range(m):
+        for q in range(n):
+            if img[p, q] > 0.0:
+                img[p, q] = img[p, q] - 1.0
+        sum += img[p, q]
+    penalty = sum * penalty_const
+    return penalty
