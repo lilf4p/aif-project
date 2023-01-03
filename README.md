@@ -10,6 +10,30 @@ use-cases.
 ### Installation and Usage ###
 `pip install -r requirements.txt`
 
+To run the program write a json file choosing the type of Algorithm to use and specify one default experiment or a custom one, then run from the main folder: 
+
+`python main.py <json>`
+
+The json file must have a key "type" with the type of algorithm and a key "data" wich contai the value "builtin". If "builtin" is set to true the user must choose a default experiment, otherwise he can define a custom configuration with the proper algorithm type syntax.
+
+### Grayscale Ellipses Algorithm ###
+To run the algorithm with grayscale ellipses the user can choose one of the following default experiments: "monalisa-ellissi-mse", "monalisa-ellissi-mse+ssim", "monalisa-ellissi-uqi",  "monalisa-ellissi-mse-uqi"
+
+or the user can define custom configuration by setting the following parameters:
+
+- "image_path" : path to input image
+- "num_polygons" : number of shapes 
+- "multi_objective" : if set to true multiple fitness function can be used
+- "distance_metric" : fitness function used 
+- "population_size" : number of infdividuals in population 
+- "p_crossover" : probability for crossover operator
+- "p_mutation" : probability for mutation operator
+- "max_generations" : maximum number of generations allowed
+- "hof_size" : size of elitism
+- "crowding_factor" : crowding factor for crossover
+- "output_path" : path to save the result
+
+
 #### Cython usage ####
 For compilation with Cython, after the above steps the following script
 **must** be run:
