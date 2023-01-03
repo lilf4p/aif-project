@@ -4,10 +4,7 @@ from typing import *
 from abc import abstractmethod
 from PIL import Image, ImageDraw
 import numpy as np
-import scipy as scp
 import seaborn as sns
-import cupy as cp
-import numba as nb
 import schema as sch
 import matplotlib.pyplot as plt
 import cv2
@@ -19,5 +16,5 @@ from time import time, perf_counter
 TReal = TypeVar('TReal', bound=Union[float, int])
 TBoolStr = TypeVar('TBoolStr', bound=tuple[bool, Optional[str]])
 TBoolStrIndex = TypeVar('TBoolStrIndex', bound=tuple[bool, Optional[str], Optional[int]])
-TArray = TypeVar('TArray', bound=Union[np.ndarray, cp.ndarray])
+TArray = TypeVar('TArray', bound=np.ndarray)
 TCallback = TypeVar('TCallback', bound=dict[Callable, dict[str, Any]])

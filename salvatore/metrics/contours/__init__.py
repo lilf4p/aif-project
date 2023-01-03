@@ -3,4 +3,3 @@ from __future__ import annotations
 from .base import *
 from .utils import *
 from .distance_table import *
-from .lines_distance_table import *

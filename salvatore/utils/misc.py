@@ -109,17 +109,12 @@ def create_monochromatic_image(width: int, height: int, color: int | tuple[int] 
     :param device: Device in which the image should be created, either 'cpu' or 'gpu'
     for the first available CUDA gpu. Defaults to 'cpu'.
     """
-    # Set numerical framework
-    vp = np if device == 'cpu' else (cp if device == 'gpu' else None)
-    if vp is None:
-        raise ValueError(f"Unknown device '{device}'")
-
     if mode == 'gray':
-        img = vp.zeros(shape=(height, width))#, dtype=vp.uint8)
+        img = np.zeros(shape=(height, width))#, dtype=vp.uint8)
         if not isinstance(color, int) or not (0 <= color <= 255):
             raise TypeError(f"'color' should be an integer in the range [0, 255]; got {color}")
     elif mode == 'bgr':
-        img = vp.zeros(shape=(height, width, 3))#, dtype=vp.uint8)
+        img = np.zeros(shape=(height, width, 3))#, dtype=vp.uint8)
         if not isinstance(color, tuple) or len(color) != 3 or not all([0 <= v <= 255 for v in color]):
             raise TypeError(f"'color' should be a tuple of 3 elements in the range [0, 255]; got {color}")
     else:

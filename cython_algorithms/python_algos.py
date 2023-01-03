@@ -83,19 +83,8 @@ def np_cx_swap_points(ind1, ind2):
     return ind1, ind2
 
 
-def np_get_overlap_penalty(standardized: np.ndarray, image_width: int, image_height: int, penalty_const: float):
-    img = np.zeros((image_height, image_width), dtype=np.float64)
-    for i in range(standardized.shape[1]):
-        w, h = standardized[0, i], standardized[1, i]
-        img[h, w] += 1.0
-    img[img > 0.0] -= 1.0
-    penalty = img.sum() * penalty_const
-    return penalty
-
-
 __all__ = [
     'np_cx_swap_points',
     'np_cx_simulated_binary_bounded',
     'np_mut_polynomial_bounded',
-    'np_get_overlap_penalty',
 ]

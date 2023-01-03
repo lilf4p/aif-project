@@ -1,0 +1,8 @@
+{
+  "type": "rgb_polygons",
+  "data": {
+    "builtin": false,
+    "FITNESS_METHOD": "MSE",
+    "POLYGON_SIZE": 10
+  }
+}

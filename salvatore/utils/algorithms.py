@@ -153,10 +153,10 @@ class EASimpleForArrays(EAlgorithm):
                  halloffame: ArrayHallOfFame = None, logbook: dp_tools.Logbook = None, copy_during_selection=True,
                  verbose=__debug__) -> tuple[Sequence | np.ndarray, dp_tools.Logbook]:
         """
-        Specialized version of eaSimpleWithElitismAndCallback for working with numpy/cupy arrays for population
+        Specialized version of eaSimpleWithElitismAndCallback for working with numpy arrays for population
         and a given batch size for performing parallel operations. Here we assume that an individual is a numpy
-        or cupy array and the population can be represented as a list of them. The algorithm assumes also that
-        the following have been registered in toolbox:
+        array and the population can be represented as a list of them. The algorithm assumes also that the
+        following have been registered in toolbox:
         1. evaluate(individuals: list[TArray], batch_size: int = 1) -> TArray for evaluating a set of individuals
         2. select(individuals: list[TArray], num: int) -> list[TArray] for selection (as standard operators)
         3. mate(ind1: TArray, ind2: TArray) -> tuple[TArray, TArray] for crossover (as standard operators)

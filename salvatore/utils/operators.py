@@ -2,7 +2,6 @@
 # this specific use case
 from copy import deepcopy
 from salvatore.utils.types import *
-from salvatore.individuals import *
 from cython_algorithms import cy_swap_points, cy_mut_polynomial_bounded, cy_simulated_binary_bounded, \
     py_simulated_binary_bounded, py_mut_polynomial_bounded, py_swap_points, \
     np_cx_swap_points, np_cx_simulated_binary_bounded, np_mut_polynomial_bounded
@@ -19,7 +18,6 @@ def selection_random(individuals, k):
     num_individuals = len(individuals)
     indexes = [i for i in range(num_individuals)]
     return [random.choice(indexes) for i in range(k)]
-    # return [random.choice(individuals) for i in range(k)]
 
 
 def selection_tournament(individuals, k, tournsize, fit_attr="fitness"):
@@ -62,18 +60,6 @@ def vary_and(offspring, toolbox, cxpb, mutpb, copy=True):
     return offspring
 
 
-def individual_cx_swap_points(ind1: Individual, ind2: Individual):
-    ind1_arr, ind2_arr = ind1.get_array(), ind2.get_array()
-    cy_swap_points(ind1_arr, ind2_arr)
-    return ind1, ind2
-
-
-def individual_mut_polynomial_bounded(individual: Individual, eta, low, up, indpb):
-    ind_arr = individual.get_array()
-    cy_mut_polynomial_bounded(ind_arr, eta, low, up, indpb)
-    return individual,
-
-
 __all__ = [
     'selection_tournament',
     'vary_and',
@@ -90,6 +76,4 @@ __all__ = [
     'py_simulated_binary_bounded',
     'py_mut_polynomial_bounded',
 
-    'individual_cx_swap_points',
-    'individual_mut_polynomial_bounded',
 ]

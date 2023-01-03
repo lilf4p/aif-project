@@ -4,7 +4,7 @@ from salvatore.utils import *
 # Criterions, metrics and experiment helper functions to be used in 'eval()'
 from salvatore.criterions import *
 from salvatore.metrics import *
-from salvatore.contours import distance_table, distance_table_overlap_penalty
+from salvatore.contours import distance_table
 
 
 _BUILTINS_FILE_PATH = 'salvatore/builtin_experiments_config.json'

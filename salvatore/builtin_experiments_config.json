@@ -108,7 +108,7 @@
 
     "canny_low": 150,
     "canny_high": 200,
-    "num_of_points": 6000,
+    "num_of_points": 8000,
     "use_gpu": true,
 
     "save_image_gen_step": 100,
@@ -124,13 +124,13 @@
         "max_time": 4320.0
       },
       "min_fitness_stop": {
-        "min_fitness_value": 100.0
+        "min_fitness_value": 0.0
       },
       "min_fitness_percentage_gain_stop": {
-        "percentage": 0.0005
+        "percentage": 0.0
       },
       "flat_percentage_fitness_stop": {
-        "epsilon_perc": 0.005,
+        "epsilon_perc": 0.0,
         "gen_num": 500
       }
     }
@@ -153,7 +153,7 @@
 
     "canny_low": 150,
     "canny_high": 200,
-    "num_of_points": 6000,
+    "num_of_points": 8000,
     "use_gpu": true,
 
     "save_image_gen_step": 100,
@@ -166,16 +166,16 @@
     },
     "stopping_criterions": {
       "max_time_stop": {
-        "max_time": 4320.0
+        "max_time": 10800.0
       },
       "min_fitness_stop": {
-        "min_fitness_value": 100.0
+        "min_fitness_value": 0.0
       },
       "min_fitness_percentage_gain_stop": {
-        "percentage": 0.0005
+        "percentage": 0.0
       },
       "flat_percentage_fitness_stop": {
-        "epsilon_perc": 0.005,
+        "epsilon_perc": 0.0,
         "gen_num": 500
       }
     }
@@ -215,13 +215,13 @@
         "max_time": 10800.0
       },
       "min_fitness_stop": {
-        "min_fitness_value": 100.0
+        "min_fitness_value": 0.0
       },
       "min_fitness_percentage_gain_stop": {
-        "percentage": 0.0001
+        "percentage": 0.0
       },
       "flat_percentage_fitness_stop": {
-        "epsilon_perc": 0.001,
+        "epsilon_perc": 0.0,
         "gen_num": 500
       }
     }
@@ -261,147 +261,6 @@
         "max_time": 10800.0
       },
       "min_fitness_stop": {
-        "min_fitness_value": 100.0
-      },
-      "min_fitness_percentage_gain_stop": {
-        "percentage": 0.0001
-      },
-      "flat_percentage_fitness_stop": {
-        "epsilon_perc": 0.001,
-        "gen_num": 500
-      }
-    }
-  },
-
-  "lines_eiffel_tower_cython": {
-    "__description__": [
-      "Experiment that uses the combined approach of MSE for lines and distances table for line extremes ",
-      "for reconstructing contours of the Eiffel Tower image (160x316) ",
-      "and by using Cython functions for faster execution."
-    ],
-    "function": "test_lines_nn",
-    "dir_path": ".",
-    "image_path": "images/torre eiffel.jpg",
-    "p_crossover": 0.9,
-    "p_mutation": 0.5,
-    "population_size": 250,
-    "max_generations": 10000,
-    "random_seed": 10,
-    "hof_size": 25,
-    "use_cython": true,
-
-    "lineno": 600,
-    "point_adherence_coeff": 1.0,
-    "line_adherence_coeff": 5.0,
-    "line_l1_lambda": 0.0,
-
-    "save_image_gen_step": 100,
-    "other_callback_args": null,
-    "logger": {
-      "dir_path": ".",
-      "stats_gen_step": 50,
-      "csv_gen_step": 100,
-      "stats_fields": ["min", "avg"]
-    },
-    "stopping_criterions": {
-      "max_time_stop": {
-        "max_time": 14400.0
-      },
-      "min_fitness_stop": {
-        "min_fitness_value": 100.0
-      },
-      "min_fitness_percentage_gain_stop": {
-        "percentage": 0.001
-      },
-      "flat_percentage_fitness_stop": {
-        "epsilon_perc": 0.001,
-        "gen_num": 500
-      }
-    }
-  },
-
-  "lines_mona_lisa_cython": {
-    "__description__": [
-      "Experiment that uses the combined approach of MSE for lines and distances table for line extremes ",
-      "for reconstructing contours of the Mona Lisa RGB image (165x190) ",
-      "and by using Cython functions for faster execution."
-    ],
-    "function": "test_lines_nn",
-    "dir_path": ".",
-    "image_path": "images/Mona_Lisa_head.png",
-    "p_crossover": 0.9,
-    "p_mutation": 0.5,
-    "population_size": 250,
-    "max_generations": 10000,
-    "random_seed": 10,
-    "hof_size": 25,
-    "use_cython": true,
-
-    "lineno": 1000,
-    "point_adherence_coeff": 1.0,
-    "line_adherence_coeff": 5.0,
-    "line_l1_lambda": 0.0,
-
-    "save_image_gen_step": 100,
-    "other_callback_args": null,
-    "logger": {
-      "dir_path": ".",
-      "stats_gen_step": 50,
-      "csv_gen_step": 100,
-      "stats_fields": ["min", "avg"]
-    },
-    "stopping_criterions": {
-      "max_time_stop": {
-        "max_time": 14400.0
-      },
-      "min_fitness_stop": {
-        "min_fitness_value": 1000.0
-      },
-      "min_fitness_percentage_gain_stop": {
-        "percentage": 0.001
-      },
-      "flat_percentage_fitness_stop": {
-        "epsilon_perc": 0.001,
-        "gen_num": 500
-      }
-    }
-  },
-
-  "table_op_eiffel_tower_cython": {
-    "__description__": [
-      "Experiment that uses the distances table approach with a penalty for overlapping ",
-      "individual points for reconstructing contours of the Eiffel Tower image ",
-      "(160x316), and by using Cython functions for faster execution."
-    ],
-    "function": "distance_table_overlap_penalty",
-    "dir_path": ".",
-    "image_path": "images/torre eiffel.jpg",
-    "p_crossover": 0.9,
-    "p_mutation": 0.5,
-    "population_size": 250,
-    "max_generations": 15000,
-    "random_seed": 10,
-    "hof_size": 25,
-    "use_cython": true,
-
-    "canny_low": 100,
-    "canny_high": 200,
-    "num_of_points": 4000,
-    "use_gpu": true,
-
-    "save_image_gen_step": 100,
-    "other_callback_args": null,
-    "logger": {
-      "dir_path": ".",
-      "stats_gen_step": 50,
-      "csv_gen_step": 100,
-      "stats_fields": ["min", "avg"]
-    },
-    "stopping_criterions": {
-      "max_time_stop": {
-        "max_time": 3600.0
-      },
-      "min_fitness_stop": {
         "min_fitness_value": 0.0
       },
       "min_fitness_percentage_gain_stop": {
@@ -409,53 +268,6 @@
       },
       "flat_percentage_fitness_stop": {
         "epsilon_perc": 0.0,
-        "gen_num": 500
-      }
-    }
-  },
-
-  "table_op_mona_lisa_cython": {
-    "__description__": [
-      "Experiment that uses the distances table approach with a penalty for overlapping ",
-      "individual points for reconstructing contours of the Mona Lisa RGB image ",
-      "(165x190), and by using Cython functions for faster execution."
-    ],
-    "function": "distance_table_overlap_penalty",
-    "dir_path": ".",
-    "image_path": "images/Mona_Lisa_head.png",
-    "p_crossover": 0.9,
-    "p_mutation": 0.5,
-    "population_size": 250,
-    "max_generations": 10000,
-    "random_seed": 10,
-    "hof_size": 25,
-    "use_cython": true,
-
-    "canny_low": 100,
-    "canny_high": 200,
-    "num_of_points": 6000,
-    "use_gpu": true,
-
-    "save_image_gen_step": 100,
-    "other_callback_args": null,
-    "logger": {
-      "dir_path": ".",
-      "stats_gen_step": 50,
-      "csv_gen_step": 100,
-      "stats_fields": ["min", "avg"]
-    },
-    "stopping_criterions": {
-      "max_time_stop": {
-        "max_time": 14400.0
-      },
-      "min_fitness_stop": {
-        "min_fitness_value": 100.0
-      },
-      "min_fitness_percentage_gain_stop": {
-        "percentage": 0.0001
-      },
-      "flat_percentage_fitness_stop": {
-        "epsilon_perc": 0.001,
         "gen_num": 500
       }
     }

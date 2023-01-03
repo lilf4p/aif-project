@@ -209,25 +209,3 @@ def cxSwapPoints(np.ndarray[np.float_t, ndim=1] individual1, np.ndarray[np.float
             ind1[i] = ind2[i]
             ind2[i] = temp
     return individual1, individual2
-
-
-@cython.boundscheck(False)
-@cython.nonecheck(False)
-def get_overlap_penalty(long[:, :] standardized, long image_width, long image_height, double penalty_const):
-    img_array = np.zeros((image_height, image_width), dtype=np.float64)
-    cdef double[:, :] img = img_array
-    cdef Py_ssize_t m = standardized.shape[0]
-    cdef Py_ssize_t n = standardized.shape[1]
-    cdef Py_ssize_t i
-    cdef long w, h
-    cdef double sum = 0.0
-    for i in range(n):
-        w, h = standardized[0, i], standardized[1, i]
-        img[h, w] += 1.0
-    for p in range(m):
-        for q in range(n):
-            if img[p, q] > 0.0:
-                img[p, q] = img[p, q] - 1.0
-        sum += img[p, q]
-    penalty = sum * penalty_const
-    return penalty

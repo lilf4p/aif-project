@@ -120,18 +120,6 @@ def builtins(
         __builtin_internal(exp_type, name)
 
 
-@app.command()
-def syntax(
-        type=typer.Option(default='', help='Experiment type identifier.')
-):
-    """
-    Displays JSON syntax for each custom experiment type
-    (i.e., with `builtin` = False).
-    """
-    print(type)
-    print('Sorry, this command is still under construction.')
-
-
 def __builtin_internal(experiment_type: str, name: str = ''):
     if experiment_type == CONTOURS_POINTS:
         results = salvatore_get_builtin_help()
