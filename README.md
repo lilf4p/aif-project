@@ -10,11 +10,39 @@ use-cases.
 ### Installation and Usage ###
 `pip install -r requirements.txt`
 
-To run the program write a json file choosing the type of Algorithm to use and specify one default experiment or a custom one, then run from the main folder: 
+Runs a Genetic Algorithm Experiment from a JSON configuration file.
+    File shall have the following syntax:
+    
+    {
+        "type": <experiment type, e.g. "grayscale_text">,
+        "data": <parameters to pass to the experiment>
+    }
+    
+    For the "data" field, syntax shall be either:
+    
+    {
+        "builtin": true,
+        "name": <name of the pre-configured experiments>
+    }
+    
+    For running a pre-configured experiment by passing its name, or:
+    
+    {
+        "builtin": false,
+        # experiment parameters
+    }
+   
+    For running a custom experiment. Notice that the syntax for this last
+    case differs for each experiment type.
+    
+    Builtin experiment names and descriptions can be displayed with the
+    `builtins [--type=<experiment_type> [--name=<experiment_name>]]` command.
+    Syntax for each experiment type can be displayed with the
+    `syntax [--type=<experiment_type>]` command.
 
-`python main.py <json>`
+    To run the program then just pass the json file path to the program:
 
-The json file must have a key "type" with the type of algorithm and a key "data" wich contai the value "builtin". If "builtin" is set to true the user must choose a default experiment, otherwise he can define a custom configuration with the proper algorithm type syntax.
+    `python main.py <json>`
 
 ### Grayscale Ellipses Algorithm ###
 To run the algorithm with grayscale ellipses the user can choose one of the following default experiments: "monalisa-ellissi-mse", "monalisa-ellissi-mse+ssim", "monalisa-ellissi-uqi",  "monalisa-ellissi-mse-uqi"
