@@ -4,7 +4,7 @@ from salvatore.utils import *
 # Criterions, metrics and experiment helper functions to be used in 'eval()'
 from salvatore.criterions import *
 from salvatore.metrics import *
-from salvatore.contours import *
+from salvatore.contours import distance_table, distance_table_overlap_penalty
 
 
 _BUILTINS_FILE_PATH = 'salvatore/builtin_experiments_config.json'
@@ -25,6 +25,7 @@ def _parse_stopping_criterions(data: dict):
     if stopping_criterions is None:
         return None
     result = {}
+    stopping_criterions = sch.Schema({str: {str: object}}).validate(stopping_criterions)
     for key, value in stopping_criterions.items():
         key_function = eval(key)
         result[key_function] = value
@@ -69,7 +70,7 @@ def parse_experiment_data(data: dict):
     # Build stopping criterions
     experiment_data['stopping_criterions'] = _parse_stopping_criterions(experiment_data)
 
-    return function(**experiment_data)
+    return function(experiment_data)
 
 
 __all__ = ['print_builtin_help', 'parse_experiment_data']

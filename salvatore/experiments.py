@@ -33,13 +33,6 @@ class Experiment:
             sch.Optional('bounds_low', default=0.0): float,
             sch.Optional('bounds_high', default=1.0): float,
             sch.Optional('use_cython', default=True): bool,
-
-            # Other parameters (directory, loggers, callbacks etc.)  todo move to a 'generic experiment function'
-            'dir_path': str,
-            sch.Optional('save_image_gen_step', default=100): int,
-            sch.Optional('logger', default=None): Logger.logger_schema(),
-            sch.Optional('other_callback_args', default=None): {str: Any},
-            sch.Optional('stopping_criterions', default=None): {str: {str: Any}}
         }
 
     @classmethod
@@ -321,6 +314,27 @@ class Experiment:
         create_gif(self.save_image_dir)
 
 
+def generic_experiment_from_config(experiment_class: Type[Experiment], data: dict):
+    # logger and stopping_criterions are already checked using schema in parse_experiment_data
+    logger = data.pop('logger', None)
+    stopping_criterions = data.pop('stopping_criterions', None)
+
+    save_image_gen_step = data.pop('save_image_gen_step', 100)
+    other_callback_args = data.pop('other_callback_args', None)
+
+    # Now validate also save_image_gen_step and other_callback_args
+    if save_image_gen_step is not None:
+        save_image_gen_step = sch.Schema(int).validate(save_image_gen_step)
+    if other_callback_args is not None:
+        other_callback_args = sch.Schema({str: object}).validate(other_callback_args)
+
+    dir_path = data.pop('dir_path', '.')
+    os.chdir(dir_path)
+
+    experiment = experiment_class.from_config(data)
+    common_test_part(experiment, save_image_gen_step, other_callback_args, logger, stopping_criterions)
+
+
 def generic_experiment_test(
     experiment_class: Type[Experiment], dir_path: str, image_path: str,
     p_crossover=0.9, p_mutation=0.5, population_size=250, max_generations=1000,
@@ -336,12 +350,11 @@ def generic_experiment_test(
         max_generations=max_generations, hof_size=hof_size, random_seed=random_seed, save_image_dir=save_image_dir,
         bounds_low=bounds_low, bounds_high=bounds_high, use_cython=use_cython, *args, **kwargs
     )
-    common_test_part(
-        experiment, save_image_gen_step, other_callback_args, logger, stopping_criterions
-    )
+    common_test_part(experiment, save_image_gen_step, other_callback_args, logger, stopping_criterions)
 
 
 __all__ = [
     'Experiment',
     'generic_experiment_test',
+    'generic_experiment_from_config',
 ]

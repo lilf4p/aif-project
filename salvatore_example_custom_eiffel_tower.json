@@ -2,7 +2,7 @@
   "type": "contours_points",
   "data": {
     "builtin": false,
-    "function": "test_table_target_points_nn",
+    "function": "distance_table",
     "dir_path": ".",
     "image_path": "images/cubismo_picasso.jpg",
     "max_generations": 10000,

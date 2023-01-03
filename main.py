@@ -104,8 +104,8 @@ def run(config_file_path: str):
 
 @app.command()
 def builtins(
-        type=typer.Option(default='', help='Experiment type identifier.'),
-        name=typer.Option(default='', help='Name of the experiment (for visualizing that one only).')
+        type: str = typer.Option(default='', help='Experiment type identifier.'),
+        name: str = typer.Option(default='', help='Name of the experiment (for visualizing that one only).')
 ):
     """
     Displays builtin experiment names and descriptions.
@@ -151,12 +151,3 @@ def __print_builtin_help(builtin_data: dict):
 
 if __name__ == '__main__':
     app()
-    """
-    while True:
-        try:
-            config_file_path = input('Path to config file> ')
-            # config_file_path = sys.argv[1]  # todo considerare anche -h o --help come opzione
-            file_run(config_file_path)
-        except Exception as ex:
-            traceback.print_exception(*sys.exc_info())
-    """

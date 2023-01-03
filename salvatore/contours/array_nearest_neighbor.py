@@ -107,6 +107,14 @@ class TableTargetPointsOverlapPenaltyExperiment(Experiment):
             self.toolbox.register('mate', py_swap_points)
 
 
+def distance_table(data: dict):
+    generic_experiment_from_config(TableTargetPointsNNContoursExperiment, data)
+
+
+def distance_table_overlap_penalty(data: dict):
+    generic_experiment_from_config(TableTargetPointsOverlapPenaltyExperiment, data)
+
+
 def test_table_target_points_nn(
         dir_path='../..', image_path='images/torre eiffel.jpg',
         p_crossover: float = 0.9, p_mutation: float = 0.5, population_size=250,
@@ -154,4 +162,7 @@ def test_table_target_points_overlap_penalty(
 __all__ = [
     'test_table_target_points_nn',
     'test_table_target_points_overlap_penalty',
+
+    'distance_table',
+    'distance_table_overlap_penalty',
 ]
