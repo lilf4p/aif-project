@@ -93,17 +93,17 @@ To run the algorithm with grayscale ellipses the user can choose one of the foll
 
 or the user can define custom configuration by setting the following parameters:
 
-- "image_path" : path to input image
-- "num_polygons" : number of shapes 
-- "multi_objective" : if set to true multiple fitness function can be used
-- "distance_metric" : fitness function used 
-- "population_size" : number of infdividuals in population 
-- "p_crossover" : probability for crossover operator
-- "p_mutation" : probability for mutation operator
-- "max_generations" : maximum number of generations allowed
-- "hof_size" : size of elitism
-- "crowding_factor" : crowding factor for crossover
-- "output_path" : path to save the result
+- `image_path` : path to input image
+- `num_polygons` : number of shapes 
+- `multi_objective` : if set to true multiple fitness function can be used
+- `distance_metric` : fitness function used 
+- `population_size` : number of infdividuals in population 
+- `p_crossover` : probability for crossover operator
+- `p_mutation` : probability for mutation operator
+- `max_generations` : maximum number of generations allowed
+- `hof_size` : size of elitism
+- `crowding_factor` : crowding factor for crossover
+- `output_path` : path to save the result
 
 
 #### Cython usage ####
