@@ -259,7 +259,6 @@ class Experiment:
 
     # noinspection PyUnresolvedReferences
     def run(self, show: bool = False, callbacks: TCallback = None, verbose: bool = True):
-        # todo we can extend calculated statistics by passing a dict
         if show:
             self._show_results = True
             self.show_target_image()

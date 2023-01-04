@@ -18,15 +18,13 @@
     "canny_low": 100,
     "canny_high": 200,
     "num_of_points": 4000,
-    "use_gpu": true,
 
     "save_image_gen_step": 100,
     "other_callback_args": null,
     "logger": {
       "dir_path": ".",
       "stats_gen_step": 50,
-      "csv_gen_step": 100,
-      "stats_fields": ["min", "avg"]
+      "csv_gen_step": 100
     },
     "stopping_criterions": {
       "max_time_stop": {
@@ -63,15 +61,13 @@
     "canny_low": 100,
     "canny_high": 200,
     "num_of_points": 4000,
-    "use_gpu": true,
 
     "save_image_gen_step": 100,
     "other_callback_args": null,
     "logger": {
       "dir_path": ".",
       "stats_gen_step": 50,
-      "csv_gen_step": 100,
-      "stats_fields": ["min", "avg"]
+      "csv_gen_step": 100
     },
     "stopping_criterions": {
       "max_time_stop": {
@@ -109,15 +105,13 @@
     "canny_low": 150,
     "canny_high": 200,
     "num_of_points": 8000,
-    "use_gpu": true,
 
     "save_image_gen_step": 100,
     "other_callback_args": null,
     "logger": {
       "dir_path": ".",
       "stats_gen_step": 50,
-      "csv_gen_step": 100,
-      "stats_fields": ["min", "avg"]
+      "csv_gen_step": 100
     },
     "stopping_criterions": {
       "max_time_stop": {
@@ -154,15 +148,13 @@
     "canny_low": 150,
     "canny_high": 200,
     "num_of_points": 8000,
-    "use_gpu": true,
 
     "save_image_gen_step": 100,
     "other_callback_args": null,
     "logger": {
       "dir_path": ".",
       "stats_gen_step": 50,
-      "csv_gen_step": 100,
-      "stats_fields": ["min", "avg"]
+      "csv_gen_step": 100
     },
     "stopping_criterions": {
       "max_time_stop": {
@@ -192,23 +184,21 @@
     "p_crossover": 0.9,
     "p_mutation": 0.5,
     "population_size": 250,
-    "max_generations": 50000,
+    "max_generations": 12000,
     "random_seed": 10,
     "hof_size": 25,
-    "use_cython": true,
+    "use_cython": false,
 
     "canny_low": 100,
     "canny_high": 200,
     "num_of_points": 10000,
-    "use_gpu": true,
 
     "save_image_gen_step": 100,
     "other_callback_args": null,
     "logger": {
       "dir_path": ".",
       "stats_gen_step": 100,
-      "csv_gen_step": 100,
-      "stats_fields": ["min", "avg"]
+      "csv_gen_step": 100
     },
     "stopping_criterions": {
       "max_time_stop": {
@@ -238,7 +228,7 @@
     "p_crossover": 0.9,
     "p_mutation": 0.5,
     "population_size": 250,
-    "max_generations": 50000,
+    "max_generations": 12000,
     "random_seed": 10,
     "hof_size": 25,
     "use_cython": true,
@@ -246,15 +236,13 @@
     "canny_low": 100,
     "canny_high": 200,
     "num_of_points": 10000,
-    "use_gpu": true,
 
     "save_image_gen_step": 100,
     "other_callback_args": null,
     "logger": {
       "dir_path": ".",
       "stats_gen_step": 100,
-      "csv_gen_step": 100,
-      "stats_fields": ["min", "avg"]
+      "csv_gen_step": 100
     },
     "stopping_criterions": {
       "max_time_stop": {

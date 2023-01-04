@@ -18,8 +18,6 @@ class Logger:
             sch.Optional('csv_file_path'): str,
             sch.Optional('stats_gen_step'): int,
             sch.Optional('csv_gen_step'): int,
-            sch.Optional('headers'): list[str],
-            sch.Optional('stats_fields'): sch.Or(list, tuple),
         }
 
     @classmethod
@@ -29,8 +27,7 @@ class Logger:
         return cls(**config)
 
     def __init__(self, dir_path, json_file_path='exp_data.json', csv_file_path='exp_log.csv',
-                 stats_gen_step: int = 50, csv_gen_step: int = 25, headers=None,
-                 stats_fields=(), experiment: Experiment = None):
+                 stats_gen_step: int = 50, csv_gen_step: int = 25, experiment: Experiment = None):
         self.dir_path = dir_path
         # Set output files paths
         self.json_file_path = os.path.join(dir_path, json_file_path)
@@ -42,7 +39,7 @@ class Logger:
         self.csv_gen_step = csv_gen_step
         self.last_gen_recorded = 0
         self.dict = {'experiment': {'stats': []}}
-        self.headers = headers if headers is not None else ['gen', 'nevals', 'time'] + list(stats_fields)
+        self.headers = ['gen', 'nevals', 'time', 'min', 'avg']
         # Initialize logging output if the user has already given the experiment
         if experiment is not None:
             self.set_experiment_vals(experiment)
