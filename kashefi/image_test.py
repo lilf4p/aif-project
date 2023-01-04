@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 # MAX_STEPS = 200
 # FLAG_LOCATION = 0.5
-# log_dump = []
+log_dump = []
 
 class ImageTest:
     def __init__(self, imagePath, polygonSize):
@@ -46,7 +46,7 @@ class ImageTest:
         chunkSize = self.polygonSize * 2 + 5 # (x,y) per vertex + (RGBA) default + polygon radius
         polygons = self.list2Chunks(polygonData, chunkSize)
         #making radius smaller would start slower convergence but better results in next generations
-        max_radius = self.width/12 if self.width < self.height else self.height/12
+        max_radius = self.width/10 if self.width < self.height else self.height/10
         # iterate over all polygons and draw each of them into the image:
         for poly in polygons:
             index = 0

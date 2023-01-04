@@ -1,0 +1,24 @@
+{
+    "type": "grayscale_ellipses",
+    "data": {
+        "builtin": false,
+        "name": "MSE-SUF",
+        "FITNESS_METHOD": "MSE",
+        "POLYGON_SIZE": 6,
+        "NUM_OF_POLYGONS": 250,
+        "POPULATION_SIZE": 300,
+        "HOLL_OF_FAME_SIZE": 20,
+        "SELECTION_METHOD": "Tournament",
+        "CROSSOVER_METHOD": "SimulatedBinaryBounded",
+        "MUTATION_METHOD": "PolynomialBounded",
+        "TOURNAMENT_SIZE": 2,
+        "P_CROSSOVER": 0.9,
+        "P_MUTATION": 0.1,
+        "MAX_GENERATION": 2000,
+        "CROWDING_FACTOR": 10.0,
+        "BOUNDS_LOW": 0.0,
+        "BOUNDS_HIGH": 1.0,
+        "IMAGE": "images/monalisa.png",
+        "OUTPUT_DIR": "images/results"
+    }
+}
