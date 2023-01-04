@@ -10,58 +10,6 @@ use-cases.
 ### Installation and Usage ###
 `pip install -r requirements.txt`
 
-Runs a Genetic Algorithm Experiment from a JSON configuration file.
-
-File shall have the following syntax:
-    
-    {
-        "type": <experiment type, e.g. "grayscale_text">,
-        "data": <parameters to pass to the experiment>
-    }
-    
-Where "type" is one of the following experiment type: "grayscale_ellipses", "grayscale_lines", "grayscale_text", "contours_points", "contours_lines".
-
-For the "data" field, syntax shall be either:
-    
-    {
-        "builtin": true,
-        "name": <name of the pre-configured experiments>
-    }
-    
-For running a pre-configured experiment by passing its name, or:
-    
-    {
-        "builtin": false,
-        # experiment parameters
-    }
-   
-For running a custom experiment. Notice that the syntax for this last
-case differs for each experiment type.
-    
-To run the program then just pass the json file path to the program:
-
-    `python main.py <JSON Configuration file>`
-
-### "grayscale-ellipses" ###
-To run the algorithm with grayscale ellipses the user can choose one of the following default experiments: "monalisa-ellissi-mse", "monalisa-ellissi-mse+ssim", "monalisa-ellissi-uqi",  "monalisa-ellissi-mse-uqi"
-
-or the user can define custom configuration by setting the following parameters:
-
-- "image_path" : path to input image
-- "num_polygons" : number of shapes 
-- "multi_objective" : if set to true multiple fitness function can be used
-- "distance_metric" : fitness function used 
-- "population_size" : number of infdividuals in population 
-- "p_crossover" : probability for crossover operator
-- "p_mutation" : probability for mutation operator
-- "max_generations" : maximum number of generations allowed
-- "hof_size" : size of elitism
-- "crowding_factor" : crowding factor for crossover
-- "output_path" : path to save the result
-
-### Installation and Usage ###
-`pip install -r requirements.txt`
-
 The application exposes a command-line interface made with the `typer` library
 to run all the experiments and get help. Experiments can be run by creating a JSON
 configuration file. All files share this common structure:
@@ -99,7 +47,7 @@ by specifying the `--type` and `--name` options.
 
 - `python main.py <cmd> --help`: Displays a help message for the command `<cmd>`.
 
-### Contours Points Experiments ###
+### Contours Points Experiments ("contours_points") ###
 For running a custom experiment for reconstructing the contours
 of an image with a population of points, JSON file has to contain
 the following fields:
@@ -140,7 +88,7 @@ Specific of `distance_table` are:
 - `canny_high`: high bound for Canny edge detector for extracting contours;
 - `num_of_points`: number of points of each individual.
 
-### Grayscale Ellipses Experiments ###
+### Grayscale Ellipses Experiments ("grayscale_ellipses") ###
 To run the algorithm with grayscale ellipses the user can choose one of the following default experiments: "monalisa-ellissi-mse", "monalisa-ellissi-mse+ssim", "monalisa-ellissi-uqi",  "monalisa-ellissi-mse-uqi"
 
 or the user can define custom configuration by setting the following parameters:
