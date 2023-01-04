@@ -11,40 +11,38 @@ use-cases.
 `pip install -r requirements.txt`
 
 Runs a Genetic Algorithm Experiment from a JSON configuration file.
-    File shall have the following syntax:
+
+File shall have the following syntax:
     
     {
         "type": <experiment type, e.g. "grayscale_text">,
         "data": <parameters to pass to the experiment>
     }
     
-    For the "data" field, syntax shall be either:
+Where "type" is one of the following experiment type: "grayscale_ellipses", "grayscale_lines", "grayscale_text", "contours_points", "contours_lines".
+
+For the "data" field, syntax shall be either:
     
     {
         "builtin": true,
         "name": <name of the pre-configured experiments>
     }
     
-    For running a pre-configured experiment by passing its name, or:
+For running a pre-configured experiment by passing its name, or:
     
     {
         "builtin": false,
         # experiment parameters
     }
    
-    For running a custom experiment. Notice that the syntax for this last
-    case differs for each experiment type.
+For running a custom experiment. Notice that the syntax for this last
+case differs for each experiment type.
     
-    Builtin experiment names and descriptions can be displayed with the
-    `builtins [--type=<experiment_type> [--name=<experiment_name>]]` command.
-    Syntax for each experiment type can be displayed with the
-    `syntax [--type=<experiment_type>]` command.
+To run the program then just pass the json file path to the program:
 
-    To run the program then just pass the json file path to the program:
+    `python main.py <JSON Configuration file>`
 
-    `python main.py <json>`
-
-### Grayscale Ellipses Algorithm ###
+### "grayscale-ellipses" ###
 To run the algorithm with grayscale ellipses the user can choose one of the following default experiments: "monalisa-ellissi-mse", "monalisa-ellissi-mse+ssim", "monalisa-ellissi-uqi",  "monalisa-ellissi-mse-uqi"
 
 or the user can define custom configuration by setting the following parameters:
