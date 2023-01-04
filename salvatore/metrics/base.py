@@ -7,7 +7,7 @@ class ImageMetric:
     """
     Base class for an image metric to be used in a Genetic Algorithm.
     It specifies the accepted chromosome formats and provides basic
-    plotting utilities and calculates the cost. # todo completare!
+    plotting utilities and calculates the cost.
     """
     def __init__(self, image_path: str):
         self.image_path = image_path    # We cannot even be interested in storing opened image in subclasses

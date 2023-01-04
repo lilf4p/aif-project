@@ -1,0 +1,15 @@
+{
+    "type": "grayscale_ellipses",
+    "data": {
+        "builtin": false,
+        "image_path" : "images/monalisabw.jpg" ,
+        "polygon_size" :  2 ,
+        "multi_objective" :  false ,
+        "distance_metric" :  "MSE" ,
+        "population_size" :  500 ,
+        "max_generations" :  1000 ,
+        "hof_size" :  50 ,
+        "crowding_factor" :  10.0,
+        "output_path" : "./output"    
+    }
+}

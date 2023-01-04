@@ -1,0 +1,38 @@
+{ 
+    "picasso-text-long": { 
+        "description" : "Image reconstruction from text of the Picasso image. Long run version",
+        "image_path" :"images/cubismo_picasso.jpg" ,     
+        "distance_metric" :  "mse" ,
+        "max_epochs" : 15000,
+        "population_size" :  50 ,
+        "mutation_chance" : 0.1,
+        "mutation_strength" : 1,
+        "elitism" : true,
+        "elitism_size" : 5  
+    },
+
+    "picasso-text": { 
+        "description" : "Image reconstruction from text of the Picasso image.",
+        "image_path" :"images/cubismo_picasso.jpg" ,
+        "distance_metric" :  "mse" ,
+        "max_epochs" : 8000,
+        "population_size" :  50 ,
+        "mutation_chance" : 0.1,
+        "mutation_strength" : 1,
+        "elitism" : true,
+        "elitism_size" : 5  
+    },
+
+    "monalisa-text": {
+        "description" : "Image reconstruction from text of the Mona Lisa image.",
+        "image_path" :"images/Mona_Lisa_head.png" ,     
+        "distance_metric" :  "mse" ,
+        "max_epochs" : 5000,
+        "population_size" :  50 ,
+        "mutation_chance" : 0.1,
+        "mutation_strength" : 1,
+        "elitism" : true,
+        "elitism_size" : 5  
+    }
+
+}
