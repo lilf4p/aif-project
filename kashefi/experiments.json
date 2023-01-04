@@ -1,6 +1,6 @@
 {
-  "MTSF": {
-    "TEST": "MTSF -> Fitness=MSE, Selection=Tournament, Crossover=SimulatedBinaryBounded, Mutation=FlipBIt  ",
+  "MSE-TSF": {
+    "name": "MSE-TSF",
     "FITNESS_METHOD": "MSE",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -17,10 +17,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MTSP-300-250": {
-    "TEST": "MTSP-300-250 -> Fitness=MSE, Selection=Tournament, Crossover=SimulatedBInaryBounded, Mutation=PolynomialBounded  ",
+  "MSE-TSP": {
+    "name": "MSE-TSP-300-250",
     "FITNESS_METHOD": "MSE",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -37,50 +37,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MTSP-800-700": {
-    "TEST": "MTSP-800-700 -> Fitness=MSE, Selection=Tournament, Crossover=SimulatedBInaryBounded, Mutation=PolynomialBounded  ",
-    "FITNESS_METHOD": "MSE",
-    "POLYGON_SIZE": 6,
-    "NUM_OF_POLYGONS": 700,
-    "POPULATION_SIZE": 800,
-    "HOLL_OF_FAME_SIZE": 20,
-    "SELECTION_METHOD": "Tournament",
-    "CROSSOVER_METHOD": "SimulatedBinaryBounded",
-    "MUTATION_METHOD": "PolynomialBounded",
-    "TOURNAMENT_SIZE": 2,
-    "P_CROSSOVER": 0.9,
-    "P_MUTATION": 0.1,
-    "MAX_GENERATION": 2000,
-    "CROWDING_FACTOR": 10.0,
-    "BOUNDS_LOW": 0.0,
-    "BOUNDS_HIGH": 1.0,
-    "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
-  },
-  "MTSP-800-300": {
-    "TEST": "MTSP-800-300 -> Fitness=MSE, Selection=Tournament, Crossover=SimulatedBInaryBounded, Mutation=PolynomialBounded  ",
-    "FITNESS_METHOD": "MSE",
-    "POLYGON_SIZE": 6,
-    "NUM_OF_POLYGONS": 300,
-    "POPULATION_SIZE": 800,
-    "HOLL_OF_FAME_SIZE": 20,
-    "SELECTION_METHOD": "Tournament",
-    "CROSSOVER_METHOD": "SimulatedBinaryBounded",
-    "MUTATION_METHOD": "PolynomialBounded",
-    "TOURNAMENT_SIZE": 2,
-    "P_CROSSOVER": 0.9,
-    "P_MUTATION": 0.1,
-    "MAX_GENERATION": 2000,
-    "CROWDING_FACTOR": 10.0,
-    "BOUNDS_LOW": 0.0,
-    "BOUNDS_HIGH": 1.0,
-    "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
-  },
-  "MTUP": {
-    "TEST": "MTUP -> Fitness=MSE, Selection=Tournament, Crossover=Uniform, Mutation=PolynomialBounded  ",
+  "MSE-TUP": {
+    "name": "MSE-TUP",
     "FITNESS_METHOD": "MSE",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -97,10 +57,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MTUF": {
-    "TEST": "MTUF -> Fitness=MSE, Selection=Tournament, Crossover=Uniform, Mutation=FlipBit  ",
+  "MSE-TUF": {
+    "name": "MSE-TUF",
     "FITNESS_METHOD": "MSE",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -117,10 +77,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSSP": {
-    "TEST": "MSSP -> Fitness=MSE, Selection=SelectBest, Crossover=SimulatedBInaryBounded, Mutation=PolynomialBounded  ",
+  "MSE-SSP": {
+    "name": "MSE-SSP",
     "FITNESS_METHOD": "MSE",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -137,10 +97,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSSF": {
-    "TEST": "MSSF -> Fitness=MSE, Selection=SelectBest, Crossover=SimulatedBInaryBounded, Mutation=FLipBit  ",
+  "MSE-SSF": {
+    "name": "MSE-SSF",
     "FITNESS_METHOD": "MSE",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -157,10 +117,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSUP": {
-    "TEST": "MSUP -> Fitness=MSE, Selection=SelectBest, Crossover=Unifrom, Mutation=PolynomialBounded  ",
+  "MSE-SUP": {
+    "name": "MSE-SUP",
     "FITNESS_METHOD": "MSE",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -177,10 +137,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSUF": {
-    "TEST": "MSUF -> Fitness=MSE, Selection=SelectBest, Crossover=Uniform, Mutation=FlipBIt  ",
+  "MSE-SUF": {
+    "name": "MSE-SUF",
     "FITNESS_METHOD": "MSE",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -197,10 +157,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "STSF": {
-    "TEST": "STSF -> Fitness=SSIM, Selection=Tournament, Crossover=SimulatedBinaryBounded, Mutation=FlipBIt  ",
+  "SSIM-TSF": {
+    "name": "SSIM-TSF",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -217,10 +177,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "STSP": {
-    "TEST": "STSP -> Fitness=SSIM, Selection=Tournament, Crossover=SimulatedBInaryBounded, Mutation=PolynomialBounded  ",
+  "SSIM-TSP": {
+    "name": "SSIM-TSP",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -237,10 +197,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "STUP": {
-    "TEST": "STUP -> Fitness=SSIM, Selection=Tournament, Crossover=Uniform, Mutation=PolynomialBounded  ",
+  "SSIM-TUP": {
+    "name": "SSIM-TUP",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -257,10 +217,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "STUF": {
-    "TEST": "STUF -> Fitness=SSIM, Selection=Tournament, Crossover=Uniform, Mutation=FlipBit  ",
+  "SSIM-TUF": {
+    "name": "SSIM-TUF",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -277,10 +237,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "SSSP": {
-    "TEST": "SSSP -> Fitness=SSIM, Selection=SelectBest, Crossover=SimulatedBInaryBounded, Mutation=PolynomialBounded  ",
+  "SSIM-SSP": {
+    "name": "SSIM-SSP",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -297,10 +257,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "SSSF": {
-    "TEST": "SSSF -> Fitness=SSIM, Selection=SelectBest, Crossover=SimulatedBInaryBounded, Mutation=FLipBit  ",
+  "SSIM-SSF": {
+    "name": "SSIM-SSF",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -317,10 +277,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "SSUP": {
-    "TEST": "SSUP -> Fitness=SSIM, Selection=SelectBest, Crossover=Unifrom, Mutation=PolynomialBounded  ",
+  "SSIM-SUP": {
+    "name": "SSIM-SUP",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -337,10 +297,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "SSUF": {
-    "TEST": "SSUF -> Fitness=SSIM, Selection=SelectBest, Crossover=Uniform, Mutation=FlipBIt  ",
+  "SSIM-SUF": {
+    "name": "SSIM-SUF",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -357,10 +317,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSTSF": {
-    "TEST": "MSTSF -> Fitness=MSSIM, Selection=Tournament, Crossover=SimulatedBinaryBounded, Mutation=FlipBIt  ",
+  "MSSIM-TSF": {
+    "name": "MSSIM-TSF",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -377,10 +337,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSTSP": {
-    "TEST": "MSTSP -> Fitness=MSSIM, Selection=Tournament, Crossover=SimulatedBInaryBounded, Mutation=PolynomialBounded  ",
+  "MSSIM-TSP": {
+    "name": "MSSIM-TSP",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -397,10 +357,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSTUP": {
-    "TEST": "MSTUP -> Fitness=MSSIM, Selection=Tournament, Crossover=Uniform, Mutation=PolynomialBounded  ",
+  "MSSIM-TUP": {
+    "name": "MSSIM-TUP",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -417,10 +377,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSTUF": {
-    "TEST": "MSTUF -> Fitness=MSSIM, Selection=Tournament, Crossover=Uniform, Mutation=FlipBit  ",
+  "MSSIM-TUF": {
+    "name": "MSSIM-TUF",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -437,10 +397,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSSSP": {
-    "TEST": "MSSSP -> Fitness=MSSIM, Selection=SelectBest, Crossover=SimulatedBInaryBounded, Mutation=PolynomialBounded  ",
+  "MSSIM-SSP": {
+    "name": "MSSIM-SSP",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -457,10 +417,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSSSF": {
-    "TEST": "MSSSF -> Fitness=MSSIM, Selection=SelectBest, Crossover=SimulatedBInaryBounded, Mutation=FLipBit  ",
+  "MSSIM-SSF": {
+    "name": "MSSIM-SSF",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -477,10 +437,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSSUP": {
-    "TEST": "MSSUP -> Fitness=MSSIM, Selection=SelectBest, Crossover=Unifrom, Mutation=PolynomialBounded  ",
+  "MSSIM-SUP": {
+    "name": "MSSIM-SUP",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -497,10 +457,10 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   },
-  "MSSUF": {
-    "TEST": "MSSUF -> Fitness=MSSIM, Selection=SelectBest, Crossover=Uniform, Mutation=FlipBIt  ",
+  "MSSIM-SUF": {
+    "name": "MSSIM-SUF",
     "FITNESS_METHOD": "SSIM",
     "POLYGON_SIZE": 6,
     "NUM_OF_POLYGONS": 250,
@@ -517,6 +477,6 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/"
+    "OUTPUT_DIR": "images/results/"
   }
 }

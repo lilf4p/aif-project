@@ -17,7 +17,10 @@ def get_experiment_names():
         for k in keys:
             ex_names.append(data[k]['TEST'])
         return list(ex_names)
-
+def get_custom_experiment():
+    with open('custom_experiment.json') as json_file:
+        data = json.load(json_file)
+        return data
 #function to load a json and return a dictionary
 def load_json(file):
     with open(file) as json_file:
