@@ -122,8 +122,8 @@ using a custom configuration properly defined in a json file as it follows
 - `elitism` : wether to use elitism techniques
 - `elitism_size` : number of members used for elitism
 - `font` : 
-        * `name` : name of the desired font (between arial, gidole and freemono)
-        * `size` : size of the text to draw
+    - `name` : name of the desired font (between arial, gidole and freemono)
+    -  `size` : size of the text to draw
 If any of these parameters is not provided the default value will be loaded.
 
 
