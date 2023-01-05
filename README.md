@@ -112,19 +112,6 @@ The algorithm with grayscale text can be executed by user by:
 
 or
 
-- using a custom configuration properly defined in a json file as it follows
-`image_path` : path to the target image
-`distance_metric` : function to evaluate fitness
-`max_gens`: maximum number of generations before stopping
-`population_size` : the size of the population for each generation
-`mutation_chance` : probability of mutation
-`mutation_strength` : strength of the mutation, how long the text string should be
-`elitism` : wether to use elitism techniques
-`elitism_size` : number of members used for elitism
-`font` : 
-        `name` : name of the desired font (between arial, gidole and freemono)
-        `size` : size of the text to draw
-If any of these parameters is not provided the default value will be loaded.
 
 #### Cython usage ####
 For compilation with Cython, after the above steps the following script
