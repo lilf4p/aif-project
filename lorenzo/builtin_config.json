@@ -1,38 +1,66 @@
 { 
     "picasso-text-long": { 
-        "description" : "Image reconstruction from text of the Picasso image. Long run version",
-        "image_path" :"images/cubismo_picasso.jpg" ,     
+        "image_path" :"images/cubismo_picasso.jpg" , 
+        "description" : "Image reconstruction from text of the Picasso image. Long run version",    
         "distance_metric" :  "mse" ,
-        "max_epochs" : 15000,
+        "max_gens" : 15000,
         "population_size" :  50 ,
         "mutation_chance" : 0.1,
         "mutation_strength" : 1,
         "elitism" : true,
-        "elitism_size" : 5  
+        "elitism_size" : 5,
+        "font" : {
+            "name" : "default",
+            "size" : 0
+        }
     },
 
     "picasso-text": { 
-        "description" : "Image reconstruction from text of the Picasso image.",
         "image_path" :"images/cubismo_picasso.jpg" ,
+        "description" : "Image reconstruction from text of the Picasso image.",
         "distance_metric" :  "mse" ,
-        "max_epochs" : 8000,
+        "max_gens" : 8000,
         "population_size" :  50 ,
         "mutation_chance" : 0.1,
         "mutation_strength" : 1,
         "elitism" : true,
-        "elitism_size" : 5  
+        "elitism_size" : 5,
+        "font" : {
+            "name" : "default",
+            "size" : 0
+        }
     },
 
     "monalisa-text": {
-        "description" : "Image reconstruction from text of the Mona Lisa image.",
-        "image_path" :"images/Mona_Lisa_head.png" ,     
+        "image_path" :"images/Mona_Lisa_head.png" ,  
+        "description" : "Image reconstruction from text of the Mona Lisa image.",   
         "distance_metric" :  "mse" ,
-        "max_epochs" : 5000,
+        "max_gens" : 5000,
         "population_size" :  50 ,
         "mutation_chance" : 0.1,
         "mutation_strength" : 1,
         "elitism" : true,
-        "elitism_size" : 5  
+        "elitism_size" : 5,  
+        "font" : {
+            "name" : "default",
+            "size" : 0
+        }
+    },
+
+    "singapore-text": {
+        "image_path" :"images/Singapore_skyline_400x300.jpg" ,   
+        "description" : "Image reconstruction from text of the Singapore skyline image (lower resolution).",    
+        "distance_metric" :  "mse" ,
+        "max_gens" : 10000,
+        "mutation_strength": 2,
+        "mutation_chance":0.2,
+        "population_size" :  50 ,
+        "elitism" : true,
+        "elitism_size" : 5,  
+        "font" : {
+            "name" : "freemono.ttf",
+            "size" : 12
+        }
     }
 
 }

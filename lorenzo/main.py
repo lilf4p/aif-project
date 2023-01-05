@@ -17,15 +17,15 @@ def text_reconstruction(user_config):
     IMAGE_PATH = config['image_path']
     # Hyperparameters
     DISTANCE_METRIC = config['distance_metric']  # Metric used for the fitness evaluation
-    NUMBER_OF_GENERATIONS = config['max_epochs']  # Max generations run
+    NUMBER_OF_GENERATIONS = config['max_gens']  # Max generations run
     POPULATION_NUMBER = config['population_size']  # How many images in 1 generation (without elitism)
     MUTATION_CHANCE = config['mutation_chance']  # Chance of mutating (adding random shapes)
     MUTATION_STRENGTH = config['mutation_strength']  # How many shapes to add in mutation
     ELITISM = config['elitism']  # Turn on/off elitism (transfering best images to next generation without crossover)
     ELITISM_NUMBER = config['elitism_size']  # How many best images transfer to next generation (elitism)
-
+    FONT = config['font']
     gif, stats = ea(IMAGE_PATH, DISTANCE_METRIC, NUMBER_OF_GENERATIONS, POPULATION_NUMBER, MUTATION_CHANCE, 
-                            MUTATION_STRENGTH,  ELITISM, ELITISM_NUMBER)
+                            MUTATION_STRENGTH,  ELITISM, ELITISM_NUMBER, FONT)
 
     # plot stats
     plt.plot(stats, color='blue')

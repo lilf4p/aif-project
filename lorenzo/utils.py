@@ -27,13 +27,18 @@ def check_config(config):
         del config['name']
     schema = Schema({
         'image_path': str,
+        Optional('description'): str,
         Optional('distance_metric', default='mse'): str,
-        Optional('max_epochs', default=5000): int,
+        Optional('max_gens', default=5000): int,
         Optional('population_size', default=100): int,
         Optional('mutation_chance', default=0.2): float,
         Optional('mutation_strength', default=1): int,
         Optional('elitism', default=True): bool,
         Optional('elitism_size', default=5): int,
+        Optional('font', default={"name":"default", "size":0}): {
+            Optional('name', default="default") : str,
+            Optional('size', default=0) : int 
+            }
     })
     validated = schema.validate(config)
     return validated

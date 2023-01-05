@@ -6,9 +6,10 @@ PRINT_EVERY_GEN = 25  # Print fitness value every x generations
 SAVE_EVERY = 100  # Save best image every x generations for gif creation
 
 
-def ea(img_path, distance, n_of_generation, population_n, mutation_change, mutation_strength, elitism, elitism_n):
+def ea(img_path, distance, n_of_generation, population_n, mutation_change, mutation_strength, elitism, elitism_n, font):
     
     load_image(img_path)
+    set_font(font)
     
     save_gif = [] #Creating empty frames list for gif saving at the end
     stats = []

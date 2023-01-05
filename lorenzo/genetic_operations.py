@@ -6,16 +6,28 @@ from skimage.metrics import mean_squared_error as mse
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
+
+
 def load_image(image_path):
     global original_image 
     global original_height, original_width 
     original_image = Image.open(image_path).convert("L")
     original_height, original_width  = original_image.size
 
-def draw_text(image, size=20):
+def set_font(font):
+    global font_name
+    global font_size 
+    font_name = font.get("name")
+    font_size = font.get("size")
+    
+
+def draw_text(image):
     """Draw random text on image with given size."""
-    #font = ImageFont.truetype("arial.ttf", size)
-    font = ImageFont.load_default()
+    if font_name == "default":
+        font = ImageFont.load_default()
+    else:
+        font = ImageFont.truetype(f"lorenzo/fonts/{font_name}.ttf", font_size)
+    
     text_length = random.randint(1,3)
     text = "".join(random.choice(string.ascii_letters) for i in range(text_length))
 
@@ -25,7 +37,7 @@ def draw_text(image, size=20):
     color = (random.randint(0,255))
     image.text((y,x), text, fill=color, font=font)
 
-def add_random_shape_to_image(image, number_of_shapes):
+def add_random_text_to_image(image, number_of_shapes):
     """Add shape with random proporties to image number_of_shapes times."""
     image_filled = image.copy()
     for _ in range(0, number_of_shapes):
@@ -38,7 +50,7 @@ def create_random_population(size, mutation_strength):
     first_population = []
     for _ in range(0, size):
         blank_image = Image.new("L", (original_height, original_width))
-        filled_image = add_random_shape_to_image(blank_image, mutation_strength)
+        filled_image = add_random_text_to_image(blank_image, mutation_strength)
         first_population.append(filled_image)
     return first_population
 
@@ -75,7 +87,7 @@ def crossover(image1, image2):
 
 def mutate(image, number_of_times):
     """Mutate image adding random shape number_of_times."""
-    mutated = add_random_shape_to_image(image, number_of_times)
+    mutated = add_random_text_to_image(image, number_of_times)
     return mutated
 
 def get_parents(local_population, local_fitnesses, distance):

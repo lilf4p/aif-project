@@ -1,0 +1,15 @@
+{
+    "type": "grayscale_text",
+    "data": {
+        "builtin": false,
+        "distance_metric" :  "mse" ,
+        "image_path" :"images/monalisabw.jpg" ,    
+        "max_gens" : 1000,
+        "mutation_strength": 1,
+        "mutation_chance":0.3,
+        "font" : {
+            "name" : "gidole",
+            "size" : 15
+        }       
+    }
+}
