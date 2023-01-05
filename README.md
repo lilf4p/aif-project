@@ -106,11 +106,11 @@ or the user can define custom configuration by setting the following parameters:
 - `output_path` : path to save the result
 
 ### Grayscale Text Experiments ("grayscale_text") ###
-The algorithm with grayscale text can be executed by user by:
+The user can run the algorithm with grayscale text by:  
 loading a builtin configuration from the builtin_config json file. Builtin available 
 `picasso-text-long`, `picasso-text`, `monalisa-text`, `singapore-text`  
 
-or
+or  
 
 using a custom configuration properly defined in a json file as it follows
 - `image_path` : path to the target image
