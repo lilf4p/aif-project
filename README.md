@@ -82,6 +82,22 @@ Specific of `distance_table` are:
 - `canny_high`: high bound for Canny edge detector for extracting contours;
 - `num_of_points`: number of points of each individual.
 
+### Contours Lines Experiments ("contours_lines") ###
+For running a custom experiment for reconstructing the contours
+of an image with a population of points, JSON file has to contain
+the following fields:
+
+- `image_path` : path to input image
+- `num_lines` : number of lines that the algorithm will use 
+- `max_generations` : number of iterations 
+- `num_population` : number of infdividuals in population 
+- `hall_of_fame_size` : size of elitism
+- `growth_rate` : percentage of new individual in each iteration
+- `mutant_per` : number of lines changed in each iteration 
+- `inheritance_rate` : pecentage of lines took from the first parent
+- `len_lines` : maxiumum length of each lines
+
+
 ### Grayscale Ellipses Experiments ("grayscale_ellipses") ###
 To run the algorithm with grayscale ellipses the user can choose one of the following default experiments: "monalisa-ellissi-mse", "monalisa-ellissi-mse+ssim", "monalisa-ellissi-uqi",  "monalisa-ellissi-mse-uqi"
 
