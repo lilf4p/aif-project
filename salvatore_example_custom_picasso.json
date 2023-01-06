@@ -6,7 +6,6 @@
     "dir_path": ".",
     "image_path": "images/cubismo_picasso.jpg",
     "max_generations": 10000,
-    "use_cython": true,
 
     "num_of_points": 5000,
     "use_gpu": true,

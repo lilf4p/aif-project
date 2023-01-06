@@ -32,7 +32,6 @@ class Experiment:
             sch.Optional('save_image_dir', default=None): str,
             sch.Optional('bounds_low', default=0.0): float,
             sch.Optional('bounds_high', default=1.0): float,
-            sch.Optional('use_cython', default=True): bool,
         }
 
     @classmethod
@@ -45,7 +44,7 @@ class Experiment:
                  p_mutation=0.5, max_generations: int = 1000, hof_size: int = 25,
                  random_seed: int = None, save_image_dir: str = None, device='cpu',
                  algorithm: EAlgorithm = EASimpleForArrays(), bounds_low: float = None,
-                 bounds_high: float = None, use_cython: bool = True):
+                 bounds_high: float = None):
         self.metric = None  # subclasses must initialize
         self.population_size = population_size
         self.p_crossover = p_crossover
@@ -56,7 +55,6 @@ class Experiment:
         self.bounds_high = bounds_high
         self.crowding_factor = None
         self.num_params = None
-        self.use_cython = use_cython
 
         self.seed = random_seed
         if self.seed is not None:
@@ -222,28 +220,16 @@ class Experiment:
         self.toolbox.register('select', selection_tournament, tournsize=2)
 
     def set_mate(self):
-        if self.use_cython:
-            self.toolbox.register(
-                'mate', cy_simulated_binary_bounded, low=self.bounds_low,
-                up=self.bounds_high, eta=self.crowding_factor,
-            )
-        else:
-            self.toolbox.register(
-                "mate", py_simulated_binary_bounded, low=self.bounds_low,
-                up=self.bounds_high, eta=self.crowding_factor
-            )
+        self.toolbox.register(
+            'mate', np_cx_simulated_binary_bounded, low=self.bounds_low,
+            up=self.bounds_high, eta=self.crowding_factor,
+        )
 
     def set_mutate(self):
-        if self.use_cython:
-            self.toolbox.register(
-                "mutate", cy_mut_polynomial_bounded, low=self.bounds_low, up=self.bounds_high,
-                eta=self.crowding_factor, indpb=1.0 / self.num_params
-            )
-        else:
-            self.toolbox.register(
-                "mutate", py_mut_polynomial_bounded, low=self.bounds_low, up=self.bounds_high,
-                eta=self.crowding_factor, indpb=1.0 / self.num_params
-            )
+        self.toolbox.register(
+            "mutate", np_mut_polynomial_bounded, low=self.bounds_low, up=self.bounds_high,
+            eta=self.crowding_factor, indpb=1.0 / self.num_params
+        )
 
     def setup(self):
         self.set_fitness()
@@ -309,9 +295,6 @@ class Experiment:
         with open(best_ind_file_name, 'wb') as fp:
             pickle.dump(best, fp)
 
-        # save gif of generated images
-        create_gif(self.save_image_dir)
-
 
 def generic_experiment_from_config(experiment_class: Type[Experiment], data: dict):
     # logger and stopping_criterions are already checked using schema in parse_experiment_data
@@ -337,9 +320,8 @@ def generic_experiment_from_config(experiment_class: Type[Experiment], data: dic
 def generic_experiment_test(
     experiment_class: Type[Experiment], dir_path: str, image_path: str,
     p_crossover=0.9, p_mutation=0.5, population_size=250, max_generations=1000,
-    random_seed=10, hof_size=25, save_image_dir: str = None,
-    bounds_low=0.0, bounds_high=1.0, use_cython=True,
-    save_image_gen_step=100, other_callback_args=None,
+    random_seed=10, hof_size=25, save_image_dir: str = None, bounds_low=0.0,
+    bounds_high=1.0, save_image_gen_step=100, other_callback_args=None,
     logger=None, stopping_criterions=None, *args, **kwargs
 ):
     os.chdir(dir_path)
@@ -347,7 +329,7 @@ def generic_experiment_test(
     experiment = experiment_class(
         image_path, population_size=population_size, p_crossover=p_crossover, p_mutation=p_mutation,
         max_generations=max_generations, hof_size=hof_size, random_seed=random_seed, save_image_dir=save_image_dir,
-        bounds_low=bounds_low, bounds_high=bounds_high, use_cython=use_cython, *args, **kwargs
+        bounds_low=bounds_low, bounds_high=bounds_high, *args, **kwargs
     )
     common_test_part(experiment, save_image_gen_step, other_callback_args, logger, stopping_criterions)
 

@@ -68,7 +68,6 @@ class Logger:
             'selection_operator': str(experiment.toolbox.select),
             'crossover_operator': str(experiment.toolbox.mate),
             'mutation_operator': str(experiment.toolbox.mutate),
-            'use_cython': experiment.use_cython,
             'device': experiment.device,
             'metric': type(experiment.metric).__name__,
             'stats': [],
