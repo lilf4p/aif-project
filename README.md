@@ -136,3 +136,30 @@ using a custom configuration properly defined in a json file as it follows
     - `name` : name of the desired font (between arial, gidole and freemono)
     -  `size` : size of the text to draw
 If any of these parameters is not provided the default value will be loaded.
+
+### RGB Polygons Experiments ("rgb_polygons")
+The user can setup a custom experiment by creating a JSON file with the
+`type` field set to `"rgb_polygons"` and the following fields:
+- `name`: name of the experiment;
+- `FITNESS_METHOD`: which fitness function to use, one of `MSE`, `SSIM` and `MSSIM`;
+- `POLYGON_SIZE`: number of vertices of the polygons in each individual; must be
+an integer `>= 3`;
+- `NUM_OF_POLYGONS`: number of polygons in each individual. Must be an integer `>= 1`;
+- `POPULATION_SIZE`: population size;
+- `HOLL_OF_FAME_SIZE`: how many individuals are maintained throughout generations with
+"elitism" mechanics;
+- `SELECTION_METHOD`: selection method to be used in the experiment. Either `Tournament`
+or `SelectBest`;
+- `CROSSOVER_METHOD`: crossover method to be used in the experiment. Either `SimulatedBinaryBounded`
+or `Uniform`;
+- `MUTATION_METHOD`: mutation method to be used in the experiment. Either `PolynomialBounded`
+or `FlipBit`;
+- `TOURNAMENT_SIZE`: size of tournament for `Tournament` selection; must be an integer `>= 1`;
+- `P_CROSSOVER`: probability of crossover at each generation; must be a float in `(0.0, 1.0)`;
+- `P_MUTATION`: probability of mutation at each generation; must be a float between `(0.0, 1.0)`;
+- `MAX_GENERATION`: maximum number of generations; must be an integer `>= 1`;
+- `CROWDING_FACTOR`: crowding factor for `SimulatedBinaryBounded` and `PolynomialBounded`; must be a positive float;
+- `BOUNDS_LOW`: lower bound for `SimulatedBinaryBounded` and `PolynomialBounded`; must be a positive float;
+- `BOUNDS_HIGH`: upper bound for `SimulatedBinaryBounded` and `PolynomialBounded`; must be a positive float;
+- `IMAGE`: path of the source image relative to the main directory of the project;
+- `OUTPUT_DIR`: path of the folder in which to save the outputs, relative to the main directory of the project.
