@@ -1,14 +1,13 @@
-import os
 import json
 import sys
 import traceback
 import typer
 
-from salvatore.config import parse_experiment_data as salvatore_parse_experiment_data, \
-    print_builtin_help as salvatore_get_builtin_help
+from salvatore.config import parse_experiment_data as salvatore_parse_experiment_data
 from leonardo import bw_algo as leonardo_parse_experiment_data
 from lorenzo import text_reconstruction as lorenzo_parse_experiment_data
 from michele.GA_lines_scratch import loadconfig as michele_parse_experiment_data
+from kashefi.main import main as kashefi_parse_experiment_data
 
 
 RGB_POLYGONS = 'rgb_polygons'
@@ -79,7 +78,7 @@ def file_run(config_file_path: str):
 
         # Dispatch to target code
         if config_type == RGB_POLYGONS:
-            pass  # todo Mohammed's code for RGB polygons
+            kashefi_parse_experiment_data(config_data)
         elif config_type == GRAYSCALE_ELLIPSES:
             leonardo_parse_experiment_data(config_experiment_data)
         elif config_type in [GRAYSCALE_LINES, CONTOURS_LINES]:
@@ -100,41 +99,6 @@ def run(config_file_path: str):
     A shortcut for the `file-run` command, see its documentation.
     """
     file_run(config_file_path)
-
-
-@app.command()
-def builtins(
-        type: str = typer.Option(default='', help='Experiment type identifier.'),
-        name: str = typer.Option(default='', help='Name of the experiment (for visualizing that one only).')
-):
-    """
-    Displays builtin experiment names and descriptions.
-    """
-    if len(type) == 0:
-        experiment_types = TYPES
-    elif type in TYPES:
-        experiment_types = [type]
-    else:
-        raise ValueError(f"Unknown experiment type `{type}`")
-    for exp_type in experiment_types:
-        __builtin_internal(exp_type, name)
-
-
-def __builtin_internal(experiment_type: str, name: str = ''):
-    if experiment_type == CONTOURS_POINTS:
-        results = salvatore_get_builtin_help()
-    else:   # todo need to complete with the other descriptions
-        results = {}
-    if len(name) > 0:
-        if name in results:
-            results = {name: results[name]}
-        else:
-            raise ValueError(f"Unknown experiment name '{name}'")
-    __print_builtin_help(results)
-
-
-def __print_builtin_help(builtin_data: dict):
-    print(*[f'* `{name}`:\n\t{description}\n' for name, description in builtin_data.items()], sep='\n')
 
 
 if __name__ == '__main__':

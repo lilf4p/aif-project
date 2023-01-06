@@ -38,11 +38,6 @@ Runs the experiment as configured in `<json_file_path>`.
 - `python main.py run <json_file_path>`
 Shortcut for the `file-run` command.
 
-- `python main.py builtins <json_file_path> [--type=<experiment_type>]
-[--name=<experiment_name>]`
-Displays information about builtin experiments, which can be filtered
-by specifying the `--type` and `--name` options.
-
 - `python main.py --help`: Displays a help message for all the commands.
 
 - `python main.py <cmd> --help`: Displays a help message for the command `<cmd>`.
@@ -96,7 +91,7 @@ or the user can define custom configuration by setting the following parameters:
 - `num_polygons` : number of shapes 
 - `multi_objective` : if set to true multiple fitness function can be used
 - `distance_metric` : fitness function used 
-- `population_size` : number of infdividuals in population 
+- `population_size` : number of individuals in population 
 - `p_crossover` : probability for crossover operator
 - `p_mutation` : probability for mutation operator
 - `max_generations` : maximum number of generations allowed

@@ -1,6 +1,5 @@
 from __future__ import annotations
 from datetime import datetime
-import elitism_callback
 from .types import *
 from bisect import bisect_right
 from operator import eq
@@ -122,27 +121,6 @@ class EAlgorithm(Callable):
         self.end_time = perf_counter()
 
 
-class EASimpleWithElitismAndCallback(EAlgorithm):
-
-    def __init__(self):
-        super(EASimpleWithElitismAndCallback, self).__init__()
-
-    def __call__(self, population: list, toolbox: dp_base.Toolbox, cxpb: float, mutpb: float,
-                 ngen: int, callbacks: Callable = None, stats: dp_tools.Statistics = None,
-                 halloffame=None, logbook: dp_tools.Logbook = None, verbose=__debug__):
-        self.population = population
-        self.toolbox = toolbox
-        self.cxpb = cxpb
-        self.mutpb = mutpb
-        self.ngen = ngen
-        self.stats = stats
-        self.hof = halloffame
-        self.logbook = dp_tools.Logbook() if logbook is None else logbook
-        return elitism_callback.eaSimpleWithElitismAndCallback(
-            self.population, toolbox, self.cxpb, self.mutpb, self.ngen, callbacks, stats, halloffame, verbose
-        )
-
-
 class EASimpleForArrays(EAlgorithm):
 
     def __init__(self):
@@ -252,6 +230,5 @@ class EASimpleForArrays(EAlgorithm):
 __all__ = [
     'ArrayHallOfFame',
     'EAlgorithm',
-    'EASimpleWithElitismAndCallback',
     'EASimpleForArrays',
 ]

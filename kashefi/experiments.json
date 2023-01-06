@@ -17,7 +17,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSE-TSP": {
     "name": "MSE-TSP-300-250",
@@ -37,7 +37,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSE-TUP": {
     "name": "MSE-TUP",
@@ -57,7 +57,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSE-TUF": {
     "name": "MSE-TUF",
@@ -77,7 +77,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSE-SSP": {
     "name": "MSE-SSP",
@@ -97,7 +97,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSE-SSF": {
     "name": "MSE-SSF",
@@ -117,7 +117,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSE-SUP": {
     "name": "MSE-SUP",
@@ -137,7 +137,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSE-SUF": {
     "name": "MSE-SUF",
@@ -157,7 +157,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "SSIM-TSF": {
     "name": "SSIM-TSF",
@@ -177,7 +177,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "SSIM-TSP": {
     "name": "SSIM-TSP",
@@ -197,7 +197,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "SSIM-TUP": {
     "name": "SSIM-TUP",
@@ -217,7 +217,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "SSIM-TUF": {
     "name": "SSIM-TUF",
@@ -237,7 +237,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "SSIM-SSP": {
     "name": "SSIM-SSP",
@@ -257,7 +257,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "SSIM-SSF": {
     "name": "SSIM-SSF",
@@ -277,7 +277,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "SSIM-SUP": {
     "name": "SSIM-SUP",
@@ -297,7 +297,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "SSIM-SUF": {
     "name": "SSIM-SUF",
@@ -317,7 +317,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSSIM-TSF": {
     "name": "MSSIM-TSF",
@@ -337,7 +337,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSSIM-TSP": {
     "name": "MSSIM-TSP",
@@ -357,7 +357,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSSIM-TUP": {
     "name": "MSSIM-TUP",
@@ -377,7 +377,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSSIM-TUF": {
     "name": "MSSIM-TUF",
@@ -397,7 +397,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSSIM-SSP": {
     "name": "MSSIM-SSP",
@@ -417,7 +417,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSSIM-SSF": {
     "name": "MSSIM-SSF",
@@ -437,7 +437,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSSIM-SUP": {
     "name": "MSSIM-SUP",
@@ -457,7 +457,7 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   },
   "MSSIM-SUF": {
     "name": "MSSIM-SUF",
@@ -477,6 +477,6 @@
     "BOUNDS_LOW": 0.0,
     "BOUNDS_HIGH": 1.0,
     "IMAGE": "images/monalisa.png",
-    "OUTPUT_DIR": "images/results/"
+    "OUTPUT_DIR": "kashefi/results/"
   }
 }

@@ -2,7 +2,23 @@
   "type": "rgb_polygons",
   "data": {
     "builtin": false,
+    "name": "MSE-TSF",
     "FITNESS_METHOD": "MSE",
-    "POLYGON_SIZE": 10
+    "POLYGON_SIZE": 6,
+    "NUM_OF_POLYGONS": 250,
+    "POPULATION_SIZE": 300,
+    "HOLL_OF_FAME_SIZE": 20,
+    "SELECTION_METHOD": "Tournament",
+    "CROSSOVER_METHOD": "SimulatedBinaryBounded",
+    "MUTATION_METHOD": "FlipBIt",
+    "TOURNAMENT_SIZE": 2,
+    "P_CROSSOVER": 0.9,
+    "P_MUTATION": 0.1,
+    "MAX_GENERATION": 10,
+    "CROWDING_FACTOR": 10.0,
+    "BOUNDS_LOW": 0.0,
+    "BOUNDS_HIGH": 1.0,
+    "IMAGE": "images/monalisa.png",
+    "OUTPUT_DIR": "kashefi/results"
   }
 }

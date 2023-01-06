@@ -15,18 +15,18 @@ import random
 import numpy as np
 import os
 
-import image_test
-import elitism_callback
+import kashefi.image_test as image_test
+import kashefi.elitism_callback as elitism_callback
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 import time
 import multiprocessing
 
-from config import get_config, get_experiment_names, get_experiment_codes, load_json,get_custom_experiment
+from kashefi.config import get_config, get_experiment_names, get_experiment_codes, load_json,get_custom_experiment
 
 start_time = time.time()
-OUTPUT_DIR = "images/results/"
+OUTPUT_DIR = "results/"
 C_METHOD = "MSE"
 
 # problem related constants
@@ -251,8 +251,8 @@ def main(experiment):
     # execute the algorithm in multiple threads simultaneously
 
 
-    pool = multiprocessing.Pool()
-    toolbox.register("map", pool.map)
+    # pool = multiprocessing.Pool()
+    # toolbox.register("map", pool.map)
 
     if (experiment["data"]["builtin"] == True):
         exp = get_config(experiment['data']['name'])
@@ -279,40 +279,3 @@ def main(experiment):
     #     main()
     # experiment = get_config(exp)
     # setup(experiment,exp)
-
-
-
-if __name__ == "__main__":
-    # freeze_support()
-    experiment = {
-      "type": "rgb_polygons",
-      "data": {
-        "builtin": True,
-        "name": "MSE-TSP"
-      }
-    }
-    # experiment = {
-    #     "type": "rgb_polygons",
-    #     "data": {
-    #         "builtin": False,
-    #         "name": "MSE-SUF",
-    #         "FITNESS_METHOD": "MSE",
-    #         "POLYGON_SIZE": 6,
-    #         "NUM_OF_POLYGONS": 250,
-    #         "POPULATION_SIZE": 300,
-    #         "HOLL_OF_FAME_SIZE": 20,
-    #         "SELECTION_METHOD": "Tournament",
-    #         "CROSSOVER_METHOD": "SimulatedBinaryBounded",
-    #         "MUTATION_METHOD": "PolynomialBounded",
-    #         "TOURNAMENT_SIZE": 2,
-    #         "P_CROSSOVER": 0.9,
-    #         "P_MUTATION": 0.1,
-    #         "MAX_GENERATION": 2000,
-    #         "CROWDING_FACTOR": 10.0,
-    #         "BOUNDS_LOW": 0.0,
-    #         "BOUNDS_HIGH": 1.0,
-    #         "IMAGE": "images/monalisa.png",
-    #         "OUTPUT_DIR": "images/results"
-    #     }
-    # }
-    main(experiment)
