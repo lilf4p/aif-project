@@ -93,6 +93,7 @@ of an image with a population of points, JSON file has to contain
 the following fields:
 
 - `image_path` : path to input image
+- `output` : path where to save the image
 - `num_lines` : number of lines that the algorithm will use 
 - `max_generations` : number of iterations 
 - `num_population` : number of infdividuals in population 
